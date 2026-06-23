@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 6% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --border: 240 6% 90%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 6% 4%;
+    --foreground: 0 0% 96%;
+    --card: 240 6% 6%;
+    --card-foreground: 0 0% 96%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 5% 65%;
+    --border: 240 6% 16%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(255, 122, 0, 0.12), transparent 24%),
+      radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.08), transparent 16%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent 20%);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    background: rgba(255, 122, 0, 0.25);
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    background: linear-gradient(120deg, #ff7a00, #ffa64d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+  }
+}
