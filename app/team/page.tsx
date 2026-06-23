@@ -12,9 +12,9 @@ export default function TeamPage() {
         <div className="mt-16 space-y-24">
           {teamSections.map((section) => (
             <div key={section.title} className="scroll-mt-32" id={section.title.toLowerCase().replace(" ", "-")}>
-              <div className="flex items-center gap-4 border-b border-white/10 pb-6">
+              <div className="flex items-center gap-4 border-b border-glass-border pb-6">
                 <h2 className="font-display text-2xl font-semibold tracking-tight">{section.title}</h2>
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.04] text-xs font-medium text-muted-foreground">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-glass-bg text-xs font-medium text-muted-foreground">
                   {section.members.length}
                 </div>
               </div>

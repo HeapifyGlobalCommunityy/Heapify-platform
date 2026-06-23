@@ -19,7 +19,7 @@ export function Navbar() {
 
   return (
     <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-6xl -translate-x-1/2">
-      <div className="flex items-center justify-between rounded-full border border-white/10 bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
+      <div className="flex items-center justify-between rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
         <Link href="/" className="flex items-center gap-2">
           <HeapifyLogo className="h-5 w-5" />
           <span className="font-display font-semibold text-sm tracking-tight">
@@ -39,7 +39,7 @@ export function Navbar() {
           <button
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08]"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-glass-border bg-glass-bg hover:bg-glass-border"
           >
             {mounted ? (theme === "dark" ? <Sun size={15} /> : <Moon size={15} />) : <div className="h-[15px] w-[15px]" />}
           </button>
@@ -47,7 +47,7 @@ export function Navbar() {
             <Link href="/forms/join">Join</Link>
           </Button>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-glass-border bg-glass-bg lg:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
@@ -57,7 +57,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-white/10 bg-black/85 p-4 backdrop-blur-xl lg:hidden">
+        <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/85 p-4 backdrop-blur-xl lg:hidden">
           {navigationLinks.map((link) => (
             <Link
               key={link.href}

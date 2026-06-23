@@ -34,7 +34,7 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-white/10">
+    <footer className="mt-24 border-t border-glass-border">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 px-6 py-16 md:grid-cols-5">
         <div className="col-span-2 space-y-4">
           <div className="mb-3 flex items-center gap-2">
@@ -46,7 +46,7 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap gap-2">
             {partners.map((partner) => (
-              <span key={partner} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+              <span key={partner} className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
                 {partner}
               </span>
             ))}
@@ -71,7 +71,7 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 border-t border-white/10 px-6 py-6 text-xs font-mono text-muted-foreground md:flex-row">
+      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 border-t border-glass-border px-6 py-6 text-xs font-mono text-muted-foreground md:flex-row">
         <span>HEAPIFY_GLOBAL_COMMUNITY © {new Date().getFullYear()}</span>
         <span>Built with Next.js + Supabase</span>
       </div>

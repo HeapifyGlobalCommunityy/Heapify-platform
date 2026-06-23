@@ -13,7 +13,7 @@ type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 export function AnimatedLogo({ className }: { className?: string }) {
   return (
     <motion.div
-      className={cn("relative flex h-16 w-16 items-center justify-center rounded-[1.4rem] border border-white/10 bg-white/5 shadow-[0_0_60px_rgba(255,122,0,0.22)]", className)}
+      className={cn("relative flex h-16 w-16 items-center justify-center rounded-[1.4rem] border border-glass-border bg-glass-bg shadow-[0_0_60px_rgba(255,122,0,0.22)]", className)}
       animate={{ y: [0, -4, 0], rotate: [0, 1.5, 0] }}
       transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
     >
@@ -53,9 +53,9 @@ export function SectionWrapper({ eyebrow, title, description, action, children, 
 export function CTAComponent({ title, description, actions }: { title: string; description: string; actions: Action[] }) {
   return (
     <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ duration: 0.7 }} className="px-6 py-6">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] md:p-12">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] md:p-12">
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             premium community infrastructure
           </div>
@@ -104,7 +104,7 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
   return (
     <div className="grid gap-4 md:grid-cols-5">
       {stats.map((stat, index) => (
-        <motion.div key={stat.label} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.45, delay: index * 0.05 }} whileHover={{ y: -4 }} className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl">
+        <motion.div key={stat.label} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.45, delay: index * 0.05 }} whileHover={{ y: -4 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
           <div className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl"><AnimatedValue value={stat.value} /></div>
           <div className="mt-2 text-xs uppercase tracking-[0.28em] text-primary/80">{stat.label}</div>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">{stat.detail}</p>
@@ -116,7 +116,7 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
 
 export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return (
-    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] backdrop-blur-xl">
+    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] backdrop-blur-xl">
       <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/75">{eyebrow}</div>
       <h3 className="mt-4 font-display text-xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
@@ -126,7 +126,7 @@ export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; 
 
 export function EventCard({ event, compact = false }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; summary?: string; spotlight?: string; format?: string; description?: string }; compact?: boolean }) {
   return (
-    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
+    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative flex items-start justify-between gap-4">
         <div>
@@ -156,7 +156,7 @@ export function EventCard({ event, compact = false }: { event: { slug: string; t
 
 function MetaItem({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2 text-xs text-muted-foreground">
+    <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-3 py-2 text-xs text-muted-foreground">
       <Icon className="h-3.5 w-3.5 text-primary" />
       <span className="line-clamp-1">{label}</span>
     </div>
@@ -165,7 +165,7 @@ function MetaItem({ icon: Icon, label }: { icon: React.ComponentType<{ className
 
 export function ProjectCard({ project }: { project: { slug: string; title: string; description: string; stack: string[]; impact: string; members: string } }) {
   return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-[1.75rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground">{project.members}</div>
@@ -176,7 +176,7 @@ export function ProjectCard({ project }: { project: { slug: string; title: strin
       <p className="mt-4 text-sm leading-7 text-muted-foreground">{project.description}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {project.stack.map((item) => (
-          <span key={item} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{item}</span>
+          <span key={item} className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{item}</span>
         ))}
       </div>
       <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
@@ -192,18 +192,18 @@ export function ProjectCard({ project }: { project: { slug: string; title: strin
 
 export function TeamCard({ member }: { member: { name: string; role: string; bio: string; links: string[] } }) {
   return (
-    <motion.article whileHover={{ y: -5 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+    <motion.article whileHover={{ y: -5 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">{member.role}</div>
           <h3 className="font-display text-xl font-semibold tracking-tight">{member.name}</h3>
         </div>
-        <div className="h-12 w-12 rounded-2xl border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_62%)]" />
+        <div className="h-12 w-12 rounded-2xl border border-glass-border bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_62%)]" />
       </div>
       <p className="mt-4 text-sm leading-7 text-muted-foreground">{member.bio}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {member.links.map((link) => (
-          <span key={link} className="rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{link}</span>
+          <span key={link} className="rounded-full border border-glass-border px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{link}</span>
         ))}
       </div>
     </motion.article>
@@ -212,7 +212,7 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
 
 export function SocialCard({ title, description }: { title: string; description: string }) {
   return (
-    <motion.article whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+    <motion.article whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
       <h3 className="font-display text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
       <div className="mt-6 inline-flex items-center gap-2 text-sm text-primary">
@@ -225,7 +225,7 @@ export function SocialCard({ title, description }: { title: string; description:
 
 export function FormCard({ title, description }: { title: string; description: string }) {
   return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 backdrop-blur-xl">
+    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 backdrop-blur-xl">
       <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-muted-foreground">Form</div>
       <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
@@ -241,9 +241,9 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
   return (
     <section className="relative isolate overflow-hidden px-6 pb-24 pt-32 md:pb-32 md:pt-40">
       <AnimatedNetworkBackground />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.2),rgba(10,10,10,0.65)_65%,rgba(10,10,10,1))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0.8)_65%,rgba(255,255,255,1))] dark:bg-[linear-gradient(180deg,rgba(10,10,10,0.2),rgba(10,10,10,0.65)_65%,rgba(10,10,10,1))]" />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative mx-auto flex max-w-6xl flex-col items-center text-center">
-        <div className="mb-8 flex items-center gap-4 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-muted-foreground backdrop-blur-md">
+        <div className="mb-8 flex items-center gap-4 rounded-full border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground backdrop-blur-md">
           <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
           Premium builder community platform
         </div>
@@ -279,19 +279,19 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
-        <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-muted-foreground">
+      <div className="grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
+        <label className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-sm text-muted-foreground">
           <Search className="h-4 w-4 text-primary" />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
         </label>
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-xs text-muted-foreground">
             <Filter className="h-4 w-4 text-primary" />
             <select value={activeCategory} onChange={(event) => setActiveCategory(event.target.value)} className="w-full bg-transparent outline-none">
               {categories.map((category) => <option key={category} value={category} className="bg-[#0A0A0A]">{category}</option>)}
             </select>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-xs text-muted-foreground">
             <Sparkles className="h-4 w-4 text-primary" />
             <select value={activeStatus} onChange={(event) => setActiveStatus(event.target.value)} className="w-full bg-transparent outline-none">
               <option className="bg-[#0A0A0A]">All</option>
@@ -304,7 +304,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
       </div>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
-          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition-colors", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-white/10 bg-white/[0.03] text-muted-foreground hover:text-foreground")}>
+          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition-colors", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground")}>
             {category}
           </button>
         ))}
@@ -327,13 +327,13 @@ export function ResourcesExplorer({ resources }: { resources: Array<{ title: str
 
   return (
     <div className="space-y-6">
-      <label className="flex items-center gap-3 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-muted-foreground backdrop-blur-xl">
+      <label className="flex items-center gap-3 rounded-[1.5rem] border border-glass-border bg-glass-bg px-4 py-4 text-sm text-muted-foreground backdrop-blur-xl">
         <Search className="h-4 w-4 text-primary" />
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search blogs, roadmaps, recordings, and notes" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
       </label>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {filtered.map((resource, index) => (
-          <motion.article key={resource.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }} whileHover={{ y: -4 }} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl">
+          <motion.article key={resource.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }} whileHover={{ y: -4 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
             <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">{resource.meta}</div>
             <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{resource.title}</h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{resource.description}</p>
@@ -355,5 +355,49 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease: "easeOut" }} className="relative">
       {children}
     </motion.div>
+  );
+}
+
+export function BentoGrid({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("grid gap-5", className)}>
+      {children}
+    </div>
+  );
+}
+
+export function BentoCard({ eyebrow, title, description, className, index = 0, children }: { eyebrow?: string; title?: string; description?: string; className?: string; index?: number; children?: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.45, delay: index * 0.05 }}
+      whileHover={{ y: -4, scale: 1.005 }}
+      className={cn("group relative overflow-hidden rounded-[1.5rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", className)}
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.12),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="relative z-10">
+        {eyebrow && <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary/80">{eyebrow}</div>}
+        {title && <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{title}</h3>}
+        {description && <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>}
+        {children && <div className="mt-5">{children}</div>}
+      </div>
+    </motion.div>
+  );
+}
+
+export function StatusBadge({ status, className }: { status: string; className?: string }) {
+  let colors = "border-glass-border bg-glass-bg text-muted-foreground";
+  if (status.toLowerCase() === "active" || status.toLowerCase() === "open") {
+    colors = "border-primary/30 bg-primary/10 text-primary";
+  } else if (status.toLowerCase() === "upcoming" || status.toLowerCase() === "soon") {
+    colors = "border-blue-500/30 bg-blue-500/10 text-blue-400";
+  }
+  
+  return (
+    <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em]", colors, className)}>
+      {status}
+    </span>
   );
 }

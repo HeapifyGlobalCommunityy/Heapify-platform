@@ -1,11 +1,11 @@
 import { openSourceHighlights, featuredProjects } from "@/lib/site-content";
-import { CTAComponent, ProjectCard, SectionWrapper } from "@/components/site/ui";
+import { BentoCard, BentoGrid, CTAComponent, ProjectCard, SectionWrapper } from "@/components/site/ui";
 
-export default function Page() {
+export default function OpenSourcePage() {
   return (
     <>
-      <SectionWrapper eyebrow="Open Source" title="A curated contribution surface" description="High-signal projects, strong presentation, and later room for issue tracking or repo integration." className="pt-36">
-        <div className="grid gap-5 lg:grid-cols-3">
+      <SectionWrapper eyebrow="Open Source" title="Contribution Surface" description="High-signal projects, strong presentation, and later room for issue tracking or repo integration." className="pt-36 pb-12">
+        <div className="grid gap-5 lg:grid-cols-3 mt-8">
           {featuredProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
@@ -13,14 +13,16 @@ export default function Page() {
       </SectionWrapper>
 
       <SectionWrapper eyebrow="Why it works" title="Built to help new contributors move fast">
-        <div className="grid gap-4 md:grid-cols-3">
-          {openSourceHighlights.map((item) => (
-            <div key={item.title} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
-              <h3 className="font-display text-xl font-semibold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.description}</p>
-            </div>
+        <BentoGrid className="md:grid-cols-3 mt-8">
+          {openSourceHighlights.map((item, index) => (
+            <BentoCard
+              key={item.title}
+              index={index}
+              title={item.title}
+              description={item.description}
+            />
           ))}
-        </div>
+        </BentoGrid>
       </SectionWrapper>
 
       <CTAComponent

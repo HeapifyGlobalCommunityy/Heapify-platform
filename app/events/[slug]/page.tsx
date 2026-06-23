@@ -17,7 +17,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             <ArrowLeft className="h-4 w-4" /> Back to events
           </Link>
           
-          <div className="mt-8 rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl relative overflow-hidden">
+          <div className="mt-8 rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(255,255,255,0.8))] dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
               <div className="w-64 h-64 bg-primary/30 rounded-full blur-[100px]" />
             </div>
@@ -28,7 +28,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               
               <div className="mt-10 flex flex-wrap gap-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
                     <Calendar className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -37,7 +37,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
                     <Clock className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -46,7 +46,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
                     <MapPin className="h-4 w-4 text-primary" />
                   </div>
                   <div>
@@ -65,7 +65,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <h2 className="font-display text-2xl font-semibold">Agenda</h2>
               <div className="mt-6 space-y-4">
                 {eventDetail.agenda.map((item, i) => (
-                  <div key={i} className="flex gap-6 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                  <div key={i} className="flex gap-6 rounded-2xl border border-glass-border bg-glass-bg p-5">
                     <div className="font-mono text-sm text-primary/80">{item.time}</div>
                     <div className="text-sm text-foreground/90">{item.item}</div>
                   </div>
@@ -77,7 +77,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               <h2 className="font-display text-2xl font-semibold">Speakers</h2>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 {eventDetail.speakers.map((speaker, i) => (
-                  <div key={i} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                  <div key={i} className="flex items-center gap-4 rounded-2xl border border-glass-border bg-glass-bg p-5">
                     <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/10" />
                     <div>
                       <div className="font-semibold text-sm">{speaker.name}</div>
@@ -90,7 +90,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
           </div>
 
           <div>
-            <div className="sticky top-24 rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+            <div className="sticky top-24 rounded-3xl border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
               <h3 className="font-display font-semibold text-xl">Registration</h3>
               <p className="mt-3 text-sm text-muted-foreground">Secure your spot for this experience. Approval required.</p>
               
@@ -107,7 +107,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         </div>
       </article>
 
-      <SectionWrapper title="Related Events" className="border-t border-white/10">
+      <SectionWrapper title="Related Events" className="border-t border-glass-border">
         <div className="grid gap-5 lg:grid-cols-2">
           {eventDetail.related.map((event) => (
             <EventCard key={event.slug} event={event} />

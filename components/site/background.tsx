@@ -116,7 +116,7 @@ export function AnimatedNetworkBackground() {
       <div className="absolute inset-0 opacity-55 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]">
         <canvas ref={canvasRef} className="h-full w-full" aria-hidden="true" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,transparent_78%,rgba(10,10,10,0.3)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,transparent_78%,rgba(255,255,255,0.8)_100%)] dark:bg-[linear-gradient(transparent_0%,transparent_78%,rgba(10,10,10,0.3)_100%)]" />
     </div>
   );
 }

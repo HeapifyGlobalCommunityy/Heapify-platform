@@ -4,14 +4,16 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 6% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --border: 240 6% 90%;
+    --background: 212 100% 95%; /* More noticeable light blue */
+    --foreground: 24 20% 15%;
+    --card: 0 0% 100%; /* Pure white */
+    --card-foreground: 24 20% 15%;
+    --muted: 212 100% 90%; /* Distinct blue for muted elements */
+    --muted-foreground: 24 40% 45%;
+    --border: 24 30% 90%;
     --radius: 0.75rem;
+    --glass-border: rgba(255, 122, 0, 0.15);
+    --glass-bg: rgba(255, 122, 0, 0.04);
   }
 
   .dark {
@@ -22,6 +24,8 @@
     --muted: 240 5% 12%;
     --muted-foreground: 240 5% 65%;
     --border: 240 6% 16%;
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.03);
   }
 
   * {

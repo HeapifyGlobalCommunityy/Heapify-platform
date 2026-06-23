@@ -1,26 +1,37 @@
-import { CTAComponent, SectionWrapper } from "@/components/site/ui";
+import { BentoCard, BentoGrid, CTAComponent, SectionWrapper, StatusBadge } from "@/components/site/ui";
 
 const roles = [
-  { title: "Frontend Engineer", company: "Partner Studio", type: "Remote", stage: "Open" },
-  { title: "Community Operations", company: "Global Platform", type: "Hybrid", stage: "Open" },
-  { title: "Design Intern", company: "Builder Tools", type: "Onsite", stage: "Soon" },
-  { title: "Developer Relations", company: "Infra Partner", type: "Remote", stage: "Open" },
+  { title: "Frontend Engineer", company: "Partner Studio", type: "Remote", stage: "Open", desc: "Build interactive dashboards for Web3 protocols." },
+  { title: "Community Operations", company: "Global Platform", type: "Hybrid", stage: "Open", desc: "Manage event logistics and community moderation." },
+  { title: "Design Intern", company: "Builder Tools", type: "Onsite", stage: "Soon", desc: "Assist with design systems and marketing assets." },
+  { title: "Developer Relations", company: "Infra Partner", type: "Remote", stage: "Open", desc: "Write tutorials and build sample applications." },
 ];
 
-export default function Page() {
+export default function InternshipsPage() {
   return (
     <>
-      <SectionWrapper eyebrow="Internships" title="A curated internship board" description="A premium placeholder surface for partner opportunities, aligned with the rest of the community platform." className="pt-36">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {roles.map((role) => (
-            <div key={role.title} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
-              <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary/80">{role.stage}</div>
-              <h3 className="mt-3 font-display text-xl font-semibold">{role.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{role.company}</p>
-              <p className="mt-3 text-sm text-muted-foreground">{role.type}</p>
-            </div>
+      <SectionWrapper eyebrow="Internships" title="Curated Opportunities" description="A premium placeholder surface for partner opportunities, aligned with the rest of the community platform." className="pt-36">
+        <BentoGrid className="md:grid-cols-2 mt-8">
+          {roles.map((role, index) => (
+            <BentoCard
+              key={role.title}
+              index={index}
+              eyebrow={role.company}
+              title={role.title}
+              description={role.desc}
+            >
+              <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-5">
+                <div className="flex items-center gap-2">
+                  <StatusBadge status={role.stage} />
+                  <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-medium text-muted-foreground uppercase tracking-[0.2em]">
+                    {role.type}
+                  </span>
+                </div>
+                <span className="text-xs font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer">Apply Now &rarr;</span>
+              </div>
+            </BentoCard>
           ))}
-        </div>
+        </BentoGrid>
       </SectionWrapper>
 
       <CTAComponent

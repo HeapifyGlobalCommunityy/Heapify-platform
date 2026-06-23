@@ -1,24 +1,33 @@
-import { CTAComponent, SectionWrapper } from "@/components/site/ui";
+import { BentoCard, BentoGrid, CTAComponent, SectionWrapper } from "@/components/site/ui";
 
-const controls = ["Events", "Projects", "Sponsors", "Applications", "Chapters", "Content"];
+const controls = [
+  { title: "Events Management", description: "Review and approve Luma-grade events." },
+  { title: "Projects Review", description: "Moderate open-source submissions." },
+  { title: "Sponsor Portal", description: "Manage B2B partners and billing." },
+  { title: "Applications", description: "Review mentor and chapter lead applications." },
+  { title: "Global Chapters", description: "Monitor regional nodes and metrics." },
+  { title: "Content Engine", description: "Publish resources, blogs, and roadmaps." },
+];
 
-export default function Page() {
+export default function AdminPage() {
   return (
     <>
-      <SectionWrapper eyebrow="Admin" title="A command center-style admin shell" description="Role-based management is represented as a premium control dashboard placeholder." className="pt-36">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {controls.map((control) => (
-            <div key={control} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
-              <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary/80">Manage</div>
-              <h3 className="mt-3 font-display text-xl font-semibold">{control}</h3>
-            </div>
+      <SectionWrapper eyebrow="Admin" title="Command Center" description="Role-based management represented as a premium control dashboard placeholder." className="pt-36">
+        <BentoGrid className="md:grid-cols-2 xl:grid-cols-3 mt-8">
+          {controls.map((control, index) => (
+            <BentoCard
+              key={control.title}
+              index={index}
+              eyebrow="Manage"
+              title={control.title}
+              description={control.description}
+            />
           ))}
-        </div>
+        </BentoGrid>
       </SectionWrapper>
 
       <CTAComponent
-        title="Later, this route can accept auth, permissions, and live data.
-"
+        title="Later, this route can accept auth, permissions, and live data."
         description="For now, it remains a visual placeholder that matches the product-grade system around it."
         actions={[
           { label: "Open dashboard", href: "/dashboard" },

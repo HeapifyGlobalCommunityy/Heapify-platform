@@ -46,7 +46,7 @@ export default function HomePage() {
       <SectionWrapper eyebrow="Community Journey" title="The path from discovery to leadership" description="A simple operating model that can later drive personalization, tracking, and role-based journeys.">
         <div className="grid gap-4 md:grid-cols-4">
           {communityJourney.map((step) => (
-            <div key={step.step} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+            <div key={step.step} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
               <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/80">{step.step}</div>
               <h3 className="mt-4 font-display text-2xl font-semibold tracking-tight">{step.title}</h3>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.description}</p>
@@ -58,7 +58,7 @@ export default function HomePage() {
       <SectionWrapper eyebrow="Partners" title="Built to fit serious ecosystems" description="A row of anchor partners and tooling brands that reinforces the funded-startup feel.">
         <div className="flex flex-wrap gap-3">
           {partners.map((partner) => (
-            <span key={partner} className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs uppercase tracking-[0.24em] text-muted-foreground">
+            <span key={partner} className="rounded-full border border-glass-border bg-glass-bg px-4 py-2 text-xs uppercase tracking-[0.24em] text-muted-foreground">
               {partner}
             </span>
           ))}
@@ -68,7 +68,7 @@ export default function HomePage() {
       <SectionWrapper eyebrow="Testimonials" title="Designed to build trust at first glance" description="Placeholder voices that can later be replaced by authenticated community feedback.">
         <div className="grid gap-5 md:grid-cols-3">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.name} className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+            <div key={testimonial.name} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
               <p className="text-sm leading-7 text-muted-foreground">“{testimonial.quote}”</p>
               <div className="mt-6">
                 <div className="font-display text-lg font-semibold">{testimonial.name}</div>
