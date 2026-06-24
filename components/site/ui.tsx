@@ -9,24 +9,7 @@ import { AnimatedNetworkBackground } from "@/components/site/background";
 import { cn } from "@/lib/utils";
 
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
-
-export function AnimatedLogo({ className }: { className?: string }) {
-  return (
-    <motion.div
-      className={cn("relative flex h-16 w-16 items-center justify-center rounded-[1.4rem] border border-glass-border bg-glass-bg shadow-[0_0_60px_rgba(255,122,0,0.22)]", className)}
-      animate={{ y: [0, -4, 0], rotate: [0, 1.5, 0] }}
-      transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
-    >
-      <div className="absolute inset-2 rounded-[1.05rem] border border-primary/40 bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.25),transparent_68%)]" />
-      <div className="relative grid h-8 w-8 grid-cols-2 gap-1">
-        <span className="rounded-sm bg-primary shadow-[0_0_20px_rgba(255,122,0,0.45)]" />
-        <span className="rounded-sm border border-primary/70" />
-        <span className="rounded-sm border border-primary/40" />
-        <span className="rounded-sm bg-primary/80" />
-      </div>
-    </motion.div>
-  );
-}
+import { HeapifyLogo } from "@/components/layout/logo";
 
 export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
@@ -247,7 +230,7 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
           <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
           Premium builder community platform
         </div>
-        <AnimatedLogo />
+        <HeapifyLogo className="h-20 w-20 shadow-[0_0_60px_rgba(255,122,0,0.22)]" />
         <div className="mt-8 max-w-5xl space-y-6">
           <h1 className="font-display text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">{title}</h1>
           <p className="mx-auto max-w-3xl text-base leading-8 text-muted-foreground md:text-lg">{tagline}</p>
