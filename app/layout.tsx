@@ -24,15 +24,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Heapify Global Community",
+  title: "Heapify Global",
   description:
     "A global community of engineers, builders, and open-source contributors. Learn, build, contribute, lead.",
   metadataBase: new URL("https://heapify.community"),
   openGraph: {
-    title: "Heapify Global Community",
+    title: "Heapify Global",
     description:
       "A global community of engineers, builders, and open-source contributors.",
     type: "website",
+  },
+  icons: {
+    icon: "/Heapify_withbg.jpeg",
   },
 };
 
