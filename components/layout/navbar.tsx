@@ -12,9 +12,28 @@ export function Navbar() {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
+    
+    // Check active session
+    const loadSession = async () => {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      if (supabase) {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+          setUser(session?.user ?? null);
+        });
+        
+        return () => subscription.unsubscribe();
+      }
+    };
+    
+    loadSession();
   }, []);
 
   return (
@@ -43,9 +62,36 @@ export function Navbar() {
           >
             {mounted ? (theme === "dark" ? <Sun size={15} /> : <Moon size={15} />) : <div className="h-[15px] w-[15px]" />}
           </button>
-          <Button size="sm" className="hidden sm:inline-flex" asChild>
-            <Link href="/forms/join">Join</Link>
-          </Button>
+          
+          {mounted && user ? (
+            <>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost"
+                className="hidden sm:inline-flex" 
+                onClick={async () => {
+                  const { createClient } = await import("@/lib/supabase/client");
+                  const supabase = createClient();
+                  await supabase?.auth.signOut();
+                }}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
+                <Link href="/login">Sign In</Link>
+              </Button>
+              <Button size="sm" className="hidden sm:inline-flex" asChild>
+                <Link href="/signup">Join</Link>
+              </Button>
+            </>
+          )}
+
           <button
             className="flex h-9 w-9 items-center justify-center rounded-full border border-glass-border bg-glass-bg lg:hidden"
             onClick={() => setOpen(!open)}
@@ -68,6 +114,45 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          {mounted && user ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+              >
+                Dashboard
+              </Link>
+              <button
+                onClick={async () => {
+                  setOpen(false);
+                  const { createClient } = await import("@/lib/supabase/client");
+                  const supabase = createClient();
+                  await supabase?.auth.signOut();
+                }}
+                className="text-left text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Join
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

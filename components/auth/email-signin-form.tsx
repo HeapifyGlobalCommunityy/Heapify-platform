@@ -1,0 +1,127 @@
+"use client";
+
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleAuth = async (action: "login" | "signup") => {
+    setIsLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const supabase = createClient();
+    
+    if (!supabase) {
+      setError("Supabase client is not configured.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      if (action === "signup") {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${location.origin}/auth/callback`,
+          },
+        });
+        
+        if (signUpError) {
+          setError(signUpError.message);
+        } else {
+          setMessage("Check your email to confirm your account.");
+        }
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (signInError) {
+          setError(signInError.message);
+        } else {
+          // If successful, redirect to dashboard or desired next page
+          window.location.href = "/dashboard";
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="grid gap-4">
+      {error && (
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+      {message && (
+        <div className="rounded-md bg-green-500/15 p-3 text-sm text-green-500">
+          {message}
+        </div>
+      )}
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="m@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+          required
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+          required
+        />
+      </div>
+      <div className="flex flex-col gap-4 mt-2">
+        <Button 
+          onClick={() => handleAuth(mode)} 
+          disabled={isLoading || !email || !password}
+          className="w-full"
+        >
+          {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
+        </Button>
+        <div className="text-center text-sm text-muted-foreground">
+          {mode === "login" ? (
+            <>
+              Don't have an account?{" "}
+              <a href="/signup" className="underline hover:text-foreground">
+                Sign up
+              </a>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <a href="/login" className="underline hover:text-foreground">
+                Sign in
+              </a>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
