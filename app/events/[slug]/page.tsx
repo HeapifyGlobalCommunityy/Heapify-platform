@@ -1,9 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Calendar, Clock, MapPin, Ticket } from "lucide-react";
 import { eventCatalog, eventDetail, featuredEvents } from "@/lib/site-content";
-import { Button } from "@/components/ui/button";
-import { EventCard, SectionWrapper } from "@/components/site/ui";
 import { registrationConfigs, defaultRegistrationConfig } from "@/lib/registration-configs";
 import RegisterModal from "@/components/registration/RegisterModal";
 import EventDetailClient from "@/components/events/EventDetailClient";

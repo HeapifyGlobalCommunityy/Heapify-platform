@@ -34,11 +34,7 @@ const cardHover = {
   hover: { y: -3, scale: 1.008, transition: { duration: 0.2, ease: "easeOut" } },
 };
 
-// The orange-glow diffusion variant used only on the hero title card
-const heroDiffuse = {
-  rest: { backgroundPosition: "0% 50%", opacity: 1 },
-  hover: { backgroundPosition: "100% 50%", opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-};
+
 
 export default function EventDetailClient({ event, slug, related, isPast }: Props) {
   return (
