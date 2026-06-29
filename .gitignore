@@ -39,3 +39,10 @@ next-env.d.ts
 # IDE
 .idea/
 .vscode/
+
+# Project planning docs (not part of the codebase)
+*.md
+!README.md
+*.docx
+*.pdf
+context.txt
