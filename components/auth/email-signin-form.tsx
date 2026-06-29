@@ -58,8 +58,8 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
           window.location.href = "/dashboard";
         }
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error has occured");
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +126,7 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
         <div className="text-center text-sm text-muted-foreground">
           {mode === "login" ? (
             <>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <a href="/signup" className="underline hover:text-foreground">
                 Sign up
               </a>
