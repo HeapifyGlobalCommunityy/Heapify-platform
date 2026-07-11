@@ -8,6 +8,7 @@ export const brand = {
 export const navigationLinks = [
   { href: "/about", label: "About" },
   { href: "/events", label: "Events" },
+  { href: "/challenges", label: "Challenges" },
   { href: "/open-source", label: "Projects" },
   { href: "/team", label: "Team" },
   { href: "/resources", label: "Resources" },
