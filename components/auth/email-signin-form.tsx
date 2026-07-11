@@ -30,7 +30,7 @@ export function EmailSignInForm({
     setMessage(null);
 
     const supabase = createClient();
-    
+
     if (!supabase) {
       setError("Supabase client is not configured.");
       setIsLoading(false);
@@ -63,17 +63,18 @@ export function EmailSignInForm({
           password,
           options: {
             emailRedirectTo: `${location.origin}/auth/callback`,
-            data : {
+            data: {
               full_name: fullName,
             },
           },
         });
-        
+
         if (signUpError) {
-          setError(signUpError.message);
+          console.error("Signup error (not shown to user):", signUpError.message);
+          setError("If this email isn't already registered, check your inbox to confirm your account.");
           onCaptchaReset();
         } else {
-          setMessage("Check your email to confirm your account.");
+          setMessage("If this email isn't already registered, check your inbox to confirm your account.");
           onCaptchaReset();
         }
       } else {
@@ -81,7 +82,7 @@ export function EmailSignInForm({
           email,
           password,
         });
-        
+
         if (signInError) {
           setError(signInError.message);
           onCaptchaReset();
@@ -149,8 +150,8 @@ export function EmailSignInForm({
         />
       </div>
       <div className="flex flex-col gap-4 mt-2">
-        <Button 
-          onClick={() => handleAuth(mode)} 
+        <Button
+          onClick={() => handleAuth(mode)}
           disabled={
             isLoading ||
             !email ||
