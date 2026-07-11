@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { brand, communityJourney, featuredEvents, featuredProjects, partners, stats, testimonials, whatWeDo } from "@/lib/site-content";
 import { CTAComponent, EventCard, FeatureCard, Hero, ProjectCard, SectionWrapper, StatsComponent } from "@/components/site/ui";
+import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 
 export default function HomePage() {
   return (
@@ -41,6 +43,31 @@ export default function HomePage() {
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
+      </SectionWrapper>
+
+      <SectionWrapper
+        eyebrow="Community Announcements"
+        title="What&apos;s happening"
+        description="Latest updates from the Heapify team, open to everyone."
+      >
+        <Suspense
+          fallback={
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 space-y-3 animate-pulse">
+                  <div className="h-5 w-3/4 rounded-lg bg-zinc-800/60" />
+                  <div className="space-y-2">
+                    <div className="h-3.5 w-full rounded bg-zinc-800/40" />
+                    <div className="h-3.5 w-5/6 rounded bg-zinc-800/40" />
+                    <div className="h-3.5 w-2/3 rounded bg-zinc-800/30" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          }
+        >
+          <AnnouncementsSection />
+        </Suspense>
       </SectionWrapper>
 
       <SectionWrapper eyebrow="Community Journey" title="The path from discovery to leadership" description="A simple operating model that can later drive personalization, tracking, and role-based journeys.">
