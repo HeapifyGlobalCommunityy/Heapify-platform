@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import PersonalInfoSection from "./PersonalInfoSection";
 import TeamSection, { Teammate } from "./TeamSection";
 import CustomQuestionsSection, { CustomQuestion } from "./CustomQuestionsSection";
 import SubmitButton, { SubmitState } from "./SubmitButton";
 import ConfirmationView from "./ConfirmationView";
+import { registerForEvent } from "@/lib/actions/events";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Redesigned for visual hierarchy and polish — same exact field names, state
@@ -62,6 +63,8 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   const [errors, setErrors] = useState<FormErrors>({});
   const [answerErrors, setAnswerErrors] = useState<Record<string, string>>({});
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const showTeamSection = event.isHackathon && event.teamConfig !== null;
   const isTeamMode = showTeamSection && (mode === "team" || !event.teamConfig?.allowSolo);
@@ -153,11 +156,34 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
   function handleSubmit() {
     if (!validate()) return;
+    // Double-submit guard: block if already in flight
+    if (submitState === "loading" || isPending) return;
+
     setSubmitState("loading");
-    // TODO: Connect to Supabase
-    setTimeout(() => {
-      setSubmitState("success");
-    }, 1500);
+    setSubmitError(null);
+
+    const isTeamMode = showTeamSection && (mode === "team" || !event.teamConfig?.allowSolo);
+
+    startTransition(async () => {
+      const result = await registerForEvent(event.slug, {
+        fullName: values.fullName,
+        email: values.email,
+        githubUrl: values.github,
+        linkedinUrl: values.linkedin,
+        teamName: isTeamMode ? teamName : undefined,
+        teamMembers: isTeamMode
+          ? teammates.filter((t) => t.name.trim() && t.email.trim())
+          : [],
+        answers,
+      });
+
+      if (result.success) {
+        setSubmitState("success");
+      } else {
+        setSubmitState("error");
+        setSubmitError(result.error);
+      }
+    });
   }
 
   if (submitState === "success") {
@@ -177,16 +203,31 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   const sectionCount = 2 + (showTeamSection ? 1 : 0) + (event.customQuestions.length > 0 ? 1 : 0);
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-6 lg:px-10 pt-8 lg:pt-10 pb-16">
+    <div className="w-full max-w-2xl mx-auto px-6 lg:px-10 pt-24 lg:pt-28 pb-16">
 
       {/* ── Header ── */}
       <div className="space-y-3">
+        {/* Progress dots — proportional fill based on how many sections the
+            user has interacted with (name + email filled = section 1 done) */}
         <div className="flex items-center gap-1.5">
-          {Array.from({ length: sectionCount }).map((_, i) => (
-            <div key={i} className="h-1 flex-1 rounded-full bg-primary/25 overflow-hidden">
-              <div className="h-full w-full bg-primary/70 rounded-full" />
-            </div>
-          ))}
+          {Array.from({ length: sectionCount }).map((_, i) => {
+            // Section 1 is "done" once both name and email are non-empty.
+            // Sections 2+ use a simple index-based approximation since we
+            // don’t track per-section submission state.
+            const isDone = i === 0
+              ? (values.fullName.trim().length > 0 && values.email.trim().length > 0)
+              : false;
+            return (
+              <div key={i} className="h-1 flex-1 rounded-full bg-primary/20 overflow-hidden">
+                <div
+                  className={[
+                    "h-full rounded-full transition-all duration-500 ease-out",
+                    isDone ? "w-full bg-primary" : "w-0 bg-primary/60",
+                  ].join(" ")}
+                />
+              </div>
+            );
+          })}
         </div>
         <div>
           <h1 className="font-display text-3xl font-semibold tracking-tight text-white">
@@ -239,7 +280,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
       </div>
 
       <div className="mt-8">
-        <SubmitButton state={submitState} onClick={handleSubmit} />
+        <SubmitButton state={submitState} errorMessage={submitError} onClick={handleSubmit} />
       </div>
     </div>
   );
