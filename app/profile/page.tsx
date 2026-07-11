@@ -25,7 +25,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   Github, Linkedin, Twitter, Globe, Zap, CalendarDays,
-  Award, Star, ExternalLink,
+  Award, Star, ExternalLink, Pencil,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -37,7 +37,6 @@ import {
 } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import EventHistoryClient, { type EventHistoryRow } from "@/components/profile/EventHistoryClient";
-import ProfileSetupForm from "@/components/profile/ProfileSetupForm";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -124,9 +123,15 @@ export default async function ProfilePage() {
   }
 
   // maybeSingle() returns null data (no error) when the row doesn't exist.
-  // Show the setup form so the user can create their profiles row.
+  // With the Supabase trigger this shouldn't happen, but handle it gracefully.
   if (!profile) {
-    return <ProfileSetupForm email={user.email} />;
+    return (
+      <SectionWrapper eyebrow="Profile" title="Profile not found" className="pt-36">
+        <p className="text-sm text-muted-foreground">
+          Your profile row doesn&apos;t exist yet. If you just signed up, try refreshing in a moment.
+        </p>
+      </SectionWrapper>
+    );
   }
 
   // Non-critical failures — log, don't crash
@@ -176,6 +181,13 @@ export default async function ProfilePage() {
                 <span className={`rounded-full border px-3 py-0.5 text-xs font-medium capitalize ${rolePillClass(profile.role)}`}>
                   {profile.role.replace("_", " ")}
                 </span>
+                <Link
+                  href="/profile/edit"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors hover:bg-glass-border"
+                >
+                  <Pencil className="h-3 w-3 text-primary" />
+                  <span>Edit Profile</span>
+                </Link>
               </div>
               <p className="mt-1 text-sm text-muted-foreground font-mono">@{profile.username}</p>
               {profile.bio && (

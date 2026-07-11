@@ -5,67 +5,75 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { EVENT_HISTORY_PAGE_SIZE } from "@/lib/supabase/queries";
 import type { EventHistoryRow } from "@/components/profile/EventHistoryClient";
 
-// ─── Create profile ─────────────────────────────────────────────────────────
-// Uses the admin (service-role) client because the schema has no INSERT RLS
-// policy on profiles yet. The user_id is always derived from the session —
-// never from the client — so we enforce the same constraint as RLS would.
-//
-// DB NOTE for team: once this is approved and deployed —
-//   CREATE POLICY "users insert own profile" ON profiles
-//     FOR INSERT WITH CHECK (auth.uid() = id);
-// — switch this back to the anon key and remove the admin client usage.
+// ─── Update profile ───────────────────────────────────────────────────────
+// Uses the anon key — the schema already has:
+//   CREATE POLICY "users update own profile" ON profiles
+//     FOR UPDATE USING (auth.uid() = id);
+// No admin key needed. user_id always derived from session.
 
-export type CreateProfileResult =
+export interface ProfileUpdateData {
+  username: string;
+  full_name: string;
+  avatar_url: string;
+  bio: string;
+  github_url: string;
+  linkedin_url: string;
+  twitter_url: string;
+  website_url: string;
+}
+
+export type UpdateProfileResult =
   | { success: true }
   | { success: false; error: string };
 
-export async function createProfile(
-  username: string,
-  fullName: string
-): Promise<CreateProfileResult> {
+export async function updateProfile(
+  data: ProfileUpdateData
+): Promise<UpdateProfileResult> {
   const supabase = await createClient();
   if (!supabase) return { success: false, error: "Supabase not configured." };
 
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) redirect("/login");
 
-  const trimmedUsername = username.trim().toLowerCase().replace(/\s+/g, "_");
-  if (!trimmedUsername || trimmedUsername.length < 3) {
+  // Validate username
+  const username = data.username.trim();
+  if (!username || username.length < 3) {
     return { success: false, error: "Username must be at least 3 characters." };
   }
-  if (!/^[a-z0-9_.-]+$/.test(trimmedUsername)) {
+  if (!/^[a-zA-Z0-9_.-]+$/.test(username)) {
     return { success: false, error: "Username may only contain letters, numbers, _ . and -" };
   }
 
-  const admin = createAdminClient();
-  if (!admin) return { success: false, error: "Profile creation unavailable — service key not configured." };
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({
+      username,
+      full_name: data.full_name.trim() || null,
+      avatar_url: data.avatar_url.trim() || null,
+      bio: data.bio.trim() || null,
+      github_url: data.github_url.trim() || null,
+      linkedin_url: data.linkedin_url.trim() || null,
+      twitter_url: data.twitter_url.trim() || null,
+      website_url: data.website_url.trim() || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id); // RLS also enforces this — double protection
 
-  const { error: insertError } = await admin.from("profiles").insert({
-    id: user.id,          // always from session — never from client
-    username: trimmedUsername,
-    full_name: fullName.trim() || (user.user_metadata?.full_name ?? null),
-    avatar_url: user.user_metadata?.avatar_url ?? null,
-    role: "member",
-    contribution_score: 0,
-  });
-
-  if (insertError) {
-    if (insertError.code === "23505") {
-      // Unique violation — could be duplicate id (already has profile) or duplicate username
-      if (insertError.message.includes("username")) {
-        return { success: false, error: "That username is already taken. Please choose another." };
-      }
-      return { success: false, error: "A profile already exists for your account." };
+  if (updateError) {
+    if (updateError.code === "23505") {
+      return { success: false, error: "That username is already taken." };
     }
-    console.error("[createProfile] insert error:", insertError.message);
-    return { success: false, error: "Failed to create profile. Please try again." };
+    console.error("[updateProfile] error:", updateError.message);
+    return { success: false, error: "Failed to save changes. Please try again." };
   }
 
+  // Revalidate the profile page so the next visit sees fresh data
+  revalidatePath("/profile");
   return { success: true };
 }
 
