@@ -9,7 +9,6 @@ import {
   Clock,
   MapPin,
   Ticket,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EventCard, SectionWrapper } from "@/components/site/ui";
@@ -158,68 +157,77 @@ export default function EventDetailClient({
   }
 
   // ─── DESKTOP: the filmstrip slide ───────────────────────────────────────
+  // The outer wrapper has screen-level padding so neither panel ever
+  // bleeds to the viewport edge — both panels get card-style borders.
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-background"
       style={{ height: "100vh" }}
     >
-      <div
-        className="flex h-full transition-transform duration-[520ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-        style={{
-          width: "200%",
-          transform: isRegistering ? "translateX(-50%)" : "translateX(0%)",
-        }}
-      >
-        {/* ── Frame 1: full detail — recedes with depth+dim on open ── */}
+      {/* Screen-level padding so the cards float inside the viewport */}
+      <div className="absolute inset-0 p-4 lg:p-5 overflow-hidden">
+        {/* Filmstrip: 200% wide, slides left to reveal Frame 2 */}
         <div
-          className="h-full overflow-y-auto transition-[transform,opacity,filter] duration-[520ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+          className="flex h-full transition-transform duration-[750ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
-            width: "50%",
-            transformOrigin: "right center",
-            transform: isRegistering ? "scale(0.94) translateX(-2%)" : "scale(1) translateX(0%)",
-            opacity: isRegistering ? 0.55 : 1,
-            filter: isRegistering ? "brightness(0.7)" : "brightness(1)",
+            width: "200%",
+            transform: isRegistering ? "translateX(-50%)" : "translateX(0%)",
           }}
         >
-          <EventDetailFull
-            event={event}
-            isPast={isPast}
-            related={related}
-            onRegister={openRegistration}
-          />
-        </div>
-
-        {/* ── Frame 2: compact summary + registration form ── */}
-        <div
-          className="h-full flex transition-transform duration-[520ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-          style={{
-            width: "50%",
-            transform: isRegistering ? "translateX(0%)" : "translateX(1.5%)",
-          }}
-        >
-          <div className="w-[40%] h-full overflow-y-auto border-r border-zinc-800">
-            <CompactSummary
+          {/* ── Frame 1: full detail — recedes with depth+dim on open ── */}
+          <div
+            className="h-full overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 transition-[transform,opacity,filter] duration-[750ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{
+              width: "50%",
+              transformOrigin: "right center",
+              transform: isRegistering ? "scale(0.94) translateX(-2%)" : "scale(1) translateX(0%)",
+              opacity: isRegistering ? 0.5 : 1,
+              filter: isRegistering ? "brightness(0.65)" : "brightness(1)",
+            }}
+          >
+            <EventDetailFull
               event={event}
-              safeEvent={safeEvent}
-              spotsLeft={spotsLeft}
-              fillPercent={fillPercent}
-              onClose={closeRegistration}
-              animated={isRegistering}
-              isDesktop={true}
+              isPast={isPast}
+              related={related}
+              onRegister={openRegistration}
             />
           </div>
-          <div className="w-[60%] h-full overflow-y-auto">
-            {hasEverOpened && (
-              <div
-                className={[
-                  "transition-[opacity,transform] duration-[380ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
-                  isRegistering ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
-                ].join(" ")}
-                style={{ transitionDelay: isRegistering ? "260ms" : "0ms" }}
-              >
-                <RegistrationForm event={safeEvent} />
-              </div>
-            )}
+
+          {/* ── Frame 2: compact summary + registration form — card border ── */}
+          <div
+            className="h-full flex rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden transition-transform duration-[750ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{
+              width: "50%",
+              marginLeft: "calc(50% - 50% + 0px)",
+              transform: isRegistering ? "translateX(0%)" : "translateX(1.5%)",
+            }}
+          >
+            {/* Left: compact summary — 40% of Frame 2 */}
+            <div className="w-[40%] h-full overflow-y-auto border-r border-zinc-800">
+              <CompactSummary
+                event={event}
+                safeEvent={safeEvent}
+                spotsLeft={spotsLeft}
+                fillPercent={fillPercent}
+                onClose={closeRegistration}
+                animated={isRegistering}
+                isDesktop={true}
+              />
+            </div>
+            {/* Right: registration form — 60% of Frame 2 */}
+            <div className="w-[60%] h-full overflow-y-auto">
+              {hasEverOpened && (
+                <div
+                  className={[
+                    "transition-[opacity,transform] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+                    isRegistering ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
+                  ].join(" ")}
+                  style={{ transitionDelay: isRegistering ? "400ms" : "0ms" }}
+                >
+                  <RegistrationForm event={safeEvent} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

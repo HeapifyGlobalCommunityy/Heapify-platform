@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic"; // ← prevents shared/static caching
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
-  Github, Linkedin, Twitter, Globe, Trophy, Zap, CalendarDays,
+  Github, Linkedin, Twitter, Globe, Zap, CalendarDays,
   Award, Star, ExternalLink,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
