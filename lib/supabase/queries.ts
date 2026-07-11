@@ -85,19 +85,26 @@ export async function getChallengeSubmissionsForChallenge(
 }
 
 // ─── Profile ─────────────────────────────────────────────────────────────
+// DB NOTE: profiles ↔ chapters has TWO FK paths:
+//   1. profiles.chapter_id → chapters.id  (profiles_chapter_fk)
+//   2. chapters.lead_id    → profiles.id  (reverse)
+// PostgREST requires an explicit hint when multiple paths exist.
+// We use !profiles_chapter_fk to select the correct direction.
 export async function getProfile(userId: string) {
   const supabase = await createClient();
   if (!supabase) return { data: null, error: new Error("Supabase not configured") };
 
+  // maybeSingle() returns { data: null, error: null } when no row exists,
+  // rather than an error — makes it easy to show a "set up profile" UI.
   return supabase
     .from("profiles")
     .select(
       `id, username, full_name, avatar_url, bio, role, contribution_score,
        github_url, linkedin_url, twitter_url, website_url, created_at,
-       chapter:chapters(id, name, city, country)`
+       chapter:chapters!profiles_chapter_fk(id, name, city, country)`
     )
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getProfileBadges(userId: string) {

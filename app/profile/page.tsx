@@ -37,6 +37,7 @@ import {
 } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import EventHistoryClient, { type EventHistoryRow } from "@/components/profile/EventHistoryClient";
+import ProfileSetupForm from "@/components/profile/ProfileSetupForm";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -110,15 +111,22 @@ export default async function ProfilePage() {
     getMyChallengeSubmissions(user.id),
   ]);
 
-  // Profile is the critical fetch — surface a clear error if it fails
-  if (profileError || !profile) {
+  // Profile is the critical fetch — surface a clear error if it fails,
+  // or a setup form if the row simply doesn't exist yet.
+  if (profileError) {
     return (
-      <SectionWrapper eyebrow="Profile" title="Couldn't load your profile" className="pt-36">
+      <SectionWrapper eyebrow="Profile" title="Couldn&apos;t load your profile" className="pt-36">
         <p className="text-sm text-muted-foreground">
-          {profileError?.message ?? "Profile not found. Make sure your account is fully set up."}
+          {profileError?.message ?? "Something went wrong fetching your profile. Please try again."}
         </p>
       </SectionWrapper>
     );
+  }
+
+  // maybeSingle() returns null data (no error) when the row doesn't exist.
+  // Show the setup form so the user can create their profiles row.
+  if (!profile) {
+    return <ProfileSetupForm email={user.email} />;
   }
 
   // Non-critical failures — log, don't crash
