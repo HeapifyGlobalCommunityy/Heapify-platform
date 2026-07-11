@@ -1,14 +1,10 @@
-/**
- * Per-event registration configuration.
- *
- * Each entry maps an event slug → its specific registration behavior.
- * In Phase 1, this moves to the `events` table as JSON columns:
- *   - events.is_hackathon (boolean)
- *   - events.team_config (json)
- *   - events.custom_questions (json)
- *   - events.capacity (int)
- *   - events.registered_count (int, computed from event_registrations)
- */
+// lib/registration-configs.ts
+// ─── IMPORTANT ────────────────────────────────────────────────────────────────
+// Every field that RegistrationForm reads must be explicitly set to a safe
+// value in defaultRegistrationConfig. Undefined causes runtime crashes.
+// teamConfig MUST be null (not undefined) when unused.
+// customQuestions MUST be [] (not undefined) when unused.
+// ──────────────────────────────────────────────────────────────────────────────
 
 export interface TeamConfig {
   minSize: number;
@@ -26,118 +22,94 @@ export interface CustomQuestion {
 
 export interface RegistrationConfig {
   isHackathon: boolean;
-  teamConfig: TeamConfig | null;
-  customQuestions: CustomQuestion[];
   capacity: number;
   registeredCount: number;
+  teamConfig: TeamConfig | null; // null means "not a team event" — NEVER undefined
+  customQuestions: CustomQuestion[]; // empty array means "no extra questions" — NEVER undefined
 }
 
-// TODO: Connect to Supabase — replace this map with DB queries in Phase 1
-export const registrationConfigs: Record<string, RegistrationConfig> = {
-  "global-builder-night": {
-    isHackathon: false,
-    teamConfig: null,
-    capacity: 500,
-    registeredCount: 214,
-    customQuestions: [
-      {
-        id: "q1",
-        label: "How did you hear about Builder Night?",
-        type: "select",
-        options: ["Discord", "Twitter/X", "LinkedIn", "Friend", "Other"],
-        required: false,
-      },
-    ],
-  },
-  "web3-systems-lab": {
-    isHackathon: false,
-    teamConfig: null,
-    capacity: 100,
-    registeredCount: 38,
-    customQuestions: [
-      {
-        id: "q1",
-        label: "What's your current Web3 experience level?",
-        type: "select",
-        options: ["None — just curious", "Some reading", "Built something small", "Shipped production"],
-        required: true,
-      },
-      {
-        id: "q2",
-        label: "What specific area do you want to explore?",
-        type: "text",
-        required: false,
-      },
-    ],
-  },
-  "merge-sprint-weekend": {
-    isHackathon: false,
-    teamConfig: null,
-    capacity: 200,
-    registeredCount: 200, // sold out
-    customQuestions: [],
-  },
-  "founders-qa-live": {
-    isHackathon: false,
-    teamConfig: null,
-    capacity: 200,
-    registeredCount: 112,
-    customQuestions: [
-      {
-        id: "q1",
-        label: "Do you have a question for the founders?",
-        type: "textarea",
-        required: false,
-      },
-    ],
-  },
-  "chapter-launch-playbook": {
-    isHackathon: false,
-    teamConfig: null,
-    capacity: 50,
-    registeredCount: 29,
-    customQuestions: [
-      {
-        id: "q1",
-        label: "Are you planning to launch a chapter?",
-        type: "select",
-        options: ["Yes — actively planning", "Thinking about it", "Just learning"],
-        required: true,
-      },
-      {
-        id: "q2",
-        label: "Which city or institution would your chapter be in?",
-        type: "text",
-        required: false,
-      },
-    ],
-  },
-  "build-week-zero": {
-    isHackathon: true,
-    teamConfig: { minSize: 2, maxSize: 4, allowSolo: true },
-    capacity: 80,
-    registeredCount: 61,
-    customQuestions: [
-      {
-        id: "q1",
-        label: "What's your primary tech stack?",
-        type: "text",
-        required: true,
-      },
-      {
-        id: "q2",
-        label: "What do you want to build this weekend?",
-        type: "textarea",
-        required: false,
-      },
-    ],
-  },
-};
-
+// ─── Default — used when no event-specific config is found ────────────────────
 export const defaultRegistrationConfig: RegistrationConfig = {
   isHackathon: false,
-  teamConfig: null,
-  customQuestions: [],
   capacity: 100,
   registeredCount: 0,
+  teamConfig: null,       // ← must be null, not undefined
+  customQuestions: [],    // ← must be [], not undefined
+};
+
+// ─── Per-event configs ────────────────────────────────────────────────────────
+// Add an entry here for each event slug that needs custom configuration.
+// Every entry must satisfy RegistrationConfig (all fields required).
+
+export const registrationConfigs: Record<string, RegistrationConfig> = {
+  // Example: a hackathon with team support and custom questions
+  "build-the-future-hackathon-2025": {
+    isHackathon: true,
+    capacity: 100,
+    registeredCount: 72,
+    teamConfig: {
+      allowSolo: true,
+      minSize: 2,
+      maxSize: 4,
+    },
+    customQuestions: [
+      {
+        id: "tech_stack",
+        label: "Preferred tech stack",
+        type: "text",
+        required: false,
+      },
+      {
+        id: "portfolio",
+        label: "Portfolio / project link",
+        type: "text",
+        required: false,
+      },
+      {
+        id: "idea",
+        label: "What do you want to build?",
+        type: "textarea",
+        required: false,
+      },
+    ],
+  },
+
+  // Example: a workshop — no teams, simple questions
+  "intro-to-llms-workshop": {
+    isHackathon: false,
+    capacity: 50,
+    registeredCount: 30,
+    teamConfig: null,
+    customQuestions: [
+      {
+        id: "experience",
+        label: "Years of experience with AI/ML",
+        type: "select",
+        options: ["< 1 year", "1–3 years", "3–5 years", "5+ years"],
+        required: true,
+      },
+      {
+        id: "role",
+        label: "Current role",
+        type: "text",
+        required: false,
+      },
+    ],
+  },
+
+  // Example: a webinar — bare minimum
+  "community-ama-webinar": {
+    isHackathon: false,
+    capacity: 500,
+    registeredCount: 210,
+    teamConfig: null,
+    customQuestions: [
+      {
+        id: "referral",
+        label: "How did you hear about us?",
+        type: "text",
+        required: false,
+      },
+    ],
+  },
 };

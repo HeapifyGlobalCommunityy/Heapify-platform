@@ -7,6 +7,7 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
+import { clearDemoProfile, readDemoProfile } from "@/lib/demo-profile";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -16,7 +17,17 @@ export function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    
+
+    const demoProfile = readDemoProfile();
+    if (demoProfile) {
+      setUser({
+        id: demoProfile.id,
+        email: demoProfile.email,
+        user_metadata: { full_name: demoProfile.fullName },
+      });
+      return;
+    }
+
     // Check active session
     const loadSession = async () => {
       const { createClient } = await import("@/lib/supabase/client");
@@ -24,15 +35,15 @@ export function Navbar() {
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
-        
+
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
           setUser(session?.user ?? null);
         });
-        
+
         return () => subscription.unsubscribe();
       }
     };
-    
+
     loadSession();
   }, []);
 
@@ -68,11 +79,16 @@ export function Navbar() {
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
+                <Link href="/profile">Profile</Link>
+              </Button>
               <Button 
                 size="sm" 
                 variant="ghost"
                 className="hidden sm:inline-flex" 
                 onClick={async () => {
+                  clearDemoProfile();
+                  setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
                   await supabase?.auth.signOut();
@@ -123,9 +139,18 @@ export function Navbar() {
               >
                 Dashboard
               </Link>
+              <Link
+                href="/profile"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Profile
+              </Link>
               <button
                 onClick={async () => {
                   setOpen(false);
+                  clearDemoProfile();
+                  setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
                   await supabase?.auth.signOut();

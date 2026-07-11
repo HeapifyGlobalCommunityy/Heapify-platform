@@ -1,9 +1,7 @@
 "use client";
 
-const inputBase =
-  "w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all duration-150";
-const labelBase = "block text-sm text-zinc-400 mb-1.5";
-const errorBase = "text-red-400 text-xs mt-1";
+import { type ReactNode } from "react";
+import { Plus, X, Users, User, AlertCircle } from "lucide-react";
 
 export interface Teammate {
   id: string;
@@ -27,147 +25,161 @@ interface Props {
     teammates?: Record<number, { name?: string; email?: string }>;
   };
   onModeChange: (mode: "solo" | "team") => void;
-  onTeamNameChange: (v: string) => void;
+  onTeamNameChange: (value: string) => void;
   onTeammateChange: (id: string, field: "name" | "email", value: string) => void;
   onAddTeammate: () => void;
   onRemoveTeammate: (id: string) => void;
 }
 
 export default function TeamSection({
-  teamConfig,
-  mode,
-  teamName,
-  teammates,
-  errors,
-  onModeChange,
-  onTeamNameChange,
-  onTeammateChange,
-  onAddTeammate,
-  onRemoveTeammate,
+  teamConfig, mode, teamName, teammates, errors,
+  onModeChange, onTeamNameChange, onTeammateChange, onAddTeammate, onRemoveTeammate,
 }: Props) {
-  const totalMembers = 1 + teammates.length; // leader + teammates
-  const canAdd = teammates.length < teamConfig.maxSize - 1;
-  const canRemove = teammates.length > teamConfig.minSize - 2; // keep at least minSize-1 teammates
+  const isTeamMode = mode === "team" || !teamConfig.allowSolo;
 
   return (
-    <div>
-      <p className="text-xs font-mono uppercase tracking-[0.28em] text-zinc-600 mb-5">
-        03 — Team
-      </p>
-
-      {/* Solo / Team toggle — only shown when solo is allowed */}
+    <div className="space-y-4">
       {teamConfig.allowSolo && (
-        <div className="flex gap-1 p-1 rounded-lg border border-zinc-800 bg-zinc-900/60 w-fit mb-6">
-          {(["solo", "team"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => onModeChange(m)}
-              className={`px-4 py-1.5 rounded-md text-sm font-sans transition-all duration-150 capitalize ${
-                mode === m
-                  ? "bg-primary text-black font-medium"
-                  : "text-zinc-400 hover:text-white"
-              }`}
-            >
-              {m === "solo" ? "Solo" : "Team"}
-            </button>
-          ))}
+        <div className="flex gap-2 p-1 rounded-xl bg-zinc-950/60 border border-zinc-800">
+          <ModeButton
+            active={mode === "solo"}
+            icon={<User className="h-3.5 w-3.5" />}
+            label="Solo"
+            onClick={() => onModeChange("solo")}
+          />
+          <ModeButton
+            active={mode === "team"}
+            icon={<Users className="h-3.5 w-3.5" />}
+            label="Team"
+            onClick={() => onModeChange("team")}
+          />
         </div>
       )}
 
-      {/* Team fields — shown when team mode is active */}
-      {(mode === "team" || !teamConfig.allowSolo) && (
-        <div className="space-y-5">
-          {/* Team name */}
+      {isTeamMode && (
+        <div className="space-y-4">
           <div>
-            <label className={labelBase}>Team Name <span className="text-primary">*</span></label>
-            <input
-              className={inputBase}
-              placeholder="Your team name"
-              value={teamName}
-              onChange={(e) => onTeamNameChange(e.target.value)}
-            />
-            {errors.teamName && <p className={errorBase}>{errors.teamName}</p>}
+            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+              Team name
+            </label>
+            <div
+              className={[
+                "rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
+                errors.teamName ? "border-red-500/50" : "border-zinc-800 focus-within:border-primary/60",
+              ].join(" ")}
+            >
+              <input
+                type="text"
+                value={teamName}
+                placeholder="Team Axiom"
+                onChange={(e) => onTeamNameChange(e.target.value)}
+                className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none"
+              />
+            </div>
+            {errors.teamName && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                {errors.teamName}
+              </p>
+            )}
           </div>
 
-          {/* Member count indicator */}
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-600">
-              You + {teammates.length} teammate{teammates.length !== 1 ? "s" : ""}
-            </span>
-            <span className="font-mono text-zinc-400">
-              <span className={totalMembers >= teamConfig.minSize ? "text-primary" : "text-zinc-400"}>
-                {totalMembers}
-              </span>
-              <span className="text-zinc-700"> / {teamConfig.maxSize} members</span>
-            </span>
-          </div>
-
-          {/* Teammate entries */}
-          <div className="space-y-3">
-            {teammates.map((tm, idx) => (
-              <div
-                key={tm.id}
-                className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 space-y-3 transition-all duration-200"
-                style={{ animation: "fadeIn 0.2s ease-out" }}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-zinc-600">
-                    Teammate {idx + 1}
-                  </span>
-                  {canRemove && (
-                    <button
-                      onClick={() => onRemoveTeammate(tm.id)}
-                      className="text-zinc-700 hover:text-red-400 transition-colors text-lg leading-none"
-                      aria-label="Remove teammate"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className={labelBase}>Full Name</label>
-                    <input
-                      className={inputBase}
-                      placeholder="Name"
-                      value={tm.name}
-                      onChange={(e) => onTeammateChange(tm.id, "name", e.target.value)}
-                    />
-                    {errors.teammates?.[idx]?.name && (
-                      <p className={errorBase}>{errors.teammates[idx].name}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className={labelBase}>Email</label>
-                    <input
-                      className={inputBase}
-                      type="email"
-                      placeholder="email@example.com"
-                      value={tm.email}
-                      onChange={(e) => onTeammateChange(tm.id, "email", e.target.value)}
-                    />
-                    {errors.teammates?.[idx]?.email && (
-                      <p className={errorBase}>{errors.teammates[idx].email}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Add teammate button */}
-          <button
-            onClick={onAddTeammate}
-            disabled={!canAdd}
-            className="w-full rounded-lg border border-zinc-800 py-2.5 text-sm text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed font-sans"
-          >
-            + Add teammate
-          </button>
-          <p className="text-xs text-zinc-700 -mt-2">
-            Up to {teamConfig.maxSize} members including you
+          <p className="text-xs text-zinc-500">
+            {teamConfig.minSize}–{teamConfig.maxSize} members total, including you.
           </p>
+
+          {teammates.length > 0 && (
+            <div className="space-y-3">
+              {teammates.map((tm, i) => {
+                const tmError = errors.teammates?.[i];
+                return (
+                  <div
+                    key={tm.id}
+                    className="flex gap-2 items-start rounded-xl border border-zinc-800 bg-zinc-950/40 p-3"
+                  >
+                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <input
+                          type="text"
+                          value={tm.name}
+                          placeholder={`Teammate ${i + 1} name`}
+                          onChange={(e) => onTeammateChange(tm.id, "name", e.target.value)}
+                          className={[
+                            "w-full rounded-lg border bg-zinc-950/60 px-3 py-2 text-sm text-white",
+                            "placeholder:text-zinc-600 outline-none transition-colors",
+                            tmError?.name ? "border-red-500/50" : "border-zinc-800 focus:border-primary/60",
+                          ].join(" ")}
+                        />
+                        {tmError?.name && (
+                          <p className="mt-1 text-[11px] text-red-400">{tmError.name}</p>
+                        )}
+                      </div>
+                      <div>
+                        <input
+                          type="email"
+                          value={tm.email}
+                          placeholder="Email"
+                          onChange={(e) => onTeammateChange(tm.id, "email", e.target.value)}
+                          className={[
+                            "w-full rounded-lg border bg-zinc-950/60 px-3 py-2 text-sm text-white",
+                            "placeholder:text-zinc-600 outline-none transition-colors",
+                            tmError?.email ? "border-red-500/50" : "border-zinc-800 focus:border-primary/60",
+                          ].join(" ")}
+                        />
+                        {tmError?.email && (
+                          <p className="mt-1 text-[11px] text-red-400">{tmError.email}</p>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveTeammate(tm.id)}
+                      aria-label="Remove teammate"
+                      className="mt-1.5 shrink-0 h-6 w-6 flex items-center justify-center rounded-full text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {teammates.length < teamConfig.maxSize - 1 && (
+            <button
+              type="button"
+              onClick={onAddTeammate}
+              className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Add teammate
+            </button>
+          )}
         </div>
       )}
     </div>
+  );
+}
+
+function ModeButton({
+  active, icon, label, onClick,
+}: {
+  active: boolean;
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors",
+        active ? "bg-primary text-white" : "text-zinc-400 hover:text-zinc-200",
+      ].join(" ")}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }

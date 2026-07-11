@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import PersonalInfoSection from "./PersonalInfoSection";
 import TeamSection, { Teammate } from "./TeamSection";
 import CustomQuestionsSection, { CustomQuestion } from "./CustomQuestionsSection";
 import SubmitButton, { SubmitState } from "./SubmitButton";
 import ConfirmationView from "./ConfirmationView";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Redesigned for visual hierarchy and polish — same exact field names, state
+// shape, and validation logic as before, so nothing about the data contract
+// changes. Only the presentation layer (spacing, grouping, typography,
+// section framing) is new.
+// ═══════════════════════════════════════════════════════════════════════════
 
 interface TeamConfig {
   minSize: number;
@@ -61,7 +68,6 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
   function handleValueChange(field: string, value: string) {
     setValues((prev) => ({ ...prev, [field]: value }));
-    // Clear error on change
     if (field in errors) setErrors((prev) => ({ ...prev, [field]: undefined }));
   }
 
@@ -147,11 +153,8 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
   function handleSubmit() {
     if (!validate()) return;
-
     setSubmitState("loading");
-
     // TODO: Connect to Supabase
-    // await supabase.from('event_registrations').insert({ event_id, user_id, status: 'registered', ... })
     setTimeout(() => {
       setSubmitState("success");
     }, 1500);
@@ -168,68 +171,100 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
     );
   }
 
+  // Total section count drives both the numbering and the little progress
+  // dots at the top — gives the form a sense of "here's how much is left",
+  // which is a small but real hook to keep people moving through it.
+  const sectionCount = 2 + (showTeamSection ? 1 : 0) + (event.customQuestions.length > 0 ? 1 : 0);
+
   return (
-    <div className="w-full max-w-2xl mx-auto px-6 lg:px-10 pt-8 lg:pt-10 pb-16 space-y-10">
-      {/* Form header */}
-      <div className="space-y-2">
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-white">
-          Register for {event.title}
-        </h1>
-        <p className="text-sm text-zinc-500 font-sans">
-          You&apos;re almost in. Fill in the details below.
-        </p>
+    <div className="w-full max-w-2xl mx-auto px-6 lg:px-10 pt-8 lg:pt-10 pb-16">
+
+      {/* ── Header ── */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          {Array.from({ length: sectionCount }).map((_, i) => (
+            <div key={i} className="h-1 flex-1 rounded-full bg-primary/25 overflow-hidden">
+              <div className="h-full w-full bg-primary/70 rounded-full" />
+            </div>
+          ))}
+        </div>
+        <div>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-white">
+            Register for {event.title}
+          </h1>
+          <p className="mt-2 text-sm text-zinc-500">
+            You&apos;re almost in — this takes about a minute.
+          </p>
+        </div>
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-zinc-800" />
-
-      {/* Section 1 + 2 — Personal Info & Social Profiles */}
-      <PersonalInfoSection
-        values={values}
-        errors={errors}
-        onChange={handleValueChange}
-      />
-
-      <div className="h-px bg-zinc-800" />
-
-      {/* Section 3 — Team (conditional) */}
-      {showTeamSection && event.teamConfig && (
-        <>
-          <TeamSection
-            teamConfig={event.teamConfig}
-            mode={mode}
-            teamName={teamName}
-            teammates={teammates}
-            errors={{ teamName: errors.teamName, teammates: errors.teammates }}
-            onModeChange={setMode}
-            onTeamNameChange={setTeamName}
-            onTeammateChange={handleTeammateChange}
-            onAddTeammate={handleAddTeammate}
-            onRemoveTeammate={handleRemoveTeammate}
+      {/* ── Sections, each in its own card for clear visual grouping ── */}
+      <div className="mt-8 space-y-5">
+        <FormSection index={1} title="Personal information">
+          <PersonalInfoSection
+            values={values}
+            errors={errors}
+            onChange={handleValueChange}
           />
-          <div className="h-px bg-zinc-800" />
-        </>
-      )}
+        </FormSection>
 
-      {/* Section 4 — Custom Questions (conditional) */}
-      {event.customQuestions.length > 0 && (
-        <>
-          <CustomQuestionsSection
-            sectionIndex={showTeamSection ? 4 : 3}
-            questions={event.customQuestions}
-            answers={answers}
-            errors={answerErrors}
-            onChange={handleAnswerChange}
-          />
-          <div className="h-px bg-zinc-800" />
-        </>
-      )}
+        {showTeamSection && event.teamConfig && (
+          <FormSection index={2} title="Team">
+            <TeamSection
+              teamConfig={event.teamConfig}
+              mode={mode}
+              teamName={teamName}
+              teammates={teammates}
+              errors={{ teamName: errors.teamName, teammates: errors.teammates }}
+              onModeChange={setMode}
+              onTeamNameChange={setTeamName}
+              onTeammateChange={handleTeammateChange}
+              onAddTeammate={handleAddTeammate}
+              onRemoveTeammate={handleRemoveTeammate}
+            />
+          </FormSection>
+        )}
 
-      {/* Submit */}
-      <SubmitButton
-        state={submitState}
-        onClick={handleSubmit}
-      />
+        {event.customQuestions.length > 0 && (
+          <FormSection index={showTeamSection ? 3 : 2} title="Additional information">
+            <CustomQuestionsSection
+              sectionIndex={showTeamSection ? 3 : 2}
+              questions={event.customQuestions}
+              answers={answers}
+              errors={answerErrors}
+              onChange={handleAnswerChange}
+            />
+          </FormSection>
+        )}
+      </div>
+
+      <div className="mt-8">
+        <SubmitButton state={submitState} onClick={handleSubmit} />
+      </div>
     </div>
+  );
+}
+
+// ─── Section card wrapper — gives every section a consistent frame ─────────
+
+function FormSection({
+  index, title, children,
+}: {
+  index: number;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-5 lg:p-6">
+      <div className="flex items-center gap-3 mb-5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-xs font-mono font-semibold">
+          {index}
+        </span>
+        <h2 className="text-sm font-semibold text-white tracking-wide uppercase">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </section>
   );
 }
