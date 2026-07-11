@@ -84,7 +84,7 @@ export function EmailSignInForm({
         });
 
         if (signInError) {
-          setError(signInError.message);
+          setError("Invalid email or password.");
           onCaptchaReset();
         } else {
           // If successful, redirect to dashboard or desired next page
