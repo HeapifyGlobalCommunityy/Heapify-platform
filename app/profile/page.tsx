@@ -23,6 +23,7 @@ export const dynamic = "force-dynamic"; // ← prevents shared/static caching
 
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { SafeImage } from "@/components/ui/safe-image";
 import {
   Github, Linkedin, Twitter, Globe, Zap, CalendarDays,
   Award, Star, ExternalLink, Pencil,
@@ -163,11 +164,13 @@ export default async function ProfilePage() {
           <div className="flex flex-col sm:flex-row items-start gap-6">
             {/* Avatar */}
             {profile.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <SafeImage
                 src={profile.avatar_url}
                 alt={profile.full_name ?? profile.username}
+                width={80}
+                height={80}
                 className="h-20 w-20 rounded-2xl object-cover border border-primary/20"
+                fallback={<InitialsAvatar name={profile.full_name ?? profile.username} />}
               />
             ) : (
               <InitialsAvatar name={profile.full_name ?? profile.username} />
@@ -271,8 +274,14 @@ export default async function ProfilePage() {
                   className="flex items-center gap-2.5 rounded-2xl border border-primary/20 bg-primary/8 px-4 py-2.5"
                 >
                   {badge.icon_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={badge.icon_url} alt="" className="h-5 w-5" />
+                    <SafeImage 
+                      src={badge.icon_url} 
+                      alt={badge.name} 
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 object-cover" 
+                      fallback={<Star className="h-4 w-4 text-primary" />}
+                    />
                   ) : (
                     <Star className="h-4 w-4 text-primary" />
                   )}

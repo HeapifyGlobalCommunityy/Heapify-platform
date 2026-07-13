@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import { SafeImage } from "@/components/ui/safe-image";
 import {
   ArrowLeft,
   Calendar,
@@ -261,10 +262,12 @@ function EventDetailFull({
 
         {bannerUrl && (
           <div className="mt-8 relative w-full h-[240px] md:h-[360px] rounded-[2rem] overflow-hidden border border-glass-border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
+            <SafeImage 
               src={bannerUrl} 
               alt={event.title} 
+              width={1200}
+              height={360}
+              style={{ aspectRatio: "1200/360" }}
               className="w-full h-full object-cover"
             />
           </div>

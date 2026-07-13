@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { SafeImage } from "@/components/ui/safe-image";
 import { 
   Megaphone, 
   Users, 
@@ -398,11 +399,17 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                           </span>
                           {profile?.avatar_url ? (
                             <div className="relative h-8 w-8 overflow-hidden rounded-full border border-glass-border">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img 
+                              <SafeImage 
                                 src={profile.avatar_url} 
                                 alt={displayName} 
+                                width={32}
+                                height={32}
                                 className="h-full w-full object-cover"
+                                fallback={
+                                  <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_70%)] flex items-center justify-center text-[10px] font-semibold">
+                                    {displayName.charAt(0).toUpperCase()}
+                                  </div>
+                                }
                               />
                             </div>
                           ) : (
@@ -452,11 +459,17 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                       <div key={member.id} className="flex items-center gap-3 rounded-xl border border-glass-border bg-glass-bg/40 p-3">
                         {member.avatar_url ? (
                           <div className="relative h-8 w-8 overflow-hidden rounded-full border border-glass-border">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img 
+                            <SafeImage 
                               src={member.avatar_url} 
                               alt={displayName} 
+                              width={32}
+                              height={32}
                               className="h-full w-full object-cover"
+                              fallback={
+                                <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_70%)] flex items-center justify-center text-[10px] font-semibold">
+                                  {displayName.charAt(0).toUpperCase()}
+                                </div>
+                              }
                             />
                           </div>
                         ) : (
