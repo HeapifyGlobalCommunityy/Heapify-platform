@@ -46,3 +46,8 @@ next-env.d.ts
 *.docx
 *.pdf
 context.txt
+
+# Scratch/Temporary files
+scratch*
+scratch.js
+scratch_ai.html
