@@ -509,30 +509,48 @@ export const socialChannels = [
 export const formEntries = [
   {
     title: "Sponsor Form",
+    type: "sponsor",
     description:
       "Share a partnership objective, region, and preferred activation format.",
   },
   {
     title: "Partnership Form",
+    type: "partnership",
     description: "Collaborate on events, content, internships, or chapter growth.",
   },
   {
     title: "Volunteer Form",
+    type: "volunteer",
     description: "Join operations, design, events, community, or technical support.",
   },
   {
     title: "Speaker Form",
+    type: "speaker",
     description:
       "Propose a talk, workshop, panel, or fireside with community value.",
   },
   {
     title: "Mentor Form",
+    type: "mentor",
     description:
       "Support contributors with career guidance, reviews, and feedback loops.",
   },
   {
     title: "Chapter Lead Form",
+    type: "chapter_lead",
     description: "Launch or expand a chapter with clear support and governance.",
+  },
+  {
+    title: "Ambassador Form",
+    type: "ambassador",
+    description:
+      "Represent the community locally and expand our reach on campuses or within companies.",
+  },
+  {
+    title: "Contact",
+    type: "contact",
+    description:
+      "General inquiries, press, and non-standard collaboration requests.",
   },
 ];
 

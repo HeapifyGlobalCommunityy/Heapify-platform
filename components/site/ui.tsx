@@ -209,14 +209,14 @@ export function SocialCard({ title, description }: { title: string; description:
   );
 }
 
-export function FormCard({ title, description }: { title: string; description: string }) {
+export function FormCard({ title, description, type }: { title: string; description: string; type: string }) {
   return (
     <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 backdrop-blur-xl">
       <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-muted-foreground">Form</div>
       <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
       <div className="mt-6 flex gap-3">
-        <Button asChild><Link href="#">Open form</Link></Button>
+        <Button asChild><Link href={`/forms/${type}`}>Open form</Link></Button>
         <Button variant="ghost" asChild><Link href="/about">Learn more</Link></Button>
       </div>
     </motion.article>

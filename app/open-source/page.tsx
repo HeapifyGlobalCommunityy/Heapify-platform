@@ -30,7 +30,7 @@ export default function OpenSourcePage() {
         description="For now, it reads as a premium open-source hub with enough structure to support future contribution systems."
         actions={[
           { label: "Browse events", href: "/events" },
-          { label: "Join community", href: "/forms/join", variant: "ghost" },
+          { label: "Join community", href: "/forms/volunteer", variant: "ghost" },
         ]}
       />
     </>
