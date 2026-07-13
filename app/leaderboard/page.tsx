@@ -56,7 +56,7 @@ export default function LeaderboardPage() {
         description="The current structure already feels like a product leaderboard rather than a simple list."
         actions={[
           { label: "Open dashboard", href: "/dashboard" },
-          { label: "Join community", href: "/forms/volunteer", variant: "ghost" },
+          { label: "Join community", href: "/forms", variant: "ghost" },
         ]}
       />
     </>

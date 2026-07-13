@@ -11,7 +11,7 @@ export default function HomePage() {
         tagline={brand.tagline}
         description="A futuristic, premium community frontend built to scale into a product-grade platform for chapters, events, projects, and partner programs."
         actions={[
-          { label: "Join Community", href: "/forms/volunteer" },
+          { label: "Join Community", href: "/forms" },
           { label: "Explore Events", href: "/events", variant: "ghost" },
           { label: "Explore Projects", href: "/open-source", variant: "ghost" },
         ]}
@@ -110,7 +110,7 @@ export default function HomePage() {
         title="Ready to turn community energy into a product-grade platform?"
         description="This foundation is intentionally data-shaped, motion-rich, and componentized so Supabase can be wired in later without redesigning the interface."
         actions={[
-          { label: "Join the community", href: "/forms/volunteer" },
+          { label: "Join the community", href: "/forms" },
           { label: "View the roadmap", href: "/about", variant: "ghost" },
         ]}
       />
