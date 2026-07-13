@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { 
   Megaphone, 
   Users, 
@@ -399,11 +398,11 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                           </span>
                           {profile?.avatar_url ? (
                             <div className="relative h-8 w-8 overflow-hidden rounded-full border border-glass-border">
-                              <Image 
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
                                 src={profile.avatar_url} 
                                 alt={displayName} 
-                                fill
-                                className="object-cover"
+                                className="h-full w-full object-cover"
                               />
                             </div>
                           ) : (
@@ -453,11 +452,11 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                       <div key={member.id} className="flex items-center gap-3 rounded-xl border border-glass-border bg-glass-bg/40 p-3">
                         {member.avatar_url ? (
                           <div className="relative h-8 w-8 overflow-hidden rounded-full border border-glass-border">
-                            <Image 
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
                               src={member.avatar_url} 
                               alt={displayName} 
-                              fill
-                              className="object-cover"
+                              className="h-full w-full object-cover"
                             />
                           </div>
                         ) : (
