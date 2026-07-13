@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Calendar,
@@ -13,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EventCard, SectionWrapper } from "@/components/site/ui";
 import RegistrationForm from "@/components/registration/RegistrationForm";
+import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ARCHITECTURE NOTE
@@ -135,6 +137,7 @@ export default function EventDetailClient({
             isPast={isPast}
             related={related}
             onRegister={openRegistration}
+            bannerUrl={safeEvent.bannerUrl}
           />
         ) : (
           <div className="flex flex-col">
@@ -190,20 +193,21 @@ export default function EventDetailClient({
               isPast={isPast}
               related={related}
               onRegister={openRegistration}
+              bannerUrl={safeEvent.bannerUrl}
             />
           </div>
 
-          {/* ── Frame 2: compact summary + registration form — card border ── */}
+          {/* ── Frame 2: compact summary + registration form — distinct cards ── */}
           <div
-            className="h-full flex rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden transition-transform duration-[750ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="h-full flex gap-6 overflow-hidden transition-transform duration-[750ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{
               width: "50%",
               marginLeft: "calc(50% - 50% + 0px)",
               transform: isRegistering ? "translateX(0%)" : "translateX(1.5%)",
             }}
           >
-            {/* Left: compact summary — 40% of Frame 2 */}
-            <div className="w-[40%] h-full overflow-y-auto border-r border-zinc-800">
+            {/* Left: compact summary — 38% of Frame 2 */}
+            <div className="w-[38%] h-full overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950">
               <CompactSummary
                 event={event}
                 safeEvent={safeEvent}
@@ -214,8 +218,8 @@ export default function EventDetailClient({
                 isDesktop={true}
               />
             </div>
-            {/* Right: registration form — 60% of Frame 2 */}
-            <div className="w-[60%] h-full overflow-y-auto">
+            {/* Right: registration form — 62% of Frame 2 */}
+            <div className="w-[62%] h-full overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950">
               {hasEverOpened && (
                 <div
                   className={[
@@ -238,15 +242,16 @@ export default function EventDetailClient({
 // ─── Full event detail (Frame 1 content) ───────────────────────────────────
 
 function EventDetailFull({
-  event, isPast, related, onRegister,
+  event, isPast, related, onRegister, bannerUrl,
 }: {
   event: EventDetailProps;
   isPast: boolean;
   related: Props["related"];
   onRegister: () => void;
+  bannerUrl: string | null;
 }) {
   return (
-    <article className="pt-32">
+    <article className="pt-32 pb-16">
       <div className="mx-auto max-w-4xl px-6">
         <Link
           href="/events"
@@ -255,8 +260,22 @@ function EventDetailFull({
           <ArrowLeft className="h-4 w-4" /> Back to events
         </Link>
 
-        <div className="mt-8 rounded-[2rem] border border-glass-border relative overflow-hidden
-          bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl">
+        {bannerUrl && (
+          <div className="mt-8 relative w-full h-[240px] md:h-[360px] rounded-[2rem] overflow-hidden border border-glass-border">
+            <Image 
+              src={bannerUrl} 
+              alt={event.title} 
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+        )}
+
+        <div className={cn(
+          "rounded-[2rem] border border-glass-border relative overflow-hidden bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl",
+          bannerUrl ? "mt-6" : "mt-8"
+        )}>
           <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
             <div className="w-64 h-64 bg-primary/30 rounded-full blur-[100px]" />
           </div>
