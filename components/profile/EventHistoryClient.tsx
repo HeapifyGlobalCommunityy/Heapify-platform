@@ -13,10 +13,8 @@ import { Button } from "@/components/ui/button";
 
 // Status pill colours
 const statusColour: Record<string, string> = {
-  registered: "border-primary/30 bg-primary/10 text-primary",
-  attended: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-  waitlisted: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  cancelled: "border-zinc-700 bg-zinc-800/60 text-zinc-500",
+  upcoming: "border-primary/30 bg-primary/10 text-primary",
+  completed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
 };
 
 export interface EventHistoryRow {
@@ -29,6 +27,7 @@ export interface EventHistoryRow {
     title: string;
     category: string;
     start_at: string;
+    end_at?: string | null;
     status: string;
   } | null;
 }
@@ -77,6 +76,10 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
       {rows.map((row) => {
         const ev = row.event;
         if (!ev) return null;
+        const endAt = ev.end_at ? new Date(ev.end_at) : new Date(ev.start_at);
+        const isOver = endAt < new Date();
+        const computedStatus = isOver ? "completed" : "upcoming";
+
         return (
           <div
             key={row.id}
@@ -97,10 +100,10 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
             <div className="flex items-center gap-3 shrink-0">
               <span
                 className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium capitalize ${
-                  statusColour[row.status] ?? statusColour.registered
+                  statusColour[computedStatus] ?? statusColour.upcoming
                 }`}
               >
-                {row.status}
+                {computedStatus}
               </span>
               <Link
                 href={`/events/${ev.slug}`}

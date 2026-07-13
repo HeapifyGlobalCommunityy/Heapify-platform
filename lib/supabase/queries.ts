@@ -131,7 +131,7 @@ export async function getEventHistory(userId: string, page = 0) {
     .from("event_registrations")
     .select(
       `id, status, registered_at,
-       event:events(id, slug, title, category, start_at, status)`
+       event:events(id, slug, title, category, start_at, end_at, status)`
     )
     .eq("user_id", userId)
     .order("registered_at", { ascending: false })
@@ -145,10 +145,12 @@ export async function getEvents(page = 0, limit = 20) {
 
   const from = page * limit;
   const to = from + limit - 1;
+  const now = new Date().toISOString();
 
   return supabase
     .from("events")
     .select("*")
+    .or(`end_at.gte.${now},end_at.is.null`)
     .order("start_at", { ascending: false })
     .range(from, to);
 }

@@ -98,7 +98,7 @@ export async function loadMoreEventHistory(
     .from("event_registrations")
     .select(
       `id, status, registered_at,
-       event:events(id, slug, title, category, start_at, status)`
+       event:events(id, slug, title, category, start_at, end_at, status)`
     )
     .eq("user_id", user.id) // always the verified session user
     .order("registered_at", { ascending: false })
