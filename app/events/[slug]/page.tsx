@@ -148,6 +148,7 @@ export default async function EventDetailPage({
     time: formatEventTime(ev.start_at),
     location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
     host: "Heapify Global Community",
+    chapterName: (ev as unknown as { chapters: { name: string } | null }).chapters?.name || null,
     agenda: (ev.agenda || []) as { time: string; title: string }[],
     speakers: (ev.speakers || []) as { name: string; bio?: string; photo_url?: string }[],
   };

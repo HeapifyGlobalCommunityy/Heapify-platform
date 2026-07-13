@@ -48,6 +48,7 @@ interface CustomQuestion {
 interface EventDetailProps {
   slug: string; title: string; category: string; status: string;
   date: string; time: string; location: string; banner?: string;
+  chapterName?: string | null;
   agenda?: AgendaItem[]; speakers?: Speaker[];
 }
 
@@ -289,6 +290,11 @@ function EventDetailFull({
             <h1 className="mt-4 font-display text-4xl md:text-6xl font-semibold tracking-tight text-white">
               {event.title}
             </h1>
+            {event.chapterName && (
+               <p className="mt-2 text-xs font-mono text-zinc-400 uppercase tracking-widest">
+                 Organized by {event.chapterName}
+               </p>
+             )}
             {event.banner && (
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{event.banner}</p>
             )}
@@ -464,6 +470,11 @@ function CompactSummary({
         <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-white leading-tight">
           {event.title}
         </h2>
+        {event.chapterName && (
+          <p className="mt-1.5 text-xs font-mono text-zinc-400 uppercase tracking-widest">
+            Organized by {event.chapterName}
+          </p>
+        )}
       </div>
 
       <div className={`space-y-2 ${itemClasses(260).className}`} style={itemClasses(260).style}>

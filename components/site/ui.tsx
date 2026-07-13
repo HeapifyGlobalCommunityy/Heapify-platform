@@ -167,7 +167,7 @@ export function ProjectCard({ project }: { project: { slug: string; title: strin
       </div>
       <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
         <span>{project.impact}</span>
-        <Link href="/open-source" className="inline-flex items-center gap-2 text-primary">
+        <Link href={`/open-source/${project.slug}`} className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary-hover transition-colors">
           Explore
           <ArrowRight className="h-4 w-4" />
         </Link>
@@ -443,7 +443,7 @@ export function CategoryResourcesClient({
 
       {allTags.length > 0 && (
         <div className="py-3 border-y border-glass-border">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Filter this page's results</div>
+          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Filter this page&apos;s results</div>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveTag(null)}

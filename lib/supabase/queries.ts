@@ -167,7 +167,7 @@ export async function getEventBySlug(slug: string) {
 
   return supabase
     .from("events")
-    .select("*")
+    .select("*, chapters(name)")
     .eq("slug", slug)
     .maybeSingle();
 }
