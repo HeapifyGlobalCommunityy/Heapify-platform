@@ -10,6 +10,7 @@ const VALID_CATEGORIES: Record<string, string> = {
   blockchain: "Blockchain",
   cybersecurity: "Cybersecurity",
   ai: "AI",
+  recordings: "Recordings",
 };
 
 interface PageProps {
@@ -22,7 +23,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const resolvedSearchParams = await searchParams;
 
   // 1. Validation
-  if (!VALID_CATEGORIES[category] || category === "recordings") {
+  if (!VALID_CATEGORIES[category]) {
     notFound();
   }
 
