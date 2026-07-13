@@ -58,7 +58,8 @@ function formatMemberSince(dateStr: string): string {
 }
 
 function InitialsAvatar({ name }: { name: string }) {
-  const initials = name
+  const safeName = name || "?";
+  const initials = safeName
     .split(" ")
     .map((n) => n[0])
     .slice(0, 2)

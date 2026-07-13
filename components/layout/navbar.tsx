@@ -9,7 +9,7 @@ import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
 import { clearDemoProfile, readDemoProfile } from "@/lib/demo-profile";
 
-export function Navbar() {
+export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -48,16 +48,24 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-6xl -translate-x-1/2">
-      <div className="flex items-center justify-between rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
-        <Link href="/" className="flex items-center gap-2">
+    <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2">
+      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <HeapifyLogo className="h-5 w-5" />
-          <span className="font-display font-semibold text-sm tracking-tight">
-            Heapify Global Community
+          <span className="font-display font-semibold text-sm tracking-tight whitespace-nowrap">
+            Heapify <span className="hidden xl:inline">Global Community</span>
           </span>
         </Link>
 
-        <div className="hidden items-center gap-6 text-sm text-muted-foreground lg:flex">
+        <div className="hidden items-center gap-4 xl:gap-6 text-sm text-muted-foreground lg:flex">
+          <Link href="/" className="transition-colors hover:text-foreground">
+            Home
+          </Link>
+          {isChapterLead && (
+            <Link href="/chapter" className="transition-colors hover:text-foreground">
+              Chapter
+            </Link>
+          )}
           {navigationLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
               {link.label}
@@ -65,7 +73,7 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -120,6 +128,22 @@ export function Navbar() {
 
       {open && (
         <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/85 p-4 backdrop-blur-xl lg:hidden">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Home
+          </Link>
+          {isChapterLead && (
+            <Link
+              href="/chapter"
+              onClick={() => setOpen(false)}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Chapter
+            </Link>
+          )}
           {navigationLinks.map((link) => (
             <Link
               key={link.href}

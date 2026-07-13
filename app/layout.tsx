@@ -39,18 +39,35 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import { createClient } from "@/lib/supabase/server";
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  let isChapterLead = false;
+
+  if (supabase) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: chapter } = await supabase
+        .from("chapters")
+        .select("id")
+        .eq("lead_id", user.id)
+        .maybeSingle();
+      isChapterLead = !!chapter;
+    }
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <Navbar />
+          <Navbar isChapterLead={isChapterLead} />
           <main className="min-h-screen">
             <PageTransition>{children}</PageTransition>
           </main>

@@ -44,6 +44,12 @@ export default function PersonalInfoSection({ values, errors, onChange }: Props)
         onChange={(v) => onChange("email", v)}
       />
 
+      {errors.socialLinks && (
+        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/8 px-3 py-2">
+          <AlertCircle className="h-3.5 w-3.5 text-red-400 shrink-0" />
+          <p className="text-xs text-red-400">{errors.socialLinks}</p>
+        </div>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
         <Field
           label="GitHub"
@@ -60,13 +66,6 @@ export default function PersonalInfoSection({ values, errors, onChange }: Props)
           onChange={(v) => onChange("linkedin", v)}
         />
       </div>
-
-      {errors.socialLinks && (
-        <p className="flex items-center gap-1.5 text-xs text-red-400">
-          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-          {errors.socialLinks}
-        </p>
-      )}
     </div>
   );
 }
@@ -86,7 +85,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+      <label className="block text-sm font-medium text-zinc-400 mb-1.5">
         {label}
       </label>
       <div
@@ -104,7 +103,7 @@ function Field({
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none"
+          className="w-full bg-transparent text-base text-white placeholder:text-zinc-600 outline-none"
         />
       </div>
       {error && (

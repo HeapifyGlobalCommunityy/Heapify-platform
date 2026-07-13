@@ -137,3 +137,30 @@ export async function getEventHistory(userId: string, page = 0) {
     .order("registered_at", { ascending: false })
     .range(from, to);
 }
+
+// ─── Events (paginated & single) ─────────────────────────────────────────
+export async function getEvents(page = 0, limit = 20) {
+  const supabase = await createClient();
+  if (!supabase) return { data: null, error: new Error("Supabase not configured") };
+
+  const from = page * limit;
+  const to = from + limit - 1;
+
+  return supabase
+    .from("events")
+    .select("*")
+    .order("start_at", { ascending: false })
+    .range(from, to);
+}
+
+export async function getEventBySlug(slug: string) {
+  const supabase = await createClient();
+  if (!supabase) return { data: null, error: new Error("Supabase not configured") };
+
+  return supabase
+    .from("events")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+}
+

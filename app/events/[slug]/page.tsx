@@ -1,8 +1,61 @@
 // app/events/[slug]/page.tsx
+// Server-rendered event detail page.
+//
+// 1. ISR Caching:
+//    export const revalidate = 60;
+//    Caches page content for 60 seconds and updates in the background. Snappy public load.
+//
+// 2. Database Fetch:
+//    Queries the event by unique slug, queries current registration count,
+//    and queries 2 other events for the "related events" section.
+//
+// 3. Dynamic Configuration:
+//    Uses the event's database fields directly for capacity, hackathon settings,
+//    team requirements, and custom questions.
+
+export const revalidate = 60;
+
 import { notFound } from "next/navigation";
-import { eventCatalog, eventDetail, featuredEvents } from "@/lib/site-content";
-import { registrationConfigs, defaultRegistrationConfig } from "@/lib/registration-configs";
+import { createClient } from "@/lib/supabase/server";
+import { getEventBySlug } from "@/lib/supabase/queries";
 import EventDetailClient from "@/components/events/EventDetailClient";
+
+// Helper to format database category enum value to UI label
+function formatCategory(category: string): string {
+  const map: Record<string, string> = {
+    web3: "Web3",
+    blockchain: "Blockchain",
+    hackathon: "Hackathon",
+    open_source: "Open Source",
+    workshop: "Workshop",
+    internship_session: "Internship Session",
+  };
+  return map[category] ?? category;
+}
+
+// Helper to format database status to UI label
+function formatStatus(status: string): string {
+  if (!status) return "Upcoming";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+// Helper to extract date (e.g., "12 Jul 2026")
+function formatEventDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// Helper to extract time (e.g., "6:00 PM")
+function formatEventTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
 
 export default async function EventDetailPage({
   params,
@@ -14,32 +67,89 @@ export default async function EventDetailPage({
   const { slug } = await params;
   const { register } = await searchParams;
 
-  const catalogEvent = eventCatalog.find((e) => e.slug === slug);
-  if (!catalogEvent) notFound();
+  // 1. Fetch main event by slug
+  const { data: ev, error } = await getEventBySlug(slug);
+  if (error || !ev) {
+    notFound();
+  }
 
-  const event = { ...eventDetail, ...catalogEvent };
-  const related = featuredEvents.filter((e) => e.slug !== slug).slice(0, 2);
+  // 2. Fetch current registration count
+  const supabase = await createClient();
+  let registeredCount = 0;
+  if (supabase) {
+    const { count, error: countError } = await supabase
+      .from("event_registrations")
+      .select("*", { count: "exact", head: true })
+      .eq("event_id", ev.id);
+    if (!countError && count !== null) {
+      registeredCount = count;
+    }
+  }
 
-  const regConfig = registrationConfigs[slug] || defaultRegistrationConfig;
+  // 3. Fetch up to 2 other events for the "related events" section
+  let related: {
+    slug: string;
+    title: string;
+    category: string;
+    status: string;
+    date: string;
+    time: string;
+    location: string;
+  }[] = [];
+  if (supabase) {
+    const { data: relatedEvents } = await supabase
+      .from("events")
+      .select("slug, title, category, status, start_at, location")
+      .neq("slug", slug)
+      .order("start_at", { ascending: false })
+      .limit(2);
 
-  const mergedEvent = {
-    title: event.title,
-    slug: event.slug,
-    category: event.category,
-    isHackathon: regConfig.isHackathon ?? false,
-    date: event.date,
-    time: event.time,
-    location: event.location,
-    capacity: regConfig.capacity ?? 0,
-    registeredCount: regConfig.registeredCount ?? 0,
-    bannerUrl: null as string | null,
-    // Always normalize to null — never undefined — so RegistrationForm's
-    // optional-chaining on teamConfig?.allowSolo never throws.
-    teamConfig: regConfig.teamConfig ?? null,
-    customQuestions: regConfig.customQuestions ?? [],
+    if (relatedEvents) {
+      related = relatedEvents.map((r) => ({
+        slug: r.slug,
+        title: r.title,
+        category: formatCategory(r.category),
+        status: formatStatus(r.status),
+        date: formatEventDate(r.start_at),
+        time: formatEventTime(r.start_at),
+        location: r.location || "TBD",
+      }));
+    }
+  }
+
+  // Map to the format EventDetailClient expects
+  const formattedEvent = {
+    slug: ev.slug,
+    title: ev.title,
+    banner: ev.banner_url || ev.description || "",
+    category: formatCategory(ev.category),
+    status: formatStatus(ev.status),
+    date: formatEventDate(ev.start_at),
+    time: formatEventTime(ev.start_at),
+    location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+    host: "Heapify Global Community",
+    agenda: (ev.agenda || []) as { time: string; item: string }[],
+    speakers: (ev.speakers || []) as { name: string; role: string; focus?: string }[],
   };
 
-  const isPast = event.status.toLowerCase() === "past";
+  const mergedEvent = {
+    title: ev.title,
+    slug: ev.slug,
+    category: formatCategory(ev.category),
+    isHackathon: ev.is_hackathon ?? false,
+    date: formatEventDate(ev.start_at),
+    time: formatEventTime(ev.start_at),
+    location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+    capacity: ev.capacity ?? 0,
+    registeredCount: registeredCount,
+    bannerUrl: ev.banner_url || null,
+    // Always normalize to null — never undefined — so RegistrationForm's
+    // optional-chaining on teamConfig?.allowSolo never throws.
+    teamConfig: ev.team_config || null,
+    customQuestions: ev.custom_questions || [],
+  };
+
+  const isPast = ev.status.toLowerCase() === "past" || ev.status.toLowerCase() === "completed";
 
   // ?register=true opens the registration panel inline.
   // Past events ignore this flag — registration is closed.
@@ -47,7 +157,7 @@ export default async function EventDetailPage({
 
   return (
     <EventDetailClient
-      event={event}
+      event={formattedEvent}
       mergedEvent={mergedEvent}
       slug={slug}
       related={related}

@@ -286,6 +286,7 @@ create table announcements (
 -- ROW LEVEL SECURITY
 -- ============================================================================
 alter table profiles enable row level security;
+alter table chapters enable row level security;
 alter table events enable row level security;
 alter table event_registrations enable row level security;
 alter table projects enable row level security;
@@ -298,6 +299,7 @@ alter table resource_bookmarks enable row level security;
 
 -- Public read on most content
 create policy "public read profiles" on profiles for select using (true);
+create policy "public read chapters" on chapters for select using (true);
 create policy "public read events" on events for select using (true);
 create policy "public read projects" on projects for select using (true);
 create policy "public read internships" on internships for select using (true);
