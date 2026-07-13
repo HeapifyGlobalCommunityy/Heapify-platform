@@ -38,9 +38,10 @@ import { cn } from "@/lib/utils";
 interface AgendaItem { time: string; item: string }
 interface Speaker { name: string; role: string }
 interface TeamConfig { minSize: number; maxSize: number; allowSolo: boolean }
+type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
 interface CustomQuestion {
   id: string; label: string;
-  type: "select" | "text" | "textarea";
+  type: QuestionType;
   options?: string[]; required: boolean;
 }
 
@@ -325,7 +326,7 @@ function EventDetailFull({
                       transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
                   >
                     <div className="font-mono text-sm text-primary/80 shrink-0">{item.time}</div>
-                    <div className="text-sm text-foreground/90">{item.item}</div>
+                    <div className="text-sm text-foreground/90">{item.title}</div>
                   </div>
                 ))}
               </div>
@@ -342,10 +343,18 @@ function EventDetailFull({
                     className="flex items-center gap-4 rounded-2xl border border-glass-border bg-glass-bg p-5 cursor-default
                       transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
                   >
-                    <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/10 shrink-0" />
+                    {speaker.photo_url ? (
+                      <SafeImage 
+                        src={speaker.photo_url} 
+                        alt={speaker.name} 
+                        className="h-12 w-12 rounded-full shrink-0 object-cover"
+                      />
+                    ) : (
+                      <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/10 shrink-0" />
+                    )}
                     <div>
                       <div className="font-semibold text-sm">{speaker.name}</div>
-                      <div className="text-xs text-muted-foreground">{speaker.role}</div>
+                      {speaker.bio && <div className="text-xs text-muted-foreground">{speaker.bio}</div>}
                     </div>
                   </div>
                 ))}

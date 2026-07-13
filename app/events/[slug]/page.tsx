@@ -39,6 +39,17 @@ function formatStatus(status: string): string {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+// 3-state computation
+function computeEventStatus(db_status: string, start_at: string, end_at: string | null): string {
+  if (db_status === 'cancelled') return 'cancelled';
+  const now = new Date();
+  const start = new Date(start_at);
+  const end = end_at ? new Date(end_at) : start;
+  if (now > end) return 'completed';
+  if (now >= start && now <= end) return 'ongoing';
+  return 'upcoming';
+}
+
 // Helper to extract date (e.g., "12 Jul 2026")
 function formatEventDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -105,7 +116,14 @@ export default async function EventDetailPage({
       .limit(2);
 
     if (relatedEvents) {
-      related = relatedEvents.map((r) => ({
+      related = relatedEvents.map((r: {
+        slug: string;
+        title: string;
+        category: string;
+        status: string;
+        start_at: string;
+        location: string | null;
+      }) => ({
         slug: r.slug,
         title: r.title,
         category: formatCategory(r.category),
@@ -117,19 +135,21 @@ export default async function EventDetailPage({
     }
   }
 
+  const computedStatus = computeEventStatus(ev.status, ev.start_at, ev.end_at);
+
   // Map to the format EventDetailClient expects
   const formattedEvent = {
     slug: ev.slug,
     title: ev.title,
     banner: ev.banner_url || ev.description || "",
     category: formatCategory(ev.category),
-    status: formatStatus(ev.status),
+    status: formatStatus(computedStatus),
     date: formatEventDate(ev.start_at),
     time: formatEventTime(ev.start_at),
     location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
     host: "Heapify Global Community",
-    agenda: (ev.agenda || []) as { time: string; item: string }[],
-    speakers: (ev.speakers || []) as { name: string; role: string; focus?: string }[],
+    agenda: (ev.agenda || []) as { time: string; title: string }[],
+    speakers: (ev.speakers || []) as { name: string; bio?: string; photo_url?: string }[],
   };
 
   const mergedEvent = {
@@ -149,7 +169,7 @@ export default async function EventDetailPage({
     customQuestions: ev.custom_questions || [],
   };
 
-  const isPast = ev.status.toLowerCase() === "past" || ev.status.toLowerCase() === "completed";
+  const isPast = computedStatus === "completed";
 
   // ?register=true opens the registration panel inline.
   // Past events ignore this flag — registration is closed.

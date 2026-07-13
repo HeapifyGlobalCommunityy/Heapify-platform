@@ -12,10 +12,12 @@ export interface TeamConfig {
   allowSolo: boolean;
 }
 
+export type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
+
 export interface CustomQuestion {
   id: string;
   label: string;
-  type: "select" | "text" | "textarea";
+  type: QuestionType;
   options?: string[];
   required: boolean;
 }
@@ -56,19 +58,19 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
       {
         id: "tech_stack",
         label: "Preferred tech stack",
-        type: "text",
+        type: "short_text",
         required: false,
       },
       {
         id: "portfolio",
         label: "Portfolio / project link",
-        type: "text",
+        type: "short_text",
         required: false,
       },
       {
         id: "idea",
         label: "What do you want to build?",
-        type: "textarea",
+        type: "long_text",
         required: false,
       },
     ],
@@ -84,14 +86,14 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
       {
         id: "experience",
         label: "Years of experience with AI/ML",
-        type: "select",
+        type: "single_choice",
         options: ["< 1 year", "1–3 years", "3–5 years", "5+ years"],
         required: true,
       },
       {
         id: "role",
         label: "Current role",
-        type: "text",
+        type: "short_text",
         required: false,
       },
     ],
@@ -107,7 +109,7 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
       {
         id: "referral",
         label: "How did you hear about us?",
-        type: "text",
+        type: "short_text",
         required: false,
       },
     ],

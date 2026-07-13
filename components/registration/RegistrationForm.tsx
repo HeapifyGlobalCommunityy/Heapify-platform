@@ -59,7 +59,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   );
   const [teamName, setTeamName] = useState("");
   const [teammates, setTeammates] = useState<Teammate[]>([]);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [errors, setErrors] = useState<FormErrors>({});
   const [answerErrors, setAnswerErrors] = useState<Record<string, string>>({});
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
@@ -91,7 +91,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
     setTeammates((prev) => prev.filter((tm) => tm.id !== id));
   }
 
-  function handleAnswerChange(id: string, value: string) {
+  function handleAnswerChange(id: string, value: string | string[]) {
     setAnswers((prev) => ({ ...prev, [id]: value }));
     setAnswerErrors((prev) => ({ ...prev, [id]: "" }));
   }
@@ -143,9 +143,13 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
     const newAnswerErrors: Record<string, string> = {};
     event.customQuestions.forEach((q) => {
-      if (q.required && !answers[q.id]?.trim()) {
-        newAnswerErrors[q.id] = "This field is required.";
-        valid = false;
+      if (q.required) {
+        const val = answers[q.id];
+        const isEmpty = Array.isArray(val) ? val.length === 0 : (!val || !String(val).trim());
+        if (isEmpty) {
+          newAnswerErrors[q.id] = "This field is required.";
+          valid = false;
+        }
       }
     });
 

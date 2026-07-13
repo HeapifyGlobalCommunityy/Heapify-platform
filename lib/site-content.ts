@@ -439,21 +439,25 @@ export const teamSections = [
 export const resourceGroups = [
   {
     title: "Blogs",
+    slug: "blogs",
     description: "Long-form essays, community updates, and product direction notes.",
     meta: "18 articles",
   },
   {
     title: "Roadmaps",
+    slug: "roadmaps",
     description: "Structured paths for beginners, contributors, and chapter organizers.",
     meta: "12 tracks",
   },
   {
     title: "Recordings",
+    slug: "recordings",
     description: "Event archives, workshop replays, and mentor sessions.",
     meta: "64 videos",
   },
   {
     title: "Notes",
+    slug: "notes",
     description: "Concise references, session summaries, and implementation guides.",
     meta: "90 notes",
   },

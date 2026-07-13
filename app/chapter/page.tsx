@@ -7,7 +7,8 @@ import {
   Users, 
   Calendar, 
   ArrowRight, 
-  Trophy
+  Trophy,
+  Edit
 } from "lucide-react";
 import { SectionWrapper } from "@/components/site/ui";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -302,6 +303,11 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                         <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary uppercase">
                           {event.status}
                         </span>
+                        <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0 hover:bg-glass-bg">
+                          <Link href={`/chapter/events/${event.slug}/edit`}>
+                            <Edit className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
+                          </Link>
+                        </Button>
                         <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                           <Link href={`/events/${event.slug}`}>
                             <ArrowRight className="h-4 w-4 text-muted-foreground" />

@@ -14,7 +14,9 @@ import { Button } from "@/components/ui/button";
 // Status pill colours
 const statusColour: Record<string, string> = {
   upcoming: "border-primary/30 bg-primary/10 text-primary",
+  ongoing: "border-amber-500/30 bg-amber-500/10 text-amber-500",
   completed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+  cancelled: "border-red-500/30 bg-red-500/10 text-red-500",
 };
 
 export interface EventHistoryRow {
@@ -76,9 +78,18 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
       {rows.map((row) => {
         const ev = row.event;
         if (!ev) return null;
-        const endAt = ev.end_at ? new Date(ev.end_at) : new Date(ev.start_at);
-        const isOver = endAt < new Date();
-        const computedStatus = isOver ? "completed" : "upcoming";
+        let computedStatus = "upcoming";
+        if (ev.status === "cancelled") {
+          computedStatus = "cancelled";
+        } else {
+          const now = new Date();
+          const start = new Date(ev.start_at);
+          const end = ev.end_at ? new Date(ev.end_at) : start;
+          
+          if (now > end) computedStatus = "completed";
+          else if (now >= start && now <= end) computedStatus = "ongoing";
+          else computedStatus = "upcoming";
+        }
 
         return (
           <div

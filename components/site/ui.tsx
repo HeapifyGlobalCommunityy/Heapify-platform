@@ -323,7 +323,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
   );
 }
 
-export function ResourcesExplorer({ resources }: { resources: Array<{ title: string; description: string; meta: string }> }) {
+export function ResourcesExplorer({ resources }: { resources: Array<{ title: string; slug: string; description: string; meta: string }> }) {
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => resources.filter((item) => [item.title, item.description, item.meta].join(" ").toLowerCase().includes(query.toLowerCase())), [query, resources]);
@@ -341,7 +341,7 @@ export function ResourcesExplorer({ resources }: { resources: Array<{ title: str
             <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{resource.title}</h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{resource.description}</p>
             <Button variant="ghost" asChild className="mt-5 w-full justify-between">
-              <Link href="#">
+              <Link href={`/resources/${resource.slug}`}>
                 Open resource
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -402,5 +402,165 @@ export function StatusBadge({ status, className }: { status: string; className?:
     <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em]", colors, className)}>
       {status}
     </span>
+  );
+}
+
+export function CategoryResourcesClient({
+  resources,
+  hasNextPage,
+  page,
+  categoryTitle,
+}: {
+  resources: Array<{ title: string; url: string; tags: string[] | null; created_at: string }>;
+  hasNextPage: boolean;
+  page: number;
+  categoryTitle: string;
+}) {
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+
+  const allTags = useMemo(() => {
+    return Array.from(new Set(resources.flatMap((r) => r.tags || [])));
+  }, [resources]);
+
+  const filteredResources = useMemo(() => {
+    if (!activeTag) return resources;
+    return resources.filter((r) => r.tags?.includes(activeTag));
+  }, [resources, activeTag]);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-2">
+        <Link
+          href="/resources"
+          className="text-xs uppercase tracking-[0.24em] text-primary hover:text-primary-hover transition-colors inline-flex items-center gap-1"
+        >
+          ← Back to resources
+        </Link>
+        <span className="text-xs font-mono text-muted-foreground">
+          Showing Page {page}
+        </span>
+      </div>
+
+      {allTags.length > 0 && (
+        <div className="py-3 border-y border-glass-border">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Filter this page's results</div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTag(null)}
+              className={cn(
+              "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
+              !activeTag
+                ? "border-primary/40 bg-primary/10 text-primary"
+                : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
+            )}
+          >
+            All
+          </button>
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(tag === activeTag ? null : tag)}
+              className={cn(
+                "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
+                tag === activeTag
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {resources.length === 0 ? (
+        <EmptyState
+          title="No resources found"
+          description={`We haven't added any resources to the ${categoryTitle} category yet. Check back soon!`}
+        />
+      ) : filteredResources.length === 0 ? (
+        <EmptyState
+          title="No matching resources"
+          description={`No resources under ${categoryTitle} are tagged with "${activeTag}".`}
+          actionLabel="Clear tag filter"
+          onAction={() => setActiveTag(null)}
+        />
+      ) : (
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {filteredResources.map((resource, index) => (
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={resource.url + index}
+              className="group block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_36%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              
+              <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-muted-foreground">
+                      {new Date(resource.created_at).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                  </div>
+                  
+                  <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-white transition-colors">
+                    {resource.title}
+                  </h3>
+                  
+                  <p className="mt-2 text-xs text-primary/80 truncate font-mono">
+                    {resource.url}
+                  </p>
+                </div>
+
+                {(resource.tags && resource.tags.length > 0) ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {resource.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-glass-border bg-glass-bg/50 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-muted-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+
+      {(page > 1 || hasNextPage) && (
+        <div className="flex items-center justify-between pt-8 border-t border-glass-border mt-12">
+          {page > 1 ? (
+            <Button variant="ghost" asChild>
+              <Link href={`?page=${page - 1}`}>
+                ← Previous Page
+              </Link>
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          {hasNextPage ? (
+            <Button variant="ghost" asChild>
+              <Link href={`?page=${page + 1}`}>
+                Next Page →
+              </Link>
+            </Button>
+          ) : (
+            <div />
+          )}
+        </div>
+      )}
+    </div>
   );
 }

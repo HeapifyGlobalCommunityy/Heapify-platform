@@ -175,8 +175,10 @@ export interface CreateEventPayload {
   location?: string;
   capacity?: number;
   isHackathon: boolean;
-  teamConfig?: { min_size: number; max_size: number } | null;
-  customQuestions?: Array<{ id: string; label: string; required: boolean }>;
+  teamConfig?: { min_size: number; max_size: number; allowSolo: boolean } | null;
+  customQuestions?: Array<{ id: string; label: string; required: boolean; type: string; options?: string[] }>;
+  agenda?: Array<{ time: string; title: string }>;
+  speakers?: Array<{ name: string; bio?: string; photo_url?: string }>;
 }
 
 export type CreateEventResult =
@@ -248,12 +250,32 @@ export async function createEvent(
   }
 
   if (payload.teamConfig) {
-    const { min_size, max_size } = payload.teamConfig;
-    if (min_size < 1) {
-      return { success: false, error: "Minimum team size must be at least 1." };
+    const { min_size, max_size, allowSolo } = payload.teamConfig;
+    if (typeof allowSolo !== "boolean") {
+      return { success: false, error: "Invalid team configuration: allowSolo must be a boolean." };
+    }
+    if (!Number.isInteger(min_size) || min_size < 1) {
+      return { success: false, error: "Minimum team size must be an integer greater than or equal to 1." };
+    }
+    if (!Number.isInteger(max_size) || max_size < 1) {
+      return { success: false, error: "Maximum team size must be an integer greater than or equal to 1." };
     }
     if (max_size < min_size) {
       return { success: false, error: "Maximum team size must be greater than or equal to minimum team size." };
+    }
+  }
+
+  if (payload.customQuestions) {
+    for (const q of payload.customQuestions) {
+      if (q.type === "single_choice" || q.type === "multiple_choice") {
+        if (!q.options || q.options.length === 0) {
+          return { success: false, error: `Question "${q.label}" must have at least one option.` };
+        }
+        const validOptions = q.options.filter(opt => opt.trim() !== "");
+        if (validOptions.length === 0 || validOptions.length !== q.options.length) {
+          return { success: false, error: `Question "${q.label}" cannot have empty options.` };
+        }
+      }
     }
   }
 
@@ -275,6 +297,8 @@ export async function createEvent(
       is_hackathon: payload.isHackathon,
       team_config: payload.teamConfig || null,
       custom_questions: payload.customQuestions || [],
+      agenda: payload.agenda || [],
+      speakers: payload.speakers || [],
       chapter_id: chapter.id,
       created_by: user.id,
       status: "upcoming"
@@ -293,4 +317,150 @@ export async function createEvent(
   revalidatePath("/chapter");
 
   return { success: true, slug };
+}
+
+export interface UpdateEventPayload {
+  eventId: string;
+  title: string;
+  description?: string;
+  bannerUrl?: string;
+  startAt: string;
+  endAt?: string;
+  isVirtual: boolean;
+  meetingUrl?: string;
+  location?: string;
+  capacity?: number;
+  agenda?: Array<{ time: string; title: string }>;
+  speakers?: Array<{ name: string; bio?: string; photo_url?: string }>;
+}
+
+export type UpdateEventResult =
+  | { success: true; slug: string }
+  | { success: false; error: string };
+
+export async function updateEvent(
+  payload: UpdateEventPayload
+): Promise<UpdateEventResult> {
+  // 1. Server-side auth check
+  const supabase = await createClient();
+  if (!supabase) {
+    return { success: false, error: "Service unavailable. Please try again later." };
+  }
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return { success: false, error: "You must be logged in to edit an event." };
+  }
+
+  // 2. Fetch target event to verify existence and get chapter_id
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("id, slug, chapter_id, capacity")
+    .eq("id", payload.eventId)
+    .maybeSingle();
+
+  if (eventError || !event) {
+    return { success: false, error: "Event not found." };
+  }
+
+  // 3. Verify chapter ownership (chapter pointed to by event.chapter_id has lead_id = auth.uid())
+  const { data: chapter, error: chapterError } = await supabase
+    .from("chapters")
+    .select("id, lead_id")
+    .eq("id", event.chapter_id)
+    .maybeSingle();
+
+  if (chapterError || !chapter || chapter.lead_id !== user.id) {
+    return { success: false, error: "Unauthorized. Only the chapter lead can edit this event." };
+  }
+
+  // 4. Validate fields
+  const title = payload.title.trim();
+  if (!title) return { success: false, error: "Title is required." };
+
+  if (!payload.startAt) return { success: false, error: "Start date and time is required." };
+  const startDate = new Date(payload.startAt);
+  if (isNaN(startDate.getTime())) {
+    return { success: false, error: "Invalid start date format." };
+  }
+
+  if (payload.endAt) {
+    const endDate = new Date(payload.endAt);
+    if (isNaN(endDate.getTime())) {
+      return { success: false, error: "Invalid end date format." };
+    }
+    if (endDate <= startDate) {
+      return { success: false, error: "End date must be strictly after the start date." };
+    }
+  }
+
+  if (payload.isVirtual && !payload.meetingUrl?.trim()) {
+    return { success: false, error: "Meeting URL is required for virtual events." };
+  }
+  if (!payload.isVirtual && !payload.location?.trim()) {
+    return { success: false, error: "Physical location details are required." };
+  }
+
+  // 5. Capacity-reduction validation
+  const newCapacity = payload.capacity && payload.capacity > 0 ? payload.capacity : null;
+  const currentCapacity = event.capacity;
+
+  const isCappedOrReduced = 
+    (newCapacity !== null && currentCapacity === null) || // changing from unlimited to limited
+    (newCapacity !== null && currentCapacity !== null && newCapacity < currentCapacity); // reducing limit
+
+  if (isCappedOrReduced && newCapacity !== null) {
+    // Count all non-cancelled registrations
+    const { count, error: countError } = await supabase
+      .from("event_registrations")
+      .select("id", { count: "exact", head: true })
+      .eq("event_id", event.id)
+      .not("status", "eq", "cancelled");
+
+    if (countError) {
+      console.error("[updateEvent] count registrations error:", countError.message);
+      return { success: false, error: "Failed to verify registration count." };
+    }
+
+    const currentRegisteredCount = count ?? 0;
+    if (newCapacity < currentRegisteredCount) {
+      return { 
+        success: false, 
+        error: `Cannot reduce capacity below the current number of registered attendees (${currentRegisteredCount}).` 
+      };
+    }
+  }
+
+  // 6. Update database
+  const supabasePayload = {
+    title,
+    description: payload.description?.trim() || null,
+    banner_url: payload.bannerUrl?.trim() || null,
+    start_at: payload.startAt,
+    end_at: payload.endAt || null,
+    is_virtual: payload.isVirtual,
+    meeting_url: payload.isVirtual ? (payload.meetingUrl?.trim() || null) : null,
+    location: !payload.isVirtual ? (payload.location?.trim() || null) : null,
+    capacity: newCapacity,
+    agenda: payload.agenda || [],
+    speakers: payload.speakers || [],
+  };
+
+  const { error: updateError } = await supabase
+    .from("events")
+    .update(supabasePayload)
+    .eq("id", payload.eventId)
+    .eq("chapter_id", event.chapter_id); // Secondary ownership safeguard
+
+  if (updateError) {
+    console.error("[updateEvent] update error:", updateError.message);
+    return { success: false, error: "Failed to update event. Please try again." };
+  }
+
+  // 7. Revalidate paths
+  revalidatePath("/events");
+  revalidatePath(`/events/${event.slug}`);
+  revalidatePath("/chapter");
+
+  return { success: true, slug: event.slug };
 }

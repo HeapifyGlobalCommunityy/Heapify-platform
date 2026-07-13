@@ -26,7 +26,7 @@ import Link from "next/link";
 import { SafeImage } from "@/components/ui/safe-image";
 import {
   Github, Linkedin, Twitter, Globe, Zap, CalendarDays,
-  Award, Star, ExternalLink, Pencil,
+  Award, Star, ExternalLink, Pencil, Trophy,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -38,6 +38,7 @@ import {
 } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import EventHistoryClient, { type EventHistoryRow } from "@/components/profile/EventHistoryClient";
+import { LeaderboardBreakdown } from "@/components/profile/LeaderboardBreakdown";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -142,19 +143,48 @@ export default async function ProfilePage() {
   if (submissionsError) console.error("[profile] submissions error:", submissionsError.message);
 
   const chapter = profile.chapter as { name: string; city: string | null; country: string | null } | null;
+  const typedProfile = profile as unknown as {
+    id: string;
+    username: string;
+    full_name: string | null;
+    avatar_url: string | null;
+    bio: string | null;
+    role: string;
+    contribution_score: number;
+    github_url: string | null;
+    linkedin_url: string | null;
+    twitter_url: string | null;
+    website_url: string | null;
+    created_at: string;
+    chapter: { id: string; name: string; city: string | null; country: string | null } | null;
+    led_chapters: { id: string; name: string; city: string | null; country: string | null }[];
+    team_members: { title: string; display_name: string }[];
+    won_challenges: { id: string; title: string; status: string; end_at: string | null }[];
+    project_maintainers: { project: { id: string; name: string; slug: string } }[];
+    project_contributors: { project: { id: string; name: string; slug: string } }[];
+    leaderboard_entries: { category: string; score: number; period: string }[];
+  };
+
   const typedBadges = (badges ?? []) as {
     awarded_at: string;
     badge: { id: string; name: string; icon_url: string | null; description: string | null } | null;
   }[];
   const typedHistory = (historyPage0 ?? []) as EventHistoryRow[];
   const hasMoreHistory = typedHistory.length === EVENT_HISTORY_PAGE_SIZE;
-
   const typedSubmissions = (mySubmissions ?? []) as {
     id: string;
     submission_url: string | null;
     submitted_at: string;
     challenge: { id: string; title: string; status: string; end_at: string | null } | null;
   }[];
+
+  const maintainedProjectIds = new Set(
+    (typedProfile.project_maintainers ?? []).map((m) => m.project?.id).filter(Boolean)
+  );
+
+  const filteredContributors = (typedProfile.project_contributors ?? []).filter(
+    (c) => c.project?.id && !maintainedProjectIds.has(c.project.id)
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -163,28 +193,34 @@ export default async function ProfilePage() {
         <div className="mt-2 rounded-[2rem] border border-glass-border bg-glass-bg/80 p-8 shadow-[0_30px_100px_-40px_rgba(255,122,0,0.35)] backdrop-blur-xl">
           <div className="flex flex-col sm:flex-row items-start gap-6">
             {/* Avatar */}
-            {profile.avatar_url ? (
+            {typedProfile.avatar_url ? (
               <SafeImage
-                src={profile.avatar_url}
-                alt={profile.full_name ?? profile.username}
+                src={typedProfile.avatar_url}
+                alt={typedProfile.full_name ?? typedProfile.username}
                 width={80}
                 height={80}
                 className="h-20 w-20 rounded-2xl object-cover border border-primary/20"
-                fallback={<InitialsAvatar name={profile.full_name ?? profile.username} />}
+                fallback={<InitialsAvatar name={typedProfile.full_name ?? typedProfile.username} />}
               />
             ) : (
-              <InitialsAvatar name={profile.full_name ?? profile.username} />
+              <InitialsAvatar name={typedProfile.full_name ?? typedProfile.username} />
             )}
 
             {/* Identity */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="font-display text-3xl font-semibold tracking-tight">
-                  {profile.full_name ?? profile.username}
+                  {typedProfile.full_name ?? typedProfile.username}
                 </h1>
-                <span className={`rounded-full border px-3 py-0.5 text-xs font-medium capitalize ${rolePillClass(profile.role)}`}>
-                  {profile.role.replace("_", " ")}
+                <span className={`rounded-full border px-3 py-0.5 text-xs font-medium capitalize ${rolePillClass(typedProfile.role)}`}>
+                  {typedProfile.role.replace("_", " ")}
                 </span>
+                {/* Team member title */}
+                {typedProfile.team_members && typedProfile.team_members.length > 0 && (
+                  <span className="rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 px-3 py-0.5 text-xs font-medium capitalize">
+                    {typedProfile.team_members[0].title.replace("_", " ")}
+                  </span>
+                )}
                 <Link
                   href="/profile/edit"
                   className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors hover:bg-glass-border"
@@ -193,10 +229,10 @@ export default async function ProfilePage() {
                   <span>Edit Profile</span>
                 </Link>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground font-mono">@{profile.username}</p>
-              {profile.bio && (
+              <p className="mt-1 text-sm text-muted-foreground font-mono">@{typedProfile.username}</p>
+              {typedProfile.bio && (
                 <p className="mt-3 text-sm leading-7 text-muted-foreground max-w-2xl">
-                  {profile.bio}
+                  {typedProfile.bio}
                 </p>
               )}
 
@@ -204,37 +240,45 @@ export default async function ProfilePage() {
               <div className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
                 {chapter && (
                   <span className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5">
-                    🌍 {chapter.name}{chapter.city ? `, ${chapter.city}` : ""}
+                    🌍 {chapter.name}
+                    {chapter.city ? `, ${chapter.city}` : ""}
+                    {chapter.country ? `, ${chapter.country}` : ""}
+                  </span>
+                )}
+                {/* Chapter Lead badge */}
+                {typedProfile.led_chapters && typedProfile.led_chapters.length > 0 && (
+                  <span className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-amber-400">
+                    👑 Lead, {typedProfile.led_chapters[0].name}
                   </span>
                 )}
                 <span className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5">
                   <CalendarDays className="h-3 w-3" />
-                  Member since {formatMemberSince(profile.created_at)}
+                  Member since {formatMemberSince(typedProfile.created_at)}
                 </span>
               </div>
 
               {/* Social links */}
               <div className="mt-4 flex flex-wrap gap-3">
-                {profile.github_url && (
-                  <a href={profile.github_url} target="_blank" rel="noopener noreferrer"
+                {typedProfile.github_url && (
+                  <a href={typedProfile.github_url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
                     <Github className="h-3.5 w-3.5" /> GitHub
                   </a>
                 )}
-                {profile.linkedin_url && (
-                  <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer"
+                {typedProfile.linkedin_url && (
+                  <a href={typedProfile.linkedin_url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
                     <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                   </a>
                 )}
-                {profile.twitter_url && (
-                  <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer"
+                {typedProfile.twitter_url && (
+                  <a href={typedProfile.twitter_url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
                     <Twitter className="h-3.5 w-3.5" /> Twitter
                   </a>
                 )}
-                {profile.website_url && (
-                  <a href={profile.website_url} target="_blank" rel="noopener noreferrer"
+                {typedProfile.website_url && (
+                  <a href={typedProfile.website_url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
                     <Globe className="h-3.5 w-3.5" /> Website
                   </a>
@@ -242,35 +286,66 @@ export default async function ProfilePage() {
               </div>
             </div>
 
-            {/* Contribution score */}
-            <div className="shrink-0 rounded-2xl border border-primary/20 bg-primary/8 px-6 py-5 text-center shadow-[0_0_40px_rgba(255,122,0,0.12)]">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground justify-center">
-                <Zap className="h-3.5 w-3.5 text-primary" /> Contribution
+            {/* Contribution score & breakdown */}
+            <div className="w-full sm:w-[280px] shrink-0 text-center">
+              <div className="rounded-2xl border border-primary/20 bg-primary/8 px-6 py-5 shadow-[0_0_40px_rgba(255,122,0,0.12)]">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground justify-center">
+                  <Zap className="h-3.5 w-3.5 text-primary" /> Contribution
+                </div>
+                <div className="mt-2 font-display text-4xl font-semibold tracking-tight text-primary">
+                  {typedProfile.contribution_score}
+                </div>
+                <div className="text-[11px] text-muted-foreground font-mono">points</div>
               </div>
-              <div className="mt-2 font-display text-4xl font-semibold tracking-tight text-primary">
-                {profile.contribution_score}
-              </div>
-              <div className="text-[11px] text-muted-foreground font-mono">points</div>
+              
+              {/* Leaderboard breakdown */}
+              {typedProfile.leaderboard_entries && typedProfile.leaderboard_entries.length > 0 && (
+                <LeaderboardBreakdown entries={typedProfile.leaderboard_entries} />
+              )}
             </div>
           </div>
         </div>
       </SectionWrapper>
 
-      {/* ── Badges ── */}
-      <SectionWrapper eyebrow="Badges" title="Achievements" className="pt-12 pb-0">
-        {typedBadges.length === 0 ? (
+      {/* ── Badges & Achievements ── */}
+      <SectionWrapper eyebrow="Badges & Achievements" title="Achievements" className="pt-12 pb-0">
+        {typedBadges.length === 0 && (!typedProfile.won_challenges || typedProfile.won_challenges.length === 0) ? (
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 flex items-center gap-4 text-muted-foreground">
             <Award className="h-5 w-5 text-zinc-600 shrink-0" />
-            <span className="text-sm">No badges yet — earn them by attending events, shipping projects, and contributing.</span>
+            <span className="text-sm">No badges or awards yet — earn them by attending events, winning challenges, and contributing.</span>
           </div>
         ) : (
           <div className="flex flex-wrap gap-3">
+            {/* Challenge Winners */}
+            {typedProfile.won_challenges?.map((challenge) => (
+              <div
+                key={challenge.id}
+                title={`Won Monthly Challenge: ${challenge.title}`}
+                className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-amber-500/8 px-4 py-2.5"
+              >
+                <Trophy className="h-4 w-4 text-amber-400 shrink-0" />
+                <div>
+                  <div className="text-sm font-medium text-amber-400 flex items-center gap-1">
+                    Challenge Winner
+                  </div>
+                  {challenge.end_at && (
+                    <div className="text-[9px] text-muted-foreground font-mono">
+                      {new Date(challenge.end_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </div>
+                  )}
+                  <div className="text-[10px] text-muted-foreground truncate max-w-[150px] mt-0.5">
+                    {challenge.title}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Badges */}
             {typedBadges.map(({ awarded_at, badge }) => {
               if (!badge) return null;
               return (
                 <div
                   key={badge.id}
-                  title={badge.description ?? badge.name}
                   className="flex items-center gap-2.5 rounded-2xl border border-primary/20 bg-primary/8 px-4 py-2.5"
                 >
                   {badge.icon_url ? (
@@ -287,13 +362,71 @@ export default async function ProfilePage() {
                   )}
                   <div>
                     <div className="text-sm font-medium text-white">{badge.name}</div>
-                    <div className="text-[10px] text-muted-foreground">
+                    {badge.description && (
+                      <div className="text-[9px] text-zinc-400 max-w-[200px] leading-tight">
+                        {badge.description}
+                      </div>
+                    )}
+                    <div className="text-[9px] text-muted-foreground mt-0.5 font-mono">
                       {new Date(awarded_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                     </div>
                   </div>
                 </div>
               );
             })}
+          </div>
+        )}
+      </SectionWrapper>
+
+      {/* ── Open Source Projects ── */}
+      <SectionWrapper eyebrow="Open Source" title="Projects &amp; Contributions" className="pt-12 pb-0">
+        {(!typedProfile.project_maintainers || typedProfile.project_maintainers.length === 0) &&
+        (filteredContributors.length === 0) ? (
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 flex items-center gap-4 text-muted-foreground">
+            <Award className="h-5 w-5 text-zinc-600 shrink-0" />
+            <span className="text-sm">No open-source project affiliations yet. Join or maintain projects on the platform!</span>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Maintaining */}
+            {typedProfile.project_maintainers && typedProfile.project_maintainers.length > 0 && (
+              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-3">
+                <h4 className="text-xs font-mono uppercase tracking-wider text-primary flex items-center gap-1.5">
+                  <Award className="h-4 w-4" /> Maintains
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {typedProfile.project_maintainers.map(({ project }) => (
+                    <Link
+                      key={project.id}
+                      href={`/projects/${project.slug}`}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-primary/20 bg-primary/10 hover:bg-primary/20 text-xs text-white transition-colors"
+                    >
+                      {project.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Contributing */}
+            {filteredContributors.length > 0 && (
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/10 p-5 space-y-3">
+                <h4 className="text-xs font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <Globe className="h-4 w-4" /> Contributes to
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {filteredContributors.map(({ project }) => (
+                    <Link
+                      key={project.id}
+                      href={`/projects/${project.slug}`}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {project.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </SectionWrapper>

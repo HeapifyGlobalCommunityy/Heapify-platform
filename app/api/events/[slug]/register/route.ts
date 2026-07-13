@@ -20,7 +20,7 @@ interface RegisterBody {
   linkedin_url?: string;
   team_name?: string;
   team_members?: TeamMember[];
-  answers?: Record<string, string>;
+  answers?: Record<string, string | string[]>;
 }
 
 interface PhaseZeroRegisterBody {
@@ -30,7 +30,7 @@ interface PhaseZeroRegisterBody {
   linkedin?: string;
   teamName?: string;
   teammates?: PhaseZeroTeamMember[];
-  answers?: Record<string, string>;
+  answers?: Record<string, string | string[]>;
 }
 
 type RawRegisterBody = Partial<RegisterBody & PhaseZeroRegisterBody>;
@@ -244,19 +244,58 @@ export async function POST(
   const customQuestions = (event.custom_questions ?? []) as {
     id: string;
     label: string;
+    type: string;
     required: boolean;
+    options?: string[];
   }[];
 
   const answers = body.answers ?? {};
-  const missing = customQuestions.filter(
-    (q) => q.required && !answers[q.id]?.toString().trim()
-  );
+  const missingQuestionIds: string[] = [];
+  const validationErrors: string[] = [];
 
-  if (missing.length > 0) {
+  for (const q of customQuestions) {
+    const val = answers[q.id];
+    
+    // 1. Required Check
+    if (q.required) {
+      const isEmpty = Array.isArray(val) ? val.length === 0 : (!val || !String(val).trim());
+      if (isEmpty) {
+        missingQuestionIds.push(q.id);
+        continue;
+      }
+    }
+
+    // 2. Type & Option Validation (only if a value is provided)
+    if (val !== undefined && val !== null && val !== "") {
+      if (q.type === "number") {
+        if (Array.isArray(val) || isNaN(Number(val))) {
+          validationErrors.push(`Answer for "${q.label}" must be a valid number.`);
+        }
+      } else if (q.type === "single_choice") {
+        if (Array.isArray(val)) {
+          validationErrors.push(`Answer for "${q.label}" cannot be multiple choices.`);
+        } else if (q.options && q.options.length > 0 && !q.options.includes(String(val))) {
+          validationErrors.push(`Invalid choice for "${q.label}".`);
+        }
+      } else if (q.type === "multiple_choice") {
+        if (!Array.isArray(val)) {
+          validationErrors.push(`Answer for "${q.label}" must be an array of choices.`);
+        } else if (q.options && q.options.length > 0) {
+          const invalidChoices = val.filter(v => !q.options!.includes(String(v)));
+          if (invalidChoices.length > 0) {
+            validationErrors.push(`Invalid choices for "${q.label}".`);
+          }
+        }
+      }
+    }
+  }
+
+  if (missingQuestionIds.length > 0 || validationErrors.length > 0) {
     return NextResponse.json(
       {
-        error: "Missing required answers",
-        missing_question_ids: missing.map((q) => q.id),
+        error: validationErrors.length > 0 ? validationErrors[0] : "Missing required answers",
+        missing_question_ids: missingQuestionIds,
+        validation_errors: validationErrors
       },
       { status: 400 }
     );

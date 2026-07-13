@@ -101,7 +101,13 @@ export async function getProfile(userId: string) {
     .select(
       `id, username, full_name, avatar_url, bio, role, contribution_score,
        github_url, linkedin_url, twitter_url, website_url, created_at,
-       chapter:chapters!profiles_chapter_fk(id, name, city, country)`
+       chapter:chapters!chapter_id(id, name, city, country),
+       led_chapters:chapters!lead_id(id, name, city, country),
+       team_members(title, display_name),
+       won_challenges:challenges!winner_id(id, title, status, end_at),
+       project_maintainers(project:projects(id, name, slug)),
+       project_contributors(project:projects(id, name, slug)),
+       leaderboard_entries(category, score, period)`
     )
     .eq("id", userId)
     .maybeSingle();

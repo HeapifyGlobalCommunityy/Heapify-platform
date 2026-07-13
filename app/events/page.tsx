@@ -35,6 +35,17 @@ function formatStatus(status: string): string {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+// 3-state computation
+function computeEventStatus(db_status: string, start_at: string, end_at: string | null): string {
+  if (db_status === 'cancelled') return 'cancelled';
+  const now = new Date();
+  const start = new Date(start_at);
+  const end = end_at ? new Date(end_at) : start;
+  if (now > end) return 'completed';
+  if (now >= start && now <= end) return 'ongoing';
+  return 'upcoming';
+}
+
 // Helper to extract date (e.g., "12 Jul 2026")
 function formatEventDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -72,13 +83,24 @@ export default async function EventsPage() {
   }
 
   // Map database rows to UI structure
-  const mappedEvents = dbEvents.map((ev) => {
+  const mappedEvents = dbEvents.map((ev: {
+    slug: string;
+    title: string;
+    category: string;
+    status: string;
+    start_at: string;
+    end_at: string | null;
+    is_virtual: boolean;
+    location: string | null;
+    description: string | null;
+  }) => {
     const formattedCat = formatCategory(ev.category);
+    const computedStatus = computeEventStatus(ev.status, ev.start_at, ev.end_at);
     return {
       slug: ev.slug,
       title: ev.title,
       category: formattedCat,
-      status: formatStatus(ev.status),
+      status: formatStatus(computedStatus),
       date: formatEventDate(ev.start_at),
       time: formatEventTime(ev.start_at),
       format: ev.is_virtual ? "Virtual" : "In-Person",
@@ -89,9 +111,9 @@ export default async function EventsPage() {
   });
 
   // Construct dynamic category list based on existing events
-  const dynamicCategories = [
+  const dynamicCategories: string[] = [
     "All",
-    ...Array.from(new Set(mappedEvents.map((e) => e.category))),
+    ...Array.from(new Set(mappedEvents.map((e: { category: string }) => e.category))) as string[],
   ];
 
   return (

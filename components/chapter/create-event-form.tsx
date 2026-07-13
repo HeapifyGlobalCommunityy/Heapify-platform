@@ -18,10 +18,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createEvent, CreateEventPayload } from "@/lib/actions/events";
 
+export type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
+
 interface CustomQuestion {
   id: string;
   label: string;
   required: boolean;
+  type: QuestionType;
+  options?: string[];
 }
 
 export function CreateEventForm() {
@@ -46,9 +50,14 @@ export function CreateEventForm() {
   const [teamRequired, setTeamRequired] = useState(false);
   const [minTeamSize, setMinTeamSize] = useState("2");
   const [maxTeamSize, setMaxTeamSize] = useState("5");
+  const [allowSolo, setAllowSolo] = useState(true);
 
   // Custom questions states
   const [customQuestions, setCustomQuestions] = useState<CustomQuestion[]>([]);
+
+  // Agenda and Speakers states
+  const [agenda, setAgenda] = useState<{ id: string; time: string; title: string }[]>([]);
+  const [speakers, setSpeakers] = useState<{ id: string; name: string; bio: string; photo_url: string }[]>([]);
 
   // UI States
   const [isLoading, setIsLoading] = useState(false);
@@ -78,7 +87,7 @@ export function CreateEventForm() {
   const addQuestion = () => {
     setCustomQuestions([
       ...customQuestions,
-      { id: `q_${Date.now()}`, label: "", required: false }
+      { id: `q_${Date.now()}`, label: "", required: false, type: "short_text" }
     ]);
   };
 
@@ -92,9 +101,72 @@ export function CreateEventForm() {
     setCustomQuestions(customQuestions.map(q => q.id === id ? { ...q, label } : q));
   };
 
+  // Update custom question type
+  const updateQuestionType = (id: string, type: QuestionType) => {
+    setCustomQuestions(customQuestions.map(q => {
+      if (q.id !== id) return q;
+      const needsOptions = type === "single_choice" || type === "multiple_choice";
+      const hasOptions = Array.isArray(q.options);
+      return { 
+        ...q, 
+        type, 
+        options: needsOptions ? (hasOptions ? q.options : ["Option 1"]) : undefined 
+      };
+    }));
+  };
+
+  // Add option to question
+  const addOption = (id: string) => {
+    setCustomQuestions(customQuestions.map(q => {
+      if (q.id !== id || !q.options) return q;
+      if (q.options.length >= 20) return q; // Soft limit 20 options
+      return { ...q, options: [...q.options, `Option ${q.options.length + 1}`] };
+    }));
+  };
+
+  // Remove option from question
+  const removeOption = (id: string, optionIndex: number) => {
+    setCustomQuestions(customQuestions.map(q => {
+      if (q.id !== id || !q.options) return q;
+      return { ...q, options: q.options.filter((_, idx) => idx !== optionIndex) };
+    }));
+  };
+
+  // Update option string
+  const updateOption = (id: string, optionIndex: number, newOption: string) => {
+    setCustomQuestions(customQuestions.map(q => {
+      if (q.id !== id || !q.options) return q;
+      const newOptions = [...q.options];
+      newOptions[optionIndex] = newOption;
+      return { ...q, options: newOptions };
+    }));
+  };
+
   // Toggle custom question required
   const toggleQuestionRequired = (id: string) => {
     setCustomQuestions(customQuestions.map(q => q.id === id ? { ...q, required: !q.required } : q));
+  };
+
+  // Agenda handlers
+  const addAgendaItem = () => {
+    setAgenda([...agenda, { id: Date.now().toString(), time: "", title: "" }]);
+  };
+  const removeAgendaItem = (id: string) => {
+    setAgenda(agenda.filter(a => a.id !== id));
+  };
+  const updateAgendaItem = (id: string, field: "time" | "title", value: string) => {
+    setAgenda(agenda.map(a => a.id === id ? { ...a, [field]: value } : a));
+  };
+
+  // Speakers handlers
+  const addSpeaker = () => {
+    setSpeakers([...speakers, { id: Date.now().toString(), name: "", bio: "", photo_url: "" }]);
+  };
+  const removeSpeaker = (id: string) => {
+    setSpeakers(speakers.filter(s => s.id !== id));
+  };
+  const updateSpeaker = (id: string, field: "name" | "bio" | "photo_url", value: string) => {
+    setSpeakers(speakers.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -166,13 +238,53 @@ export function CreateEventForm() {
         setIsLoading(false);
         return;
       }
-      teamConfig = { min_size: min, max_size: max };
+      teamConfig = { min_size: min, max_size: max, allowSolo };
     }
 
     // Filter out empty custom questions
-    const finalQuestions = customQuestions
-      .filter(q => q.label.trim() !== "")
-      .map(q => ({ id: q.id, label: q.label.trim(), required: q.required }));
+    const finalQuestions = [];
+    for (const q of customQuestions) {
+      if (q.label.trim() === "") continue;
+      
+      const needsOptions = q.type === "single_choice" || q.type === "multiple_choice";
+      let options = undefined;
+      
+      if (needsOptions) {
+        if (!q.options || q.options.length === 0) {
+          setError(`Question "${q.label}" requires at least one option.`);
+          setIsLoading(false);
+          return;
+        }
+        
+        options = q.options.map(opt => opt.trim()).filter(opt => opt !== "");
+        if (options.length === 0 || options.length !== q.options.length) {
+          setError(`Question "${q.label}" has empty options.`);
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      finalQuestions.push({
+        id: q.id,
+        label: q.label.trim(),
+        required: q.required,
+        type: q.type,
+        options,
+      });
+    }
+
+    // Filter agenda and speakers
+    const finalAgenda = agenda
+      .filter(a => a.title.trim() !== "")
+      .map(a => ({ time: a.time.trim(), title: a.title.trim() }));
+    
+    const finalSpeakers = speakers
+      .filter(s => s.name.trim() !== "")
+      .map(s => ({ 
+        name: s.name.trim(), 
+        bio: s.bio.trim() || undefined, 
+        photo_url: s.photo_url.trim() || undefined 
+      }));
 
     // Prepare payload
     const payload: CreateEventPayload = {
@@ -181,8 +293,8 @@ export function CreateEventForm() {
       category,
       description: description.trim() || undefined,
       bannerUrl: bannerUrl.trim() || undefined,
-      startAt,
-      endAt: endAt || undefined,
+      startAt: new Date(startAt).toISOString(),
+      endAt: endAt ? new Date(endAt).toISOString() : undefined,
       isVirtual,
       meetingUrl: isVirtual ? meetingUrl : undefined,
       location: !isVirtual ? location : undefined,
@@ -190,6 +302,8 @@ export function CreateEventForm() {
       isHackathon,
       teamConfig,
       customQuestions: finalQuestions,
+      agenda: finalAgenda,
+      speakers: finalSpeakers,
     };
 
     try {
@@ -442,34 +556,161 @@ export function CreateEventForm() {
           </div>
 
           {teamRequired && (
-            <div className="grid gap-4 sm:grid-cols-2 pt-3 border-t border-glass-border">
-              <div className="space-y-1.5">
-                <Label htmlFor="minTeamSize">Min Team Size <span className="text-primary">*</span></Label>
-                <Input 
-                  id="minTeamSize"
-                  type="number"
-                  min="1"
-                  value={minTeamSize}
-                  onChange={(e) => setMinTeamSize(e.target.value)}
-                  required={teamRequired}
-                  disabled={isLoading}
-                />
+            <div className="space-y-4 pt-3 border-t border-glass-border">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="minTeamSize">Min Team Size <span className="text-primary">*</span></Label>
+                  <Input 
+                    id="minTeamSize"
+                    type="number"
+                    min="1"
+                    value={minTeamSize}
+                    onChange={(e) => setMinTeamSize(e.target.value)}
+                    required={teamRequired}
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="maxTeamSize">Max Team Size <span className="text-primary">*</span></Label>
+                  <Input 
+                    id="maxTeamSize"
+                    type="number"
+                    min="1"
+                    value={maxTeamSize}
+                    onChange={(e) => setMaxTeamSize(e.target.value)}
+                    required={teamRequired}
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="maxTeamSize">Max Team Size <span className="text-primary">*</span></Label>
-                <Input 
-                  id="maxTeamSize"
-                  type="number"
-                  min="1"
-                  value={maxTeamSize}
-                  onChange={(e) => setMaxTeamSize(e.target.value)}
-                  required={teamRequired}
+              <div className="flex items-center justify-between rounded-lg border border-glass-border bg-glass-bg/10 p-3 mt-2">
+                <div className="space-y-0.5">
+                  <Label className="text-xs font-semibold">Allow Solo Registrations?</Label>
+                  <p className="text-[9px] text-muted-foreground">Can individuals register solo without joining a team?</p>
+                </div>
+                <input 
+                  type="checkbox"
+                  id="allowSolo"
+                  checked={allowSolo}
+                  onChange={(e) => setAllowSolo(e.target.checked)}
                   disabled={isLoading}
+                  className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
                 />
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Agenda Section */}
+      <div className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+          Agenda (Optional)
+        </h3>
+        
+        <div className="space-y-3">
+          {agenda.map((item) => (
+            <div key={item.id} className="flex flex-col sm:flex-row gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+              <div className="w-full sm:w-[120px]">
+                <Input 
+                  placeholder="e.g. 10:00 AM"
+                  value={item.time}
+                  onChange={(e) => updateAgendaItem(item.id, "time", e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="flex-1">
+                <Input 
+                  placeholder="Item Title"
+                  value={item.title}
+                  onChange={(e) => updateAgendaItem(item.id, "title", e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              <Button 
+                type="button"
+                variant="ghost" 
+                size="icon" 
+                onClick={() => removeAgendaItem(item.id)}
+                disabled={isLoading}
+                className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addAgendaItem}
+            disabled={isLoading}
+            className="w-full border-dashed"
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add Agenda Item
+          </Button>
+        </div>
+      </div>
+
+      {/* Speakers Section */}
+      <div className="space-y-4">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+          Speakers (Optional)
+        </h3>
+        
+        <div className="space-y-3">
+          {speakers.map((speaker) => (
+            <div key={speaker.id} className="flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <Input 
+                    placeholder="Speaker Name"
+                    value={speaker.name}
+                    onChange={(e) => updateSpeaker(speaker.id, "name", e.target.value)}
+                    disabled={isLoading}
+                  />
+                </div>
+                <Button 
+                  type="button"
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => removeSpeaker(speaker.id)}
+                  disabled={isLoading}
+                  className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input 
+                  placeholder="Bio (e.g. Lead Engineer)"
+                  value={speaker.bio}
+                  onChange={(e) => updateSpeaker(speaker.id, "bio", e.target.value)}
+                  disabled={isLoading}
+                />
+                <Input 
+                  placeholder="Photo URL (Optional)"
+                  value={speaker.photo_url}
+                  onChange={(e) => updateSpeaker(speaker.id, "photo_url", e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+          ))}
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addSpeaker}
+            disabled={isLoading}
+            className="w-full border-dashed"
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add Speaker
+          </Button>
         </div>
       </div>
 
@@ -485,43 +726,104 @@ export function CreateEventForm() {
 
         <div className="space-y-3">
           {customQuestions.map((q, idx) => (
-            <div key={q.id} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-3">
-              <span className="text-xs font-mono text-muted-foreground shrink-0 self-center">
-                #{idx + 1}
-              </span>
-              
-              <div className="flex-1">
-                <Input 
-                  placeholder="e.g. What is your T-shirt size?"
-                  value={q.label}
-                  onChange={(e) => updateQuestionLabel(q.id, e.target.value)}
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="flex items-center justify-between sm:justify-start gap-4">
-                <label className="flex items-center gap-1.5 text-xs text-muted-foreground select-none cursor-pointer">
-                  <input 
-                    type="checkbox"
-                    checked={q.required}
-                    onChange={() => toggleQuestionRequired(q.id)}
+            <div key={q.id} className="flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <span className="text-xs font-mono text-muted-foreground shrink-0 self-center">
+                  #{idx + 1}
+                </span>
+                
+                <div className="flex-1">
+                  <Input 
+                    placeholder="Question label (e.g. What is your T-shirt size?)"
+                    value={q.label}
+                    onChange={(e) => updateQuestionLabel(q.id, e.target.value)}
                     disabled={isLoading}
-                    className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
                   />
-                  Required
-                </label>
+                </div>
 
-                <Button 
-                  type="button"
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => removeQuestion(q.id)}
-                  disabled={isLoading}
-                  className="text-destructive hover:bg-destructive/10 h-8 px-2"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
+                <div className="w-full sm:w-[160px]">
+                  <select
+                    value={q.type}
+                    onChange={(e) => updateQuestionType(q.id, e.target.value as QuestionType)}
+                    disabled={isLoading}
+                    className="flex h-9 w-full rounded-md border border-input bg-background/50 px-3 py-1 text-xs shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="short_text">Short Text</option>
+                    <option value="long_text">Long Text</option>
+                    <option value="single_choice">Single Choice</option>
+                    <option value="multiple_choice">Multiple Choice</option>
+                    <option value="number">Number</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center justify-between sm:justify-start gap-4 shrink-0">
+                  <label className="flex items-center gap-1.5 text-xs text-muted-foreground select-none cursor-pointer">
+                    <input 
+                      type="checkbox"
+                      checked={q.required}
+                      onChange={() => toggleQuestionRequired(q.id)}
+                      disabled={isLoading}
+                      className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    Req
+                  </label>
+
+                  <Button 
+                    type="button"
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => removeQuestion(q.id)}
+                    disabled={isLoading}
+                    className="text-destructive hover:bg-destructive/10 h-8 px-2"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
+
+              {/* Options UI for choice-based questions */}
+              {(q.type === "single_choice" || q.type === "multiple_choice") && q.options && (
+                <div className="pl-8 pt-2 space-y-2">
+                  <div className="text-xs font-medium text-muted-foreground mb-2">Options</div>
+                  {q.options.map((opt, optIdx) => (
+                    <div key={optIdx} className="flex items-center gap-2">
+                      <Input
+                        value={opt}
+                        onChange={(e) => updateOption(q.id, optIdx, e.target.value)}
+                        placeholder={`Option ${optIdx + 1}`}
+                        className="h-8 text-xs"
+                        disabled={isLoading}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeOption(q.id, optIdx)}
+                        disabled={isLoading}
+                        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  ))}
+                  {q.options.length < 20 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => addOption(q.id)}
+                      disabled={isLoading}
+                      className="h-8 text-xs text-primary mt-1"
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                      Add Option
+                    </Button>
+                  )}
+                  {q.options.length >= 20 && (
+                    <div className="text-[10px] text-muted-foreground mt-1">Maximum 20 options allowed.</div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
 

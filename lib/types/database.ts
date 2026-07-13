@@ -99,11 +99,21 @@ export interface EventRegistration {
 
 export interface AgendaItem {
   time: string;
-  item: string;
+  title: string;
 }
 
 export interface SpeakerItem {
   name: string;
-  role: string;
-  focus?: string;
+  bio?: string;
+  photo_url?: string;
+}
+
+export interface Resource {
+  id: string;
+  title: string;
+  category: string;
+  url: string;
+  tags: string[] | null;
+  added_by: string | null;
+  created_at: string;
 }
