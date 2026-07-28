@@ -107,7 +107,7 @@ export async function loadMoreEventHistory(
   if (error || !data) return { rows: [], hasMore: false };
 
   return {
-    rows: data as EventHistoryRow[],
+    rows: data as unknown as EventHistoryRow[],
     hasMore: data.length === EVENT_HISTORY_PAGE_SIZE,
   };
 }

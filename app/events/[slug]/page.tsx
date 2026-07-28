@@ -149,8 +149,18 @@ export default async function EventDetailPage({
     location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
     host: "Heapify Global Community",
     chapterName: (ev as unknown as { chapters: { name: string } | null }).chapters?.name || null,
-    agenda: (ev.agenda || []) as { time: string; title: string }[],
-    speakers: (ev.speakers || []) as { name: string; bio?: string; photo_url?: string }[],
+    agenda: ((ev.agenda || []) as unknown as { time?: string; item?: string; title?: string }[]).map((a) => ({
+      time: a.time ?? "",
+      // DB may store the text as 'item' or 'title' — accept both
+      item: a.item ?? a.title ?? "",
+    })),
+    speakers: ((ev.speakers || []) as unknown as { name?: string; role?: string; focus?: string; bio?: string; photo_url?: string; photoUrl?: string }[]).map((s) => ({
+      name: s.name ?? "",
+      // DB may store descriptor as 'role', 'focus', or 'bio'
+      role: s.role ?? s.focus ?? s.bio ?? "",
+      bio: s.bio ?? s.role ?? s.focus ?? "",
+      photo_url: s.photo_url ?? s.photoUrl ?? "",
+    })),
   };
 
   const mergedEvent = {

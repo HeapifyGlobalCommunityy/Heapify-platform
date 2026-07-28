@@ -13,7 +13,7 @@ export async function createClient() {
     // Here we just return null and the caller should handle it, or we throw.
     // Given the request "make the project work even without supabase", returning null is best 
     // if we don't use it, but if it is used, it will throw.
-    return null as any; 
+    return null as ReturnType<typeof createServerClient> | null; 
   }
 
   return createServerClient(

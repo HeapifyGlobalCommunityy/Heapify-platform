@@ -178,7 +178,9 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
         teamMembers: isTeamMode
           ? teammates.filter((t) => t.name.trim() && t.email.trim())
           : [],
-        answers,
+        answers: Object.fromEntries(
+          Object.entries(answers).map(([k, v]) => [k, Array.isArray(v) ? v.join(", ") : v])
+        ),
       });
 
       if (result.success) {

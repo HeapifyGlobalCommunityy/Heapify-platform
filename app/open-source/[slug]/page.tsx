@@ -41,7 +41,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   // Map nested profiles safely
-  const maintainersRaw = project.project_maintainers as Array<{
+  const maintainersRaw = project.project_maintainers as unknown as Array<{
     profiles: {
       username: string;
       full_name: string | null;
@@ -159,7 +159,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 )}
 
                 {project.roadmap_url && (
-                  <Button variant="outline" asChild className="rounded-full px-6">
+                  <Button variant="ghost" asChild className="rounded-full px-6 border border-glass-border">
                     <a href={project.roadmap_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2">
                       Roadmap
                     </a>
