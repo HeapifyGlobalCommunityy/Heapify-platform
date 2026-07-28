@@ -1,5 +1,6 @@
 "use client";
 
+import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -12,7 +13,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -25,7 +26,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
           setUser(session?.user ?? null);
         });
 

@@ -6,7 +6,7 @@ export function createClient() {
 
   if (!supabaseUrl || !supabaseKey) {
     console.warn("Supabase is not configured. Some features may not work.");
-    return null as any;
+    return null as ReturnType<typeof createBrowserClient> | null;
   }
 
   return createBrowserClient(
