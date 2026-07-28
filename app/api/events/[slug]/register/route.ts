@@ -241,7 +241,7 @@ export async function POST(
   // 6. Custom question validation — every required question needs an answer.
   //    custom_questions shape: { id, label, type, required, options? }[]
   // ---------------------------------------------------------------------
-  const customQuestions = (event.custom_questions ?? []) as {
+  const customQuestions = (event.custom_questions ?? []) as unknown as {
     id: string;
     label: string;
     type: string;

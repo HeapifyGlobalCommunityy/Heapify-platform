@@ -136,7 +136,7 @@ export default async function ProfilePage() {
   if (historyError) console.error("[profile] history error:", historyError.message);
   if (submissionsError) console.error("[profile] submissions error:", submissionsError.message);
 
-  const chapter = profile.chapter as { name: string; city: string | null; country: string | null } | null;
+  const chapter = profile.chapter as unknown as { name: string; city: string | null; country: string | null } | null;
   const typedProfile = profile as unknown as {
     id: string;
     username: string;
@@ -159,13 +159,13 @@ export default async function ProfilePage() {
     leaderboard_entries: { category: string; score: number; period: string }[];
   };
 
-  const typedBadges = (badges ?? []) as {
+  const typedBadges = (badges ?? []) as unknown as {
     awarded_at: string;
     badge: { id: string; name: string; icon_url: string | null; description: string | null } | null;
   }[];
-  const typedHistory = (historyPage0 ?? []) as EventHistoryRow[];
+  const typedHistory = (historyPage0 ?? []) as unknown as EventHistoryRow[];
   const hasMoreHistory = typedHistory.length === EVENT_HISTORY_PAGE_SIZE;
-  const typedSubmissions = (mySubmissions ?? []) as {
+  const typedSubmissions = (mySubmissions ?? []) as unknown as {
     id: string;
     submission_url: string | null;
     submitted_at: string;
