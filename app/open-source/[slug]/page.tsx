@@ -41,7 +41,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   // Map nested profiles safely
-  const maintainersRaw = project.project_maintainers as Array<{
+  const maintainersRaw = project.project_maintainers as unknown as Array<{
     profiles: {
       username: string;
       full_name: string | null;
