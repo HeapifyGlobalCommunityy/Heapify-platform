@@ -35,8 +35,8 @@ import { cn } from "@/lib/utils";
 // Frame 2 while Frame 1 recedes with a subtle depth/dim effect.
 // ═══════════════════════════════════════════════════════════════════════════
 
-interface AgendaItem { time: string; item: string }
-interface Speaker { name: string; role: string }
+interface AgendaItem { time: string; item: string; title?: string }
+interface Speaker { name: string; role?: string; bio?: string; photo_url?: string }
 interface TeamConfig { minSize: number; maxSize: number; allowSolo: boolean }
 type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
 interface CustomQuestion {
@@ -332,7 +332,7 @@ function EventDetailFull({
                       transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
                   >
                     <div className="font-mono text-sm text-primary/80 shrink-0">{item.time}</div>
-                    <div className="text-sm text-foreground/90">{item.title}</div>
+                    <div className="text-sm text-foreground/90">{item.item || item.title}</div>
                   </div>
                 ))}
               </div>

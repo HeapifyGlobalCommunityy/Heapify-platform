@@ -10,6 +10,29 @@ import { getActiveChallenges, getPastChallenges } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import ChallengeCard, { type ChallengeData } from "@/components/challenges/ChallengeCard";
 
+// PostgREST always returns joined rows as an array, even for many-to-one FKs.
+// This mapper normalises winner from { ... }[] → { ... } | null so the data
+// matches ChallengeData exactly. No runtime behaviour change.
+function normaliseChallenge(row: {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  start_at: string | null;
+  end_at: string | null;
+  winner: { id: string; username: string; full_name: string | null; avatar_url: string | null }[];
+}): ChallengeData {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    status: row.status as ChallengeData["status"],
+    start_at: row.start_at,
+    end_at: row.end_at,
+    winner: row.winner?.[0] ?? null,
+  };
+}
+
 // ─── Skeleton for streaming fallback ─────────────────────────────────────
 
 function ChallengeSkeleton() {
@@ -68,7 +91,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {(data as ChallengeData[]).map((challenge) => (
+      {data.map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}
@@ -97,7 +120,7 @@ async function PastChallenges() {
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {(data as ChallengeData[]).map((challenge) => (
+      {data.map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}

@@ -381,10 +381,10 @@ export function EditEventForm({ event }: EditEventFormProps) {
               <Button 
                 type="button"
                 variant="ghost" 
-                size="icon" 
+                size="sm" 
                 onClick={() => removeAgendaItem(item.id)}
                 disabled={isLoading}
-                className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10 h-9 w-9 p-0"
               >
                 <Trash className="h-4 w-4" />
               </Button>
@@ -393,7 +393,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
           
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={addAgendaItem}
             disabled={isLoading}
@@ -425,10 +425,10 @@ export function EditEventForm({ event }: EditEventFormProps) {
                 <Button 
                   type="button"
                   variant="ghost" 
-                  size="icon" 
+                  size="sm" 
                   onClick={() => removeSpeaker(speaker.id)}
                   disabled={isLoading}
-                  className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10"
+                  className="shrink-0 text-red-500 hover:text-red-400 hover:bg-red-500/10 h-9 w-9 p-0"
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
@@ -452,7 +452,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
           
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={addSpeaker}
             disabled={isLoading}
@@ -466,7 +466,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
       <div className="flex justify-end gap-3 border-t border-glass-border pt-6">
         <Button 
           type="button" 
-          variant="outline" 
+          variant="ghost" 
           onClick={() => router.back()}
           disabled={isLoading}
         >
