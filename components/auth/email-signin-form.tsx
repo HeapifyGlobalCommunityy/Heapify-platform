@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DEFAULT_DEMO_PROFILE, saveDemoProfile } from "@/lib/demo-profile";
 
 export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" }) {
   const router = useRouter();
@@ -21,20 +20,6 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
     setIsLoading(true);
     setError(null);
     setMessage(null);
-
-    const isLocalDemo = email.includes("@heapify.local") || email.includes("@local") || email.includes("demo");
-
-    if (isLocalDemo) {
-      saveDemoProfile({
-        ...DEFAULT_DEMO_PROFILE,
-        fullName: fullName || DEFAULT_DEMO_PROFILE.fullName,
-        email,
-        username: email.split("@")[0],
-      });
-      router.push("/profile");
-      setIsLoading(false);
-      return;
-    }
 
     const supabase = createClient();
     

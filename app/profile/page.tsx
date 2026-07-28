@@ -11,12 +11,6 @@
 // │    before any data fetch if there is no session. No data is fetched,
 // │    no JSX is rendered, no client-side bounce — the response never
 // │    leaves the server if the user is unauthenticated.
-// │
-// │ 3. demo-profile is DEV-only.
-// │    In production this page reads the real Supabase session exclusively.
-// │    The demo-profile localStorage pattern (used in the navbar and old
-// │    profile) is intentionally NOT used here. It lives only in the navbar
-// │    and must never become the permanent path for real user data.
 // └──────────────────────────────────────────────────────────────────────────
 
 export const dynamic = "force-dynamic"; // ← prevents shared/static caching

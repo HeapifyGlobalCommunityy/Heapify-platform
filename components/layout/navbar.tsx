@@ -7,7 +7,6 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
-import { clearDemoProfile, readDemoProfile } from "@/lib/demo-profile";
 
 export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
@@ -17,16 +16,6 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
 
   useEffect(() => {
     setMounted(true);
-
-    const demoProfile = readDemoProfile();
-    if (demoProfile) {
-      setUser({
-        id: demoProfile.id,
-        email: demoProfile.email,
-        user_metadata: { full_name: demoProfile.fullName },
-      });
-      return;
-    }
 
     // Check active session
     const loadSession = async () => {
@@ -95,7 +84,6 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                 variant="ghost"
                 className="hidden sm:inline-flex" 
                 onClick={async () => {
-                  clearDemoProfile();
                   setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
@@ -173,7 +161,6 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               <button
                 onClick={async () => {
                   setOpen(false);
-                  clearDemoProfile();
                   setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
