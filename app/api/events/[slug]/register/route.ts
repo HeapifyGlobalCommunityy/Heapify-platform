@@ -20,7 +20,7 @@ interface RegisterBody {
   linkedin_url?: string;
   team_name?: string;
   team_members?: TeamMember[];
-  answers?: Record<string, string | string[]>;
+  answers?: Record<string, string | string[] | number>;
 }
 
 interface PhaseZeroRegisterBody {
@@ -30,7 +30,7 @@ interface PhaseZeroRegisterBody {
   linkedin?: string;
   teamName?: string;
   teammates?: PhaseZeroTeamMember[];
-  answers?: Record<string, string | string[]>;
+  answers?: Record<string, string | string[] | number>;
 }
 
 type RawRegisterBody = Partial<RegisterBody & PhaseZeroRegisterBody>;
@@ -206,6 +206,18 @@ export async function POST(
   // 5. Team validation, only if the event is team-based.
   //    team_config shape: { solo_allowed, team_min, team_max }
   // ---------------------------------------------------------------------
+  const isMalformedTeamConfig =
+    event.team_config &&
+    typeof event.team_config === "object" &&
+    !normalizeTeamConfig(event.team_config);
+
+  if (event.is_hackathon && isMalformedTeamConfig) {
+    return NextResponse.json(
+      { error: "Event has an invalid or incomplete team configuration." },
+      { status: 400 }
+    );
+  }
+
   const teamConfig = normalizeTeamConfig(event.team_config);
 
   const teamMembers = body.team_members ?? [];
@@ -265,26 +277,40 @@ export async function POST(
       }
     }
 
-    // 2. Type & Option Validation (only if a value is provided)
+    // 2. Type & Option Validation with explicit coercion (only if a value is provided)
     if (val !== undefined && val !== null && val !== "") {
       if (q.type === "number") {
-        if (Array.isArray(val) || isNaN(Number(val))) {
+        // Arrays are rejected — number questions expect a scalar
+        if (Array.isArray(val)) {
           validationErrors.push(`Answer for "${q.label}" must be a valid number.`);
+        } else {
+          const numVal = Number(val);
+          if (isNaN(numVal)) {
+            validationErrors.push(`Answer for "${q.label}" must be a valid number.`);
+          } else {
+            answers[q.id] = numVal;
+          }
         }
       } else if (q.type === "single_choice") {
-        if (Array.isArray(val)) {
-          validationErrors.push(`Answer for "${q.label}" cannot be multiple choices.`);
-        } else if (q.options && q.options.length > 0 && !q.options.includes(String(val))) {
+        // Coerce array-of-one to string; validate against options
+        const strVal = Array.isArray(val) ? String(val[0]) : String(val);
+        if (q.options && q.options.length > 0 && !q.options.includes(strVal)) {
           validationErrors.push(`Invalid choice for "${q.label}".`);
+        } else {
+          answers[q.id] = strVal;
         }
       } else if (q.type === "multiple_choice") {
-        if (!Array.isArray(val)) {
-          validationErrors.push(`Answer for "${q.label}" must be an array of choices.`);
-        } else if (q.options && q.options.length > 0) {
-          const invalidChoices = val.filter(v => !q.options!.includes(String(v)));
+        // Coerce scalar to array; validate each item against options
+        const arrVal = Array.isArray(val) ? val : [String(val)];
+        if (q.options && q.options.length > 0) {
+          const invalidChoices = arrVal.filter(v => !q.options!.includes(String(v)));
           if (invalidChoices.length > 0) {
             validationErrors.push(`Invalid choices for "${q.label}".`);
+          } else {
+            answers[q.id] = arrVal;
           }
+        } else {
+          answers[q.id] = arrVal;
         }
       }
     }
@@ -307,7 +333,7 @@ export async function POST(
   // ---------------------------------------------------------------------
   let registrationStatus: "registered" | "waitlisted" = "registered";
 
-  if (event.capacity != null) {
+  if (event.capacity != null && event.capacity > 0) {
     const { count, error: countError } = await supabase
       .from("event_registrations")
       .select("id", { count: "exact", head: true })

@@ -87,13 +87,15 @@ export default async function EventDetailPage({
   // 2. Fetch current registration count
   const supabase = await createClient();
   let registeredCount = 0;
-  if (supabase) {
-    const { count, error: countError } = await supabase
-      .from("event_registrations")
-      .select("*", { count: "exact", head: true })
-      .eq("event_id", ev.id);
-    if (!countError && count !== null) {
-      registeredCount = count;
+  if (ev.capacity != null && ev.capacity > 0) {
+    if (supabase) {
+      const { count, error: countError } = await supabase
+        .from("event_registrations")
+        .select("*", { count: "exact", head: true })
+        .eq("event_id", ev.id);
+      if (!countError && count !== null) {
+        registeredCount = count;
+      }
     }
   }
 

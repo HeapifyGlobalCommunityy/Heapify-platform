@@ -124,8 +124,9 @@ export default function EventDetailClient({
     syncUrl(false);
   }
 
-  const spotsLeft = safeEvent.capacity - safeEvent.registeredCount;
-  const fillPercent = Math.min(100, Math.round((safeEvent.registeredCount / safeEvent.capacity) * 100));
+  const isUnlimited = !safeEvent.capacity || safeEvent.capacity <= 0;
+  const spotsLeft = isUnlimited ? 0 : safeEvent.capacity - safeEvent.registeredCount;
+  const fillPercent = isUnlimited ? 0 : Math.round((safeEvent.registeredCount / safeEvent.capacity) * 100);
 
   // ─── MOBILE: no slide, no viewport clipping — just plain conditional
   //     rendering, exactly per spec ("mobile: do NOT animate, just stack").
@@ -427,6 +428,7 @@ function CompactSummary({
   isDesktop: boolean;
 }) {
   const [barWidth, setBarWidth] = useState(0);
+  const isUnlimited = !safeEvent.capacity || safeEvent.capacity <= 0;
   useEffect(() => {
     if (!animated) { setBarWidth(0); return; }
     const t = setTimeout(() => setBarWidth(fillPercent), 780);
@@ -489,20 +491,29 @@ function CompactSummary({
       </div>
 
       <div className={`w-full space-y-2 ${itemClasses(330).className}`} style={itemClasses(330).style}>
-        <div className="flex items-baseline justify-between">
-          <span className="text-sm text-zinc-400">Spots available</span>
-          <span className="font-mono text-sm text-white">
-            <span className={spotsLeft <= 10 ? "text-primary font-bold" : ""}>{spotsLeft}</span>
-            <span className="text-zinc-600">&nbsp;/&nbsp;{safeEvent.capacity}</span>
-          </span>
-        </div>
-        <div className="h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
-            style={{ width: `${barWidth}%` }}
-          />
-        </div>
-        <p className="text-xs text-zinc-600 font-mono">{fillPercent}% filled</p>
+        {isUnlimited ? (
+          <div className="flex items-baseline justify-between">
+            <span className="text-sm text-zinc-400">Capacity</span>
+            <span className="text-primary font-bold">Unlimited</span>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-baseline justify-between">
+              <span className="text-sm text-zinc-400">Spots available</span>
+              <span className="font-mono text-sm text-white">
+                <span className={spotsLeft <= 10 ? "text-primary font-bold" : ""}>{spotsLeft}</span>
+                <span className="text-zinc-600">&nbsp;/&nbsp;{safeEvent.capacity}</span>
+              </span>
+            </div>
+            <div className="h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+                style={{ width: `${barWidth}%` }}
+              />
+            </div>
+            <p className="text-xs text-zinc-600 font-mono">{fillPercent}% filled</p>
+          </>
+        )}
       </div>
 
       {safeEvent.teamConfig && (

@@ -17,24 +17,26 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
 
   useEffect(() => {
     setMounted(true);
+    let subscription: { unsubscribe: () => void } | null = null;
 
-    // Check active session
     const loadSession = async () => {
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-          setUser(session?.user ?? null);
-        });
-
-        return () => subscription.unsubscribe();
+        const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
+          (_event: AuthChangeEvent, session: Session | null) => {
+            setUser(session?.user ?? null);
+          }
+        );
+        subscription = sub;
       }
     };
 
     loadSession();
+
+    return () => subscription?.unsubscribe();
   }, []);
 
   return (
