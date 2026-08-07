@@ -35,7 +35,7 @@ export default function ChaptersPage() {
         title="Chapter data can later be hydrated from Supabase without a visual redesign."
         description="The page is intentionally structured like a real network directory, not a placeholder list."
         actions={[
-          { label: "Apply as chapter lead", href: "/forms/join" },
+          { label: "Apply as chapter lead", href: "/forms/chapter_lead" },
           { label: "See team", href: "/team", variant: "ghost" },
         ]}
       />

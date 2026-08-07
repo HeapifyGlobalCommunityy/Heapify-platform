@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -33,6 +34,9 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
           password,
           options: {
             emailRedirectTo: `${location.origin}/auth/callback`,
+            data : {
+              full_name: fullName,
+            },
           },
         });
         
@@ -54,8 +58,8 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
           window.location.href = "/dashboard";
         }
       }
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error has occured");
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +77,21 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
           {message}
         </div>
       )}
+
+      {mode === "signup" && (
+        <div className="grid gap-2">
+          <Label htmlFor="fullName">Full Name</Label>
+          <Input
+            id="fullName"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            disabled={isLoading}
+            required
+          />
+        </div>
+      )}
+
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -99,7 +118,7 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
       <div className="flex flex-col gap-4 mt-2">
         <Button 
           onClick={() => handleAuth(mode)} 
-          disabled={isLoading || !email || !password}
+          disabled={isLoading || !email || !password || (mode === "signup" && !fullName)}
           className="w-full"
         >
           {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
@@ -107,7 +126,7 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
         <div className="text-center text-sm text-muted-foreground">
           {mode === "login" ? (
             <>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <a href="/signup" className="underline hover:text-foreground">
                 Sign up
               </a>

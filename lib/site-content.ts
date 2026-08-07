@@ -8,6 +8,7 @@ export const brand = {
 export const navigationLinks = [
   { href: "/about", label: "About" },
   { href: "/events", label: "Events" },
+  { href: "/challenges", label: "Challenges" },
   { href: "/open-source", label: "Projects" },
   { href: "/team", label: "Team" },
   { href: "/resources", label: "Resources" },
@@ -438,21 +439,25 @@ export const teamSections = [
 export const resourceGroups = [
   {
     title: "Blogs",
+    slug: "blogs",
     description: "Long-form essays, community updates, and product direction notes.",
     meta: "18 articles",
   },
   {
     title: "Roadmaps",
+    slug: "roadmaps",
     description: "Structured paths for beginners, contributors, and chapter organizers.",
     meta: "12 tracks",
   },
   {
     title: "Recordings",
+    slug: "recordings",
     description: "Event archives, workshop replays, and mentor sessions.",
     meta: "64 videos",
   },
   {
     title: "Notes",
+    slug: "notes",
     description: "Concise references, session summaries, and implementation guides.",
     meta: "90 notes",
   },
@@ -504,30 +509,48 @@ export const socialChannels = [
 export const formEntries = [
   {
     title: "Sponsor Form",
+    type: "sponsor",
     description:
       "Share a partnership objective, region, and preferred activation format.",
   },
   {
     title: "Partnership Form",
+    type: "partnership",
     description: "Collaborate on events, content, internships, or chapter growth.",
   },
   {
     title: "Volunteer Form",
+    type: "volunteer",
     description: "Join operations, design, events, community, or technical support.",
   },
   {
     title: "Speaker Form",
+    type: "speaker",
     description:
       "Propose a talk, workshop, panel, or fireside with community value.",
   },
   {
     title: "Mentor Form",
+    type: "mentor",
     description:
       "Support contributors with career guidance, reviews, and feedback loops.",
   },
   {
     title: "Chapter Lead Form",
+    type: "chapter_lead",
     description: "Launch or expand a chapter with clear support and governance.",
+  },
+  {
+    title: "Ambassador Form",
+    type: "ambassador",
+    description:
+      "Represent the community locally and expand our reach on campuses or within companies.",
+  },
+  {
+    title: "Contact",
+    type: "contact",
+    description:
+      "General inquiries, press, and non-standard collaboration requests.",
   },
 ];
 

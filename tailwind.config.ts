@@ -65,9 +65,14 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fadeIn": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.7s ease forwards",
+        "fadeIn": "fadeIn 0.25s ease-out",
       },
     },
   },
