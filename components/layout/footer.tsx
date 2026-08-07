@@ -33,6 +33,18 @@ const columns = [
 ];
 
 export function Footer() {
+  const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
+
+  const filteredColumns = columns.map((col) => ({
+    ...col,
+    links: col.links.filter((l) => {
+      if (isProd) {
+        return !["/challenges", "/open-source", "/resources"].includes(l.href);
+      }
+      return true;
+    }),
+  }));
+
   return (
     <footer className="mt-24 border-t border-glass-border">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 px-6 py-16 md:grid-cols-5">
@@ -52,7 +64,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-        {columns.map((col) => (
+        {filteredColumns.map((col) => (
           <div key={col.title}>
             <div className="text-xs font-mono text-muted-foreground mb-3 uppercase tracking-wide">
               {col.title}

@@ -48,7 +48,7 @@ export default function Dropdown({
   }, []);
 
   return (
-    <div ref={containerRef} className={`relative w-full ${className}`} style={{ isolation: "isolate" }}>
+    <div ref={containerRef} className={`relative w-full ${className}`}>
       {/* Trigger Button */}
       <button
         type="button"

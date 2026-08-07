@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
@@ -17,6 +18,8 @@ export function GoogleSignInButton({
 }: GoogleSignInButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
 
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -50,10 +53,11 @@ export function GoogleSignInButton({
         return;
       }
 
+      const nextParam = redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : "";
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${location.origin}/auth/callback`,
+          redirectTo: `${location.origin}/auth/callback${nextParam}`,
         },
       });
 

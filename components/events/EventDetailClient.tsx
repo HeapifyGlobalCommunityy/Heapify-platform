@@ -114,7 +114,16 @@ export default function EventDetailClient({
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  function openRegistration() {
+  async function openRegistration() {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    if (supabase) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = `/login?redirectTo=${encodeURIComponent(`/events/${slug}?register=true`)}`;
+        return;
+      }
+    }
     setIsRegistering(true);
     setHasEverOpened(true);
     syncUrl(true);
@@ -123,6 +132,22 @@ export default function EventDetailClient({
     setIsRegistering(false);
     syncUrl(false);
   }
+
+  useEffect(() => {
+    if (initialRegistering) {
+      const checkAuth = async () => {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        if (supabase) {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) {
+            window.location.href = `/login?redirectTo=${encodeURIComponent(`/events/${slug}?register=true`)}`;
+          }
+        }
+      };
+      checkAuth();
+    }
+  }, [initialRegistering, slug]);
 
   const isUnlimited = !safeEvent.capacity || safeEvent.capacity <= 0;
   const spotsLeft = isUnlimited ? 0 : safeEvent.capacity - safeEvent.registeredCount;
@@ -254,7 +279,7 @@ function EventDetailFull({
   bannerUrl: string | null;
 }) {
   return (
-    <article className="pt-32 pb-16">
+    <article className="pt-40 pb-16 lg:pt-44">
       <div className="mx-auto max-w-4xl px-6">
         <Link
           href="/events"

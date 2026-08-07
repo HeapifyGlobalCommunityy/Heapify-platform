@@ -2,8 +2,18 @@ import { Suspense } from "react";
 import { brand, communityJourney, featuredEvents, featuredProjects, partners, stats, testimonials, whatWeDo } from "@/lib/site-content";
 import { CTAComponent, EventCard, FeatureCard, Hero, ProjectCard, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
+import { createClient } from "@/lib/supabase/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  let isAuthenticated = false;
+  if (supabase) {
+    const { data: { user } } = await supabase.auth.getUser();
+    isAuthenticated = !!user;
+  }
+
+  const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
+
   return (
     <>
       <Hero
@@ -11,9 +21,9 @@ export default function HomePage() {
         tagline={brand.tagline}
         description="A futuristic, premium community frontend built to scale into a product-grade platform for chapters, events, projects, and partner programs."
         actions={[
-          { label: "Join Community", href: "/forms" },
+          { label: (!isProd && isAuthenticated) ? "Go to Dashboard" : "Join Community", href: (!isProd && isAuthenticated) ? "/dashboard" : "/forms" },
           { label: "Explore Events", href: "/events", variant: "ghost" },
-          { label: "Explore Projects", href: "/open-source", variant: "ghost" },
+          ...(isProd ? [] : [{ label: "Explore Projects", href: "/open-source", variant: "ghost" as const }]),
         ]}
       />
 
@@ -37,13 +47,15 @@ export default function HomePage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper eyebrow="Featured Projects" title="Open-source output with premium presentation" action={{ label: "Browse projects", href: "/open-source", variant: "ghost" }}>
-        <div className="grid gap-5 lg:grid-cols-3">
-          {featuredProjects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
-      </SectionWrapper>
+      {!isProd && (
+        <SectionWrapper eyebrow="Featured Projects" title="Open-source output with premium presentation" action={{ label: "Browse projects", href: "/open-source", variant: "ghost" }}>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {featuredProjects.map((project) => (
+              <ProjectCard key={project.slug} project={project} />
+            ))}
+          </div>
+        </SectionWrapper>
+      )}
 
       <SectionWrapper
         eyebrow="Community Announcements"
@@ -110,7 +122,7 @@ export default function HomePage() {
         title="Ready to turn community energy into a product-grade platform?"
         description="This foundation is intentionally data-shaped, motion-rich, and componentized so Supabase can be wired in later without redesigning the interface."
         actions={[
-          { label: "Join the community", href: "/forms" },
+          { label: (!isProd && isAuthenticated) ? "Go to Dashboard" : "Join the community", href: (!isProd && isAuthenticated) ? "/dashboard" : "/forms" },
           { label: "View the roadmap", href: "/about", variant: "ghost" },
         ]}
       />

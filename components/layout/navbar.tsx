@@ -15,6 +15,15 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
+  const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
+
+  const filteredLinks = navigationLinks.filter((link) => {
+    if (isProd) {
+      return !["/challenges", "/open-source", "/resources"].includes(link.href);
+    }
+    return true;
+  });
+
   useEffect(() => {
     setMounted(true);
     let subscription: { unsubscribe: () => void } | null = null;
@@ -58,7 +67,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               Chapter
             </Link>
           )}
-          {navigationLinks.map((link) => (
+          {filteredLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
               {link.label}
             </Link>
@@ -76,9 +85,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           
           {mounted && user ? (
             <>
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
+              {!isProd && (
+                <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+              )}
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                 <Link href="/profile">Profile</Link>
               </Button>
@@ -135,7 +146,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               Chapter
             </Link>
           )}
-          {navigationLinks.map((link) => (
+          {filteredLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -147,13 +158,15 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           ))}
           {mounted && user ? (
             <>
-              <Link
-                href="/dashboard"
-                onClick={() => setOpen(false)}
-                className="text-sm font-medium text-foreground transition-colors hover:text-primary"
-              >
-                Dashboard
-              </Link>
+              {!isProd && (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+                >
+                  Dashboard
+                </Link>
+              )}
               <Link
                 href="/profile"
                 onClick={() => setOpen(false)}
