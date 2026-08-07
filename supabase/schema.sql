@@ -76,6 +76,9 @@ create table events (
   agenda jsonb default '[]',
   speakers jsonb default '[]',
   capacity int,
+  is_hackathon boolean not null default false,
+  team_config jsonb,
+  custom_questions jsonb not null default '[]'::jsonb,
   chapter_id uuid references chapters(id),
   created_by uuid references profiles(id),
   created_at timestamptz not null default now()
@@ -86,6 +89,13 @@ create table event_registrations (
   event_id uuid not null references events(id) on delete cascade,
   user_id uuid not null references profiles(id) on delete cascade,
   status text not null default 'registered' check (status in ('registered','waitlisted','cancelled','attended')),
+  full_name text,
+  email text,
+  github_url text,
+  linkedin_url text,
+  team_name text,
+  team_members jsonb not null default '[]'::jsonb,
+  answers jsonb not null default '{}'::jsonb,
   registered_at timestamptz not null default now(),
   unique (event_id, user_id)
 );
@@ -276,6 +286,7 @@ create table announcements (
 -- ROW LEVEL SECURITY
 -- ============================================================================
 alter table profiles enable row level security;
+alter table chapters enable row level security;
 alter table events enable row level security;
 alter table event_registrations enable row level security;
 alter table projects enable row level security;
@@ -288,6 +299,7 @@ alter table resource_bookmarks enable row level security;
 
 -- Public read on most content
 create policy "public read profiles" on profiles for select using (true);
+create policy "public read chapters" on chapters for select using (true);
 create policy "public read events" on events for select using (true);
 create policy "public read projects" on projects for select using (true);
 create policy "public read internships" on internships for select using (true);
@@ -295,8 +307,14 @@ create policy "public read resources" on resources for select using (true);
 
 -- Users manage their own rows
 create policy "users update own profile" on profiles for update using (auth.uid() = id);
-create policy "users manage own registrations" on event_registrations
-  for all using (auth.uid() = user_id);
+create policy "users select own registrations" on event_registrations
+  for select using (auth.uid() = user_id);
+create policy "users insert own registrations" on event_registrations
+  for insert with check (auth.uid() = user_id);
+create policy "users update own registrations" on event_registrations
+  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "users delete own registrations" on event_registrations
+  for delete using (auth.uid() = user_id);
 create policy "users manage own bookmarks (internships)" on internship_bookmarks
   for all using (auth.uid() = user_id);
 create policy "users manage own bookmarks (resources)" on resource_bookmarks
