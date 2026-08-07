@@ -15,6 +15,7 @@ export default function FormsPortalPage() {
               key={form.title}
               title={form.title}
               description={form.description}
+              type={form.type}
             />
           ))}
         </div>

@@ -1,119 +1,201 @@
-import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, MapPin, Ticket } from "lucide-react";
-import { eventDetail } from "@/lib/site-content";
-import { Button } from "@/components/ui/button";
-import { EventCard, SectionWrapper } from "@/components/site/ui";
+// app/events/[slug]/page.tsx
+// Server-rendered event detail page.
+//
+// 1. ISR Caching:
+//    export const revalidate = 60;
+//    Caches page content for 60 seconds and updates in the background. Snappy public load.
+//
+// 2. Database Fetch:
+//    Queries the event by unique slug, queries current registration count,
+//    and queries 2 other events for the "related events" section.
+//
+// 3. Dynamic Configuration:
+//    Uses the event's database fields directly for capacity, hackathon settings,
+//    team requirements, and custom questions.
 
-// Dummy detail page using hardcoded eventDetail
-// In a real app, you would fetch by params.slug
-export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  
+export const revalidate = 60;
+
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getEventBySlug } from "@/lib/supabase/queries";
+import EventDetailClient from "@/components/events/EventDetailClient";
+
+// Helper to format database category enum value to UI label
+function formatCategory(category: string): string {
+  const map: Record<string, string> = {
+    web3: "Web3",
+    blockchain: "Blockchain",
+    hackathon: "Hackathon",
+    open_source: "Open Source",
+    workshop: "Workshop",
+    internship_session: "Internship Session",
+  };
+  return map[category] ?? category;
+}
+
+// Helper to format database status to UI label
+function formatStatus(status: string): string {
+  if (!status) return "Upcoming";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+// 3-state computation
+function computeEventStatus(db_status: string, start_at: string, end_at: string | null): string {
+  if (db_status === 'cancelled') return 'cancelled';
+  const now = new Date();
+  const start = new Date(start_at);
+  const end = end_at ? new Date(end_at) : start;
+  if (now > end) return 'completed';
+  if (now >= start && now <= end) return 'ongoing';
+  return 'upcoming';
+}
+
+// Helper to extract date (e.g., "12 Jul 2026")
+function formatEventDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// Helper to extract time (e.g., "6:00 PM")
+function formatEventTime(dateStr: string): string {
+  return new Date(dateStr).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+export default async function EventDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ register?: string }>;
+}) {
+  const { slug } = await params;
+  const { register } = await searchParams;
+
+  // 1. Fetch main event by slug
+  const { data: ev, error } = await getEventBySlug(slug);
+  if (error || !ev) {
+    notFound();
+  }
+
+  // 2. Fetch current registration count
+  const supabase = await createClient();
+  let registeredCount = 0;
+  if (ev.capacity != null && ev.capacity > 0) {
+    if (supabase) {
+      const { count, error: countError } = await supabase
+        .from("event_registrations")
+        .select("*", { count: "exact", head: true })
+        .eq("event_id", ev.id);
+      if (!countError && count !== null) {
+        registeredCount = count;
+      }
+    }
+  }
+
+  // 3. Fetch up to 2 other events for the "related events" section
+  let related: {
+    slug: string;
+    title: string;
+    category: string;
+    status: string;
+    date: string;
+    time: string;
+    location: string;
+  }[] = [];
+  if (supabase) {
+    const { data: relatedEvents } = await supabase
+      .from("events")
+      .select("slug, title, category, status, start_at, location")
+      .neq("slug", slug)
+      .order("start_at", { ascending: false })
+      .limit(2);
+
+    if (relatedEvents) {
+      related = relatedEvents.map((r: {
+        slug: string;
+        title: string;
+        category: string;
+        status: string;
+        start_at: string;
+        location: string | null;
+      }) => ({
+        slug: r.slug,
+        title: r.title,
+        category: formatCategory(r.category),
+        status: formatStatus(r.status),
+        date: formatEventDate(r.start_at),
+        time: formatEventTime(r.start_at),
+        location: r.location || "TBD",
+      }));
+    }
+  }
+
+  const computedStatus = computeEventStatus(ev.status, ev.start_at, ev.end_at);
+
+  // Map to the format EventDetailClient expects
+  const formattedEvent = {
+    slug: ev.slug,
+    title: ev.title,
+    banner: ev.banner_url || ev.description || "",
+    category: formatCategory(ev.category),
+    status: formatStatus(computedStatus),
+    date: formatEventDate(ev.start_at),
+    time: formatEventTime(ev.start_at),
+    location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+    host: "Heapify Global Community",
+    chapterName: (ev as unknown as { chapters: { name: string } | null }).chapters?.name || null,
+    agenda: ((ev.agenda || []) as unknown as { time?: string; item?: string; title?: string }[]).map((a) => ({
+      time: a.time ?? "",
+      // DB may store the text as 'item' or 'title' — accept both
+      item: a.item ?? a.title ?? "",
+    })),
+    speakers: ((ev.speakers || []) as unknown as { name?: string; role?: string; focus?: string; bio?: string; photo_url?: string; photoUrl?: string }[]).map((s) => ({
+      name: s.name ?? "",
+      // DB may store descriptor as 'role', 'focus', or 'bio'
+      role: s.role ?? s.focus ?? s.bio ?? "",
+      bio: s.bio ?? s.role ?? s.focus ?? "",
+      photo_url: s.photo_url ?? s.photoUrl ?? "",
+    })),
+  };
+
+  const mergedEvent = {
+    title: ev.title,
+    slug: ev.slug,
+    category: formatCategory(ev.category),
+    isHackathon: ev.is_hackathon ?? false,
+    date: formatEventDate(ev.start_at),
+    time: formatEventTime(ev.start_at),
+    location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+    capacity: ev.capacity ?? 0,
+    registeredCount: registeredCount,
+    bannerUrl: ev.banner_url || null,
+    // Always normalize to null — never undefined — so RegistrationForm's
+    // optional-chaining on teamConfig?.allowSolo never throws.
+    teamConfig: ev.team_config || null,
+    customQuestions: ev.custom_questions || [],
+  };
+
+  const isPast = computedStatus === "completed";
+
+  // ?register=true opens the registration panel inline.
+  // Past events ignore this flag — registration is closed.
+  const initialRegistering = register === "true" && !isPast;
+
   return (
-    <>
-      <article className="pt-32">
-        <div className="mx-auto max-w-4xl px-6">
-          <Link href="/events" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Back to events
-          </Link>
-          
-          <div className="mt-8 rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(255,255,255,0.8))] dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
-              <div className="w-64 h-64 bg-primary/30 rounded-full blur-[100px]" />
-            </div>
-            <div className="relative">
-              <div className="text-xs font-mono uppercase tracking-[0.28em] text-primary">{eventDetail.category} • {eventDetail.status}</div>
-              <h1 className="mt-4 font-display text-4xl md:text-6xl font-semibold tracking-tight">{eventDetail.title}</h1>
-              <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{eventDetail.banner}</p>
-              
-              <div className="mt-10 flex flex-wrap gap-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
-                    <Calendar className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Date</div>
-                    <div className="text-sm font-medium">{eventDetail.date}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
-                    <Clock className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Time</div>
-                    <div className="text-sm font-medium">{eventDetail.time}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg">
-                    <MapPin className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">Location</div>
-                    <div className="text-sm font-medium">{eventDetail.location}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mx-auto max-w-4xl px-6 py-16 grid gap-12 md:grid-cols-3">
-          <div className="md:col-span-2 space-y-12">
-            <div>
-              <h2 className="font-display text-2xl font-semibold">Agenda</h2>
-              <div className="mt-6 space-y-4">
-                {eventDetail.agenda.map((item, i) => (
-                  <div key={i} className="flex gap-6 rounded-2xl border border-glass-border bg-glass-bg p-5">
-                    <div className="font-mono text-sm text-primary/80">{item.time}</div>
-                    <div className="text-sm text-foreground/90">{item.item}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h2 className="font-display text-2xl font-semibold">Speakers</h2>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {eventDetail.speakers.map((speaker, i) => (
-                  <div key={i} className="flex items-center gap-4 rounded-2xl border border-glass-border bg-glass-bg p-5">
-                    <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/10" />
-                    <div>
-                      <div className="font-semibold text-sm">{speaker.name}</div>
-                      <div className="text-xs text-muted-foreground">{speaker.role}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="sticky top-24 rounded-3xl border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
-              <h3 className="font-display font-semibold text-xl">Registration</h3>
-              <p className="mt-3 text-sm text-muted-foreground">Secure your spot for this experience. Approval required.</p>
-              
-              <div className="mt-6 flex flex-col gap-3">
-                <Button className="w-full justify-center">
-                  <Ticket className="mr-2 h-4 w-4" /> Register now
-                </Button>
-                <div className="text-center text-xs text-muted-foreground mt-2">
-                  Registration is managed securely.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <SectionWrapper title="Related Events" className="border-t border-glass-border">
-        <div className="grid gap-5 lg:grid-cols-2">
-          {eventDetail.related.map((event) => (
-            <EventCard key={event.slug} event={event} />
-          ))}
-        </div>
-      </SectionWrapper>
-    </>
+    <EventDetailClient
+      event={formattedEvent}
+      mergedEvent={mergedEvent}
+      slug={slug}
+      related={related}
+      isPast={isPast}
+      initialRegistering={initialRegistering}
+    />
   );
 }

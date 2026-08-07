@@ -1,5 +1,6 @@
 "use client";
 
+import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -8,45 +9,55 @@ import { Button } from "@/components/ui/button";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
 
-export function Navbar() {
+export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Check active session
+    let subscription: { unsubscribe: () => void } | null = null;
+
     const loadSession = async () => {
       const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
-        
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-          setUser(session?.user ?? null);
-        });
-        
-        return () => subscription.unsubscribe();
+        const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
+          (_event: AuthChangeEvent, session: Session | null) => {
+            setUser(session?.user ?? null);
+          }
+        );
+        subscription = sub;
       }
     };
-    
+
     loadSession();
+
+    return () => subscription?.unsubscribe();
   }, []);
 
   return (
-    <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-6xl -translate-x-1/2">
-      <div className="flex items-center justify-between rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
-        <Link href="/" className="flex items-center gap-2">
+    <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2">
+      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <HeapifyLogo className="h-5 w-5" />
-          <span className="font-display font-semibold text-sm tracking-tight">
-            Heapify Global Community
+          <span className="font-display font-semibold text-sm tracking-tight whitespace-nowrap">
+            Heapify <span className="hidden xl:inline">Global Community</span>
           </span>
         </Link>
 
-        <div className="hidden items-center gap-6 text-sm text-muted-foreground lg:flex">
+        <div className="hidden items-center gap-4 xl:gap-6 text-sm text-muted-foreground lg:flex">
+          <Link href="/" className="transition-colors hover:text-foreground">
+            Home
+          </Link>
+          {isChapterLead && (
+            <Link href="/chapter" className="transition-colors hover:text-foreground">
+              Chapter
+            </Link>
+          )}
           {navigationLinks.map((link) => (
             <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
               {link.label}
@@ -54,7 +65,7 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             aria-label="Toggle theme"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -68,11 +79,15 @@ export function Navbar() {
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
+                <Link href="/profile">Profile</Link>
+              </Button>
               <Button 
                 size="sm" 
                 variant="ghost"
                 className="hidden sm:inline-flex" 
                 onClick={async () => {
+                  setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
                   await supabase?.auth.signOut();
@@ -104,6 +119,22 @@ export function Navbar() {
 
       {open && (
         <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/85 p-4 backdrop-blur-xl lg:hidden">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Home
+          </Link>
+          {isChapterLead && (
+            <Link
+              href="/chapter"
+              onClick={() => setOpen(false)}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Chapter
+            </Link>
+          )}
           {navigationLinks.map((link) => (
             <Link
               key={link.href}
@@ -123,9 +154,17 @@ export function Navbar() {
               >
                 Dashboard
               </Link>
+              <Link
+                href="/profile"
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Profile
+              </Link>
               <button
                 onClick={async () => {
                   setOpen(false);
+                  setUser(null);
                   const { createClient } = await import("@/lib/supabase/client");
                   const supabase = createClient();
                   await supabase?.auth.signOut();
