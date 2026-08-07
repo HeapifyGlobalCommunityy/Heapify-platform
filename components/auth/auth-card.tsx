@@ -1,14 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { brand } from "@/lib/site-content";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { AnimatedNetworkBackground } from "@/components/site/background";
+import { TurnstileWidget } from "@/components/captcha/turnstile-widget";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
 import { EmailSignInForm } from "@/components/auth/email-signin-form";
 
 export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
   const isLogin = mode === "login";
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaWidgetKey, setCaptchaWidgetKey] = useState(0);
+
+  const resetCaptcha = () => {
+    setCaptchaToken(null);
+    setCaptchaWidgetKey((current) => current + 1);
+  };
 
   return (
     <div className="relative flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden px-6 py-24">
@@ -39,7 +48,25 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
         {/* Auth form card with premium glassmorphism */}
         <div className="rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.06),rgba(255,255,255,0.02),rgba(10,10,10,0.7))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.35)] backdrop-blur-2xl">
           <div className="grid gap-5">
-            <GoogleSignInButton />
+            <GoogleSignInButton
+              mode={mode}
+              captchaToken={captchaToken}
+              onCaptchaReset={resetCaptcha}
+            />
+
+            <div className="grid gap-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-foreground">Captcha</span>
+                <span className="text-xs text-muted-foreground">
+                  Required for Google and email sign-in
+                </span>
+              </div>
+              <TurnstileWidget
+                key={captchaWidgetKey}
+                action={mode === "login" ? "login" : "signup"}
+                onTokenChange={setCaptchaToken}
+              />
+            </div>
 
             <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">
@@ -52,7 +79,11 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
               </div>
             </div>
 
-            <EmailSignInForm mode={mode} />
+            <EmailSignInForm
+              mode={mode}
+              captchaToken={captchaToken}
+              onCaptchaReset={resetCaptcha}
+            />
           </div>
         </div>
       </motion.div>

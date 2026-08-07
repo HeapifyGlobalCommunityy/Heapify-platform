@@ -6,7 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" }) {
+type EmailSignInFormProps = {
+  mode?: "login" | "signup";
+  captchaToken: string | null;
+  onCaptchaReset: () => void;
+};
+
+export function EmailSignInForm({
+  mode = "login",
+  captchaToken,
+  onCaptchaReset,
+}: EmailSignInFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -20,7 +30,7 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
     setMessage(null);
 
     const supabase = createClient();
-    
+
     if (!supabase) {
       setError("Supabase client is not configured.");
       setIsLoading(false);
@@ -28,31 +38,54 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
     }
 
     try {
+      const captchaResponse = await fetch("/api/captcha", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: captchaToken }),
+      });
+
+      const captchaResult = (await captchaResponse.json()) as {
+        success: boolean;
+        message?: string;
+      };
+
+      if (!captchaResponse.ok || !captchaResult.success) {
+        setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
+        onCaptchaReset();
+        return;
+      }
+
       if (action === "signup") {
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${location.origin}/auth/callback`,
-            data : {
+            data: {
               full_name: fullName,
             },
           },
         });
-        
+
         if (signUpError) {
-          setError(signUpError.message);
+          console.error("Signup error (not shown to user):", signUpError.message);
+          setError("If this email isn't already registered, check your inbox to confirm your account.");
+          onCaptchaReset();
         } else {
-          setMessage("Check your email to confirm your account.");
+          setMessage("If this email isn't already registered, check your inbox to confirm your account.");
+          onCaptchaReset();
         }
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        
+
         if (signInError) {
-          setError(signInError.message);
+          setError("Invalid email or password.");
+          onCaptchaReset();
         } else {
           // If successful, redirect to dashboard or desired next page
           window.location.href = "/dashboard";
@@ -60,6 +93,7 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An unexpected error has occured");
+      onCaptchaReset();
     } finally {
       setIsLoading(false);
     }
@@ -116,9 +150,15 @@ export function EmailSignInForm({ mode = "login" }: { mode?: "login" | "signup" 
         />
       </div>
       <div className="flex flex-col gap-4 mt-2">
-        <Button 
-          onClick={() => handleAuth(mode)} 
-          disabled={isLoading || !email || !password || (mode === "signup" && !fullName)}
+        <Button
+          onClick={() => handleAuth(mode)}
+          disabled={
+            isLoading ||
+            !email ||
+            !password ||
+            !captchaToken ||
+            (mode === "signup" && !fullName)
+          }
           className="w-full"
         >
           {isLoading ? "Loading..." : mode === "login" ? "Sign In" : "Create Account"}
