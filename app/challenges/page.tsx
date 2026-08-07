@@ -91,7 +91,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {data.map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
+      {(data as unknown[]).map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}
@@ -120,7 +120,7 @@ async function PastChallenges() {
 
   return (
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {data.map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
+      {(data as unknown[]).map((row) => normaliseChallenge(row as Parameters<typeof normaliseChallenge>[0])).map((challenge) => (
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}
