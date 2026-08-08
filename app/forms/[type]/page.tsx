@@ -3,6 +3,7 @@
 
 import { notFound } from "next/navigation";
 import { SectionWrapper } from "@/components/site/ui";
+import { createClient } from "@/lib/supabase/server";
 import DynamicForm from "./DynamicForm";
 
 // ─── Field config types ─────────────────────────────────────────────────────
@@ -191,6 +192,17 @@ const FORM_CONFIG: Record<string, FormConfig> = {
       { name: "message", label: "Message", type: "textarea", required: true, placeholder: "What would you like to share with the team?" },
     ],
   },
+  chapter_member: {
+    title: "Join a Chapter",
+    description: "Apply to join a Heapify chapter near you. Your application will be reviewed by the chapter lead before you become an official member.",
+    fields: [
+      { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Your full name" },
+      { name: "email", label: "Email Address", type: "email", required: true, placeholder: "you@example.com" },
+      { name: "chapter_name", label: "Chapter", type: "select", required: true, options: [] },
+      { name: "why_join", label: "Why do you want to join this chapter?", type: "textarea", required: true, placeholder: "Tell us a bit about yourself and your interest." },
+      { name: "linkedin_github", label: "LinkedIn or GitHub (optional)", type: "text", required: false, placeholder: "https://..." },
+    ],
+  },
 };
 
 // ─── Page ───────────────────────────────────────────────────────────────────
@@ -200,10 +212,27 @@ export default async function FormPage({
   params: Promise<{ type: string }>;
 }) {
   const { type } = await params;
+
+  let chapterOptions: string[] = [];
+  if (type === "chapter_member") {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("chapters")
+      .select("name")
+      .eq("status", "active")
+      .order("name", { ascending: true });
+    chapterOptions = data?.map((c) => c.name) ?? [];
+  }
+
   const config = FORM_CONFIG[type];
 
   if (!config) {
     notFound();
+  }
+
+  if (type === "chapter_member" && config) {
+    const chapterField = config.fields.find((f) => f.name === "chapter_name");
+    if (chapterField) chapterField.options = chapterOptions;
   }
 
   return (

@@ -552,6 +552,12 @@ export const formEntries = [
     description:
       "General inquiries, press, and non-standard collaboration requests.",
   },
+  {
+    title: "Join a Chapter",
+    type: "chapter_member",
+    description:
+      "Apply to join a Heapify chapter near you. Your application will be reviewed by the chapter lead.",
+  },
 ];
 
 export const openSourceHighlights = [

@@ -272,7 +272,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
+      <div className="relative z-10 grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
         <label className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-sm text-muted-foreground">
           <Search className="h-4 w-4 text-primary" />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
@@ -301,7 +301,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           </button>
         ))}
       </div>
-      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="relative z-0 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, i) => <EventCardSkeleton key={i} />)
         ) : filtered.length === 0 ? (

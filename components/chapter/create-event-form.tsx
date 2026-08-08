@@ -463,6 +463,7 @@ export function CreateEventForm() {
               value={endAt}
               onChange={(e) => setEndAt(e.target.value)}
               disabled={isLoading}
+              min={startAt}
             />
           </div>
         </div>
