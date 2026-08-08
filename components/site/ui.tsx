@@ -88,7 +88,7 @@ function AnimatedValue({ value }: { value: number }) {
 
 export function StatsComponent({ stats }: { stats: Array<{ label: string; value: number; detail: string }> }) {
   return (
-    <div className="grid gap-4 md:grid-cols-5">
+    <div className={`grid gap-4 ${stats.length <= 2 ? "max-w-2xl md:grid-cols-2" : "md:grid-cols-5"}`}>
       {stats.map((stat, index) => (
         <motion.div key={stat.label} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.45, delay: index * 0.05 }} whileHover={{ y: -4 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
           <div className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl"><AnimatedValue value={stat.value} /></div>
@@ -196,16 +196,23 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
   );
 }
 
-export function SocialCard({ title, description }: { title: string; description: string }) {
+export function SocialCard({ title, description, href }: { title: string; description: string; href: string }) {
   return (
-    <motion.article whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      whileHover={{ y: -6, scale: 1.01 }}
+      transition={{ duration: 0.25 }}
+      className="block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl cursor-pointer"
+    >
       <h3 className="font-display text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
       <div className="mt-6 inline-flex items-center gap-2 text-sm text-primary">
         Open channel
         <ExternalLink className="h-4 w-4" />
       </div>
-    </motion.article>
+    </motion.a>
   );
 }
 

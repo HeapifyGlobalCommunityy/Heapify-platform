@@ -54,7 +54,7 @@ export function Footer() {
             <span className="font-display text-sm font-semibold">Heapify Global Community</span>
           </div>
           <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-            A premium frontend foundation for a global builders network, designed to scale into Supabase-powered community infrastructure.
+            For Builders, Not Spectators. A technology community for students, developers, and builders to learn, collaborate, compete, and create.
           </p>
           <div className="flex flex-wrap gap-2">
             {partners.map((partner) => (

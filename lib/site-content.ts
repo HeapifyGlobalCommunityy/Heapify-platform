@@ -1,6 +1,6 @@
 export const brand = {
   name: "Heapify Global Community",
-  tagline: "[TAGLINE PLACEHOLDER]",
+  tagline: "For Builders, Not Spectators",
   mission: "[MISSION PLACEHOLDER]",
   vision: "[VISION PLACEHOLDER]",
 };
@@ -16,88 +16,61 @@ export const navigationLinks = [
 ];
 
 export const stats = [
-  { label: "Members", value: 14200, detail: "Builders across 60+ countries" },
-  { label: "Events", value: 180, detail: "Sessions, summits, and activations" },
-  { label: "Projects", value: 310, detail: "Open-source and community launches" },
-  { label: "Chapters", value: 22, detail: "Local nodes with global reach" },
-  { label: "Mentors", value: 84, detail: "Technical and community guidance" },
+  { label: "Community Members", value: 500, detail: "Students, developers, and builders in the network" },
+  { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
 ];
 
 export const whatWeDo = [
   {
     eyebrow: "01",
-    title: "Community infrastructure",
+    title: "Hackathons & Challenges",
     description:
-      "A premium ecosystem for builders to learn, collaborate, and ship with structure.",
+      "We organize hackathons and technical challenges that give builders a platform to turn ideas into working solutions.",
   },
   {
     eyebrow: "02",
-    title: "Open-source momentum",
+    title: "Technical Learning",
     description:
-      "Repo-driven programs, contribution pipelines, and project discovery built for scale.",
+      "Workshops, technical sessions, builder talks, and practical learning experiences focused on real-world technologies.",
   },
   {
     eyebrow: "03",
-    title: "Career acceleration",
+    title: "Open Source",
     description:
-      "Events, mentorship, internships, and leadership tracks that compound over time.",
+      "We encourage developers to contribute, collaborate, and build in the open through open-source initiatives and community projects.",
   },
   {
     eyebrow: "04",
-    title: "Global chapter network",
+    title: "Builder Community",
     description:
-      "Distributed communities with local autonomy and a shared operating rhythm.",
+      "A network where students and developers can find collaborators, exchange ideas, and build alongside other motivated people.",
   },
   {
     eyebrow: "05",
-    title: "Partner activation",
+    title: "Career & Opportunities",
     description:
-      "Programs designed for sponsor visibility, technical depth, and measurable engagement.",
+      "Connecting builders with opportunities to learn, showcase their work, collaborate with organizations, and grow professionally.",
   },
   {
     eyebrow: "06",
-    title: "Builder storytelling",
+    title: "AI & Emerging Technology",
     description:
-      "A platform that showcases people, projects, and contributions with first-class presentation.",
+      "A strong focus on AI, GenAI, developer tools, and emerging technologies through hands-on projects and events.",
   },
 ];
 
 export const featuredEvents = [
   {
-    slug: "global-builder-night",
-    title: "Global Builder Night",
-    category: "Community",
-    status: "Upcoming",
-    date: "Aug 14, 2026",
-    time: "18:30 UTC",
-    location: "Virtual + local chapters",
-    summary:
-      "A flagship showcase of community projects, mentor sessions, and partner talks.",
-    spotlight: "Orange glow",
-  },
-  {
-    slug: "web3-systems-lab",
-    title: "Web3 Systems Lab",
-    category: "Workshop",
-    status: "Ongoing",
-    date: "Weekly",
-    time: "19:00 UTC",
-    location: "Live workshop room",
-    summary:
-      "Hands-on sessions focused on protocol design, product thinking, and ship-ready demos.",
-    spotlight: "Deep interface",
-  },
-  {
-    slug: "community-merge-day",
-    title: "Community Merge Day",
-    category: "Open Source",
+    slug: "build-with-gemma-bengaluru",
+    title: "Build with Gemma: Bengaluru AI Sprint",
+    category: "Hackathon",
     status: "Past",
-    date: "Jun 02, 2026",
+    date: "Jul 18, 2026",
     time: "All day",
-    location: "GitHub + live rooms",
+    location: "MSRIT, Bengaluru",
     summary:
-      "A high-energy contribution sprint that turned ideas into merged pull requests.",
-    spotlight: "Contributor spotlight",
+      "Heapify's flagship AI hackathon — an offline sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+    spotlight: "Flagship Event",
   },
 ];
 
@@ -114,104 +87,38 @@ export const eventStatuses = ["All", "Upcoming", "Ongoing", "Past"];
 
 export const eventCatalog = [
   {
-    slug: "global-builder-night",
-    title: "Global Builder Night",
-    category: "Community",
-    status: "Upcoming",
-    date: "Aug 14, 2026",
-    time: "18:30 UTC",
-    format: "Hybrid",
-    location: "Multiple cities + stream",
-    description:
-      "A polished showcase event for contributors, partners, and chapter leaders.",
-  },
-  {
-    slug: "web3-systems-lab",
-    title: "Web3 Systems Lab",
-    category: "Workshop",
-    status: "Ongoing",
-    date: "Every Thursday",
-    time: "19:00 UTC",
-    format: "Live workshop",
-    location: "Virtual room",
-    description:
-      "A guided lab for shipping technically sharp prototypes and teaching by doing.",
-  },
-  {
-    slug: "merge-sprint-weekend",
-    title: "Merge Sprint Weekend",
-    category: "Open Source",
-    status: "Past",
-    date: "Jun 02, 2026",
-    time: "10:00 UTC",
-    format: "Sprint",
-    location: "GitHub + Notion",
-    description:
-      "A contribution marathon spanning onboarding, issues, reviews, and final merges.",
-  },
-  {
-    slug: "founders-qa-live",
-    title: "Founders Q&A Live",
-    category: "Webinar",
-    status: "Upcoming",
-    date: "Sep 05, 2026",
-    time: "16:00 UTC",
-    format: "Livestream",
-    location: "Main stage",
-    description:
-      "A direct conversation on community growth, product direction, and platform thinking.",
-  },
-  {
-    slug: "chapter-launch-playbook",
-    title: "Chapter Launch Playbook",
-    category: "Community",
-    status: "Upcoming",
-    date: "Aug 28, 2026",
-    time: "20:00 UTC",
-    format: "Workshop",
-    location: "Chapter leaders room",
-    description:
-      "A practical session for founding a chapter and running it with consistency.",
-  },
-  {
-    slug: "build-week-zero",
-    title: "Build Week Zero",
+    slug: "build-with-gemma-bengaluru",
+    title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "May 12, 2026",
-    time: "48 hours",
-    format: "Hackathon",
-    location: "Distributed teams",
+    date: "Jul 18, 2026",
+    time: "All day",
+    format: "Offline",
+    location: "MSRIT, Bengaluru",
     description:
-      "A polished build weekend with mentorship, demos, and highly visual project outputs.",
+      "Heapify's flagship AI hackathon — an offline sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
   },
 ];
 
 export const eventDetail = {
-  slug: "global-builder-night",
-  title: "Global Builder Night",
-  banner:
-    "A premium community showcase for builders, chapters, mentors, and partners.",
-  category: "Community",
-  status: "Upcoming",
-  date: "Aug 14, 2026",
-  time: "18:30 UTC",
-  location: "Hybrid: regional hubs + livestream",
+  slug: "build-with-gemma-bengaluru",
+  title: "Build with Gemma: Bengaluru AI Sprint",
+  banner: "",
+  category: "Hackathon",
+  status: "Past",
+  date: "Jul 18, 2026",
+  time: "All day",
+  location: "MSRIT, Bengaluru",
   host: "Heapify Global Community",
-  registrationState: "Registration placeholder",
+  registrationState: "Event concluded",
   agenda: [
-    { time: "18:30", item: "Opening notes and welcome" },
-    { time: "18:50", item: "Featured project demos" },
-    { time: "19:20", item: "Speaker session and panel" },
-    { time: "20:00", item: "Community recognitions" },
-    { time: "20:20", item: "Networking and chapter rooms" },
+    { time: "Morning", item: "Registration and team formation" },
+    { time: "Afternoon", item: "Hacking and mentor support sessions" },
+    { time: "Evening", item: "Project demos and judging" },
+    { time: "Closing", item: "Awards and community wrap-up" },
   ],
-  speakers: [
-    { name: "Aanya Rao", role: "Founder", focus: "Community systems" },
-    { name: "Mika Chen", role: "Co-Founder", focus: "Product and partnerships" },
-    { name: "Jordan Vega", role: "Mentor", focus: "Open-source growth" },
-  ],
-  related: featuredEvents.slice(1),
+  speakers: [],
+  related: [],
 };
 
 export const featuredProjects = [
@@ -249,95 +156,79 @@ export const communityJourney = [
     step: "01",
     title: "Discover",
     description:
-      "Meet the community through events, content, and chapter activations.",
+      "Discover Heapify through events, hackathons, technical sessions, and community initiatives.",
   },
   {
     step: "02",
     title: "Learn",
-    description: "Use roadmaps, workshops, and recordings to level up quickly.",
+    description:
+      "Learn from builders, mentors, workshops, technical sessions, and practical resources.",
   },
   {
     step: "03",
     title: "Build",
     description:
-      "Ship alongside peers using projects, hackathons, and open-source repos.",
+      "Turn ideas into projects, participate in challenges, collaborate with other builders, and ship.",
   },
   {
     step: "04",
     title: "Lead",
     description:
-      "Become a mentor, organizer, or chapter lead inside the ecosystem.",
+      "Grow into a mentor, organizer, chapter leader, contributor, or community leader.",
   },
 ];
 
 export const partners = [
-  "GitHub",
-  "Vercel",
-  "Stripe",
-  "Luma",
-  "Linear",
-  "Supabase",
+  "IEEE CIS",
+  "Google Gemma Community",
+  "Kaggle",
+  "MSRIT — ISE Dept.",
+  "Nexus Spring of Code",
 ];
 
-export const testimonials = [
-  {
-    quote:
-      "The platform feels like a real product, not just a community landing page.",
-    name: "Arielle M.",
-    role: "Chapter Lead",
-  },
-  {
-    quote:
-      "The event experience is polished enough to bring sponsors and maintain trust.",
-    name: "Noah K.",
-    role: "Partner Engineer",
-  },
-  {
-    quote:
-      "It makes contribution and leadership paths visible in a way that actually converts.",
-    name: "Sofia R.",
-    role: "Open Source Contributor",
-  },
-];
+export const testimonials: Array<{ quote: string; name: string; role: string }> = [];
 
 export const coreValues = [
   {
-    title: "Merit with empathy",
+    title: "Build",
     description:
-      "Contribution is visible, but support is still personal and deliberate.",
+      "Turn ideas into working projects and real-world solutions.",
   },
   {
-    title: "Global by default",
-    description: "Every experience is designed to work across time zones and cultures.",
+    title: "Collaborate",
+    description:
+      "Find people to build with, contribute with, and learn from.",
   },
   {
-    title: "Built, not spoken",
-    description: "Programs are judged by shipped outcomes, not by surface-level hype.",
+    title: "Compete",
+    description:
+      "Participate in hackathons, challenges, and technical competitions.",
   },
   {
-    title: "Open and durable",
-    description: "Infrastructure should be understandable, maintainable, and reusable.",
+    title: "Contribute",
+    description:
+      "Give back through open source, mentoring, organizing, and community initiatives.",
   },
 ];
 
 export const timeline = [
   {
-    year: "2024",
-    title: "Seeded the community",
+    year: "Early Days",
+    title: "Community founded",
     description:
-      "Started with builders, chapters, and a strong emphasis on structured growth.",
+      "Heapify started as a local builder-focused group bringing together students and developers who wanted to do more than just learn — they wanted to build.",
   },
   {
-    year: "2025",
-    title: "Expanded the network",
+    year: "Growth",
+    title: "500+ builders joined",
     description:
-      "Added events, mentors, partner programs, and repeatable community ops.",
+      "The community grew to 500+ members through events, hackathons, and word-of-mouth among students and developers.",
   },
   {
-    year: "2026",
-    title: "Shipped the platform",
+    year: "Jul 2026",
+    title: "Build with Gemma: Bengaluru AI Sprint",
     description:
-      "Moved toward a premium digital home for the global community.",
+      "Heapify organized its flagship AI hackathon at MSRIT, Bengaluru — an offline event around Google's Gemma ecosystem with ~250 participants.",
   },
 ];
 
@@ -345,92 +236,100 @@ export const growthSeries = [24, 38, 52, 64, 81, 92, 108, 126];
 
 export const teamSections = [
   {
-    title: "Founder",
+    title: "Founders",
     members: [
       {
-        name: "Aanya Rao",
+        name: "Venkatesh Reddy K.",
         role: "Founder",
-        bio: "Sets the product vision and community operating model.",
-        links: ["LinkedIn", "X", "GitHub"],
-      },
-    ],
-  },
-  {
-    title: "Co-Founder",
-    members: [
-      {
-        name: "Mika Chen",
-        role: "Co-Founder",
-        bio: "Leads platform strategy, partnerships, and event design.",
-        links: ["LinkedIn", "YouTube"],
-      },
-    ],
-  },
-  {
-    title: "Core Team",
-    members: [
-      {
-        name: "Jordan Vega",
-        role: "Community Lead",
-        bio: "Runs chapters, mentorship, and global engagement flows.",
-        links: ["LinkedIn", "Discord"],
-      },
-      {
-        name: "Priya Shah",
-        role: "Program Lead",
-        bio: "Coordinates events, partnerships, and volunteer systems.",
-        links: ["LinkedIn", "X"],
-      },
-      {
-        name: "Leo Martins",
-        role: "Design Lead",
-        bio: "Crafts the visual language and storytelling systems.",
-        links: ["Dribbble", "GitHub"],
-      },
-    ],
-  },
-  {
-    title: "Junior Core",
-    members: [
-      {
-        name: "Zara Ali",
-        role: "Operations",
-        bio: "Keeps programs moving and chapter launches on track.",
+        bio: "Leads the vision and direction of Heapify Global Community.",
         links: ["LinkedIn"],
       },
       {
-        name: "Ethan Cole",
-        role: "Events",
-        bio: "Builds the schedule, sessions, and live experience.",
-        links: ["LinkedIn", "Instagram"],
+        name: "Rohan Chand M.",
+        role: "Founder",
+        bio: "Co-drives Heapify's community strategy, events, and growth.",
+        links: ["LinkedIn"],
+      },
+      {
+        name: "Aahana Mohanty",
+        role: "Founding Member",
+        bio: "Founding contributor to Heapify's community and programs.",
+        links: ["LinkedIn"],
       },
     ],
   },
   {
-    title: "Mentors",
+    title: "Co-Founders",
     members: [
       {
-        name: "Riya Nair",
-        role: "Mentor",
-        bio: "Advises contributors on systems thinking and shipping habits.",
-        links: ["LinkedIn", "GitHub"],
+        name: "Junaid",
+        role: "Co-Founder",
+        bio: "Contributes to community operations and builder initiatives.",
+        links: ["LinkedIn"],
       },
       {
-        name: "Samir Bose",
-        role: "Mentor",
-        bio: "Supports chapter teams, workshops, and technical depth.",
-        links: ["LinkedIn", "X"],
+        name: "Karthik",
+        role: "Co-Founder",
+        bio: "Drives community growth, partnerships, and builder programs.",
+        links: ["LinkedIn"],
       },
     ],
   },
   {
-    title: "Advisor Cards",
+    title: "Community",
     members: [
       {
-        name: "Dr. Lina Park",
-        role: "Advisor",
-        bio: "Helps align community growth with durable product thinking.",
-        links: ["LinkedIn", "Website"],
+        name: "Madhusudhan",
+        role: "Community Admin",
+        bio: "Keeps the community running smoothly day-to-day.",
+        links: ["LinkedIn"],
+      },
+      {
+        name: "Krish",
+        role: "Community Admin",
+        bio: "Supports community programs and member engagement.",
+        links: ["LinkedIn"],
+      },
+    ],
+  },
+  {
+    title: "Technology",
+    members: [
+      {
+        name: "Avishkar More",
+        role: "Tech Lead",
+        bio: "Leads the technical architecture and platform development.",
+        links: ["GitHub", "LinkedIn"],
+      },
+      {
+        name: "Md Oveaz",
+        role: "Tech Lead",
+        bio: "Full-stack developer building Heapify's core platform.",
+        links: ["GitHub", "LinkedIn"],
+      },
+      {
+        name: "Stavan Rahul Khobare",
+        role: "Tech Lead",
+        bio: "Platform engineer focused on backend systems and developer experience.",
+        links: ["GitHub", "LinkedIn"],
+      },
+      {
+        name: "Kishor Krishna",
+        role: "Tech Lead",
+        bio: "Frontend engineer crafting the community's digital experience.",
+        links: ["GitHub", "LinkedIn"],
+      },
+      {
+        name: "Krish",
+        role: "Technology",
+        bio: "Contributes to platform features and community tooling.",
+        links: ["GitHub"],
+      },
+      {
+        name: "Swati",
+        role: "Technology",
+        bio: "Builds and maintains core features of the Heapify platform.",
+        links: ["GitHub"],
       },
     ],
   },
@@ -465,44 +364,29 @@ export const resourceGroups = [
 
 export const socialChannels = [
   {
-    title: "Discord",
-    href: "#",
-    description: "Daily coordination and live community chat.",
-  },
-  {
-    title: "GitHub",
-    href: "#",
-    description: "Open-source repos, templates, and contribution flows.",
-  },
-  {
-    title: "LinkedIn",
-    href: "#",
-    description: "Announcements, team updates, and partner-facing content.",
+    title: "WhatsApp",
+    href: "https://chat.whatsapp.com/EiPms0OwtDY87nkjuplDiZ",
+    description: "Join the Heapify builder community on WhatsApp.",
   },
   {
     title: "Instagram",
-    href: "#",
-    description: "Visual recaps, event moments, and community culture.",
+    href: "https://www.instagram.com/heapify_",
+    description: "Event recaps, community moments, and builder highlights.",
   },
   {
-    title: "Twitter/X",
-    href: "#",
-    description: "Fast updates, launches, and session highlights.",
+    title: "Twitter / X",
+    href: "https://x.com/Heapifyy",
+    description: "Quick updates, announcements, and event highlights.",
   },
   {
-    title: "YouTube",
-    href: "#",
-    description: "Recordings, showcases, and premium long-form content.",
+    title: "LinkedIn",
+    href: "https://www.linkedin.com/in/heapify-global-community-7bb767414/",
+    description: "Community news, opportunities, and partner-facing updates.",
   },
   {
-    title: "WhatsApp",
-    href: "#",
-    description: "Local chapter coordination and quick communication.",
-  },
-  {
-    title: "Telegram",
-    href: "#",
-    description: "Broadcast updates and distributed community alerts.",
+    title: "GitHub",
+    href: "https://github.com/HeapifyGlobalCommunityy",
+    description: "Open-source repos, contributions, and community projects.",
   },
 ];
 

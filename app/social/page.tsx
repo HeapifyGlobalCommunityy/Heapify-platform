@@ -15,6 +15,7 @@ export default function SocialHubPage() {
               key={channel.title}
               title={channel.title}
               description={channel.description}
+              href={channel.href}
             />
           ))}
         </div>
