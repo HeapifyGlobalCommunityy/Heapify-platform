@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { updateProfile, type ProfileUpdateData } from "@/lib/actions/profile";
 import { Button } from "@/components/ui/button";
+import { STORAGE_BUCKETS, uploadPublicImage } from "@/lib/storage/client";
 
 interface Props {
   initialProfile: {
@@ -34,6 +35,7 @@ export default function EditProfileForm({ initialProfile }: Props) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState<ProfileUpdateData>({
@@ -53,9 +55,25 @@ export default function EditProfileForm({ initialProfile }: Props) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleAvatarUpload = async (file: File | undefined) => {
+    if (!file) return;
+
+    setError(null);
+    setIsUploadingAvatar(true);
+
+    try {
+      const avatarUrl = await uploadPublicImage(STORAGE_BUCKETS.avatars, file);
+      handleChange("avatar_url", avatarUrl);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Avatar upload failed.");
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isPending) return;
+    if (isPending || isUploadingAvatar) return;
 
     if (!formData.username.trim()) {
       setError("Username is required.");
@@ -132,17 +150,27 @@ export default function EditProfileForm({ initialProfile }: Props) {
           </div>
         </div>
 
-        {/* Avatar URL */}
+        {/* Avatar image */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-zinc-400">Avatar Image URL</label>
+          <label className="block text-sm font-medium text-zinc-400">Avatar Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleAvatarUpload(e.target.files?.[0])}
+            disabled={isPending || isUploadingAvatar}
+            className="block w-full rounded-xl border border-zinc-800 bg-zinc-950/60 px-3.5 py-2.5 text-sm text-zinc-400 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50"
+          />
+          <p className="text-xs text-muted-foreground">
+            {isUploadingAvatar ? "Uploading avatar..." : "PNG, JPG, or WebP up to 5 MB."}
+          </p>
           <div className="flex items-center gap-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 px-3.5 py-2.5 focus-within:border-primary/60 transition-colors">
             <ImageIcon className="h-4 w-4 text-zinc-600 shrink-0" />
             <input
               type="url"
               value={formData.avatar_url}
               onChange={(e) => handleChange("avatar_url", e.target.value)}
-              placeholder="https://example.com/avatar.jpg"
-              disabled={isPending}
+              placeholder="Or paste an external image URL"
+              disabled={isPending || isUploadingAvatar}
               className="w-full bg-transparent text-sm text-white placeholder:text-zinc-700 outline-none disabled:opacity-50"
             />
           </div>
