@@ -155,7 +155,7 @@ export default function EditProfileForm({ initialProfile }: Props) {
           <label className="block text-sm font-medium text-zinc-400">Avatar Image</label>
           <input
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/webp"
             onChange={(e) => handleAvatarUpload(e.target.files?.[0])}
             disabled={isPending || isUploadingAvatar}
             className="block w-full rounded-xl border border-zinc-800 bg-zinc-950/60 px-3.5 py-2.5 text-sm text-zinc-400 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50"

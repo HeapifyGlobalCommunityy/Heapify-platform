@@ -8,13 +8,19 @@ export const STORAGE_BUCKETS = {
 } as const;
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
 
 export async function uploadPublicImage(
   bucket: string,
   file: File
 ): Promise<string> {
-  if (!file.type.startsWith("image/")) {
-    throw new Error("Please select an image file.");
+  const extension = ALLOWED_IMAGE_TYPES[file.type];
+  if (!extension) {
+    throw new Error("Please select a PNG, JPG, or WebP image.");
   }
 
   if (file.size > MAX_IMAGE_SIZE) {
@@ -34,7 +40,6 @@ export async function uploadPublicImage(
     throw new Error("You must be signed in to upload an image.");
   }
 
-  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const path = `${user.id}/${crypto.randomUUID()}.${extension}`;
 
   const { data, error } = await supabase.storage

@@ -270,7 +270,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
           <Input
             id="bannerFile"
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/webp"
             onChange={(e) => handleBannerUpload(e.target.files?.[0])}
             disabled={isLoading || isUploadingBanner}
           />
