@@ -13,6 +13,7 @@ declare global {
           callback?: (token: string) => void;
           action?: string;
           theme?: "auto" | "light" | "dark";
+          appearance?: "always" | "execute" | "interaction-only";
           "expired-callback"?: () => void;
           "error-callback"?: () => void;
         }
@@ -53,6 +54,7 @@ export function TurnstileWidget({
       sitekey: siteKey,
       action,
       theme,
+      appearance: "always",
       callback: (token) => onTokenChange(token),
       "expired-callback": () => {
         onTokenChange(null);
@@ -86,7 +88,7 @@ export function TurnstileWidget({
       <Script
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
-        onLoad={() => setIsScriptReady(true)}
+        onReady={() => setIsScriptReady(true)}
       />
       <div id={containerId} className="min-h-[65px]" />
     </>

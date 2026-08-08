@@ -55,12 +55,6 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
             />
 
             <div className="grid gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">Captcha</span>
-                <span className="text-xs text-muted-foreground">
-                  Required for Google and email sign-in
-                </span>
-              </div>
               <TurnstileWidget
                 key={captchaWidgetKey}
                 action={mode === "login" ? "login" : "signup"}
