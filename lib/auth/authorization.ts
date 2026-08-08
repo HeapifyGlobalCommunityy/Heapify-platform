@@ -10,7 +10,7 @@ export async function requireRole(allowedRoles : UserRole[]) {
         data : {user},
     } = await supabase.auth.getUser();
     //for users not logged in
-    if(user === null) redirect("/login?redirectTo=/admin");
+    if(user === null) redirect("/login");
 
     const {data:profile} = await supabase
     .from("profiles")
