@@ -210,7 +210,7 @@ export default async function HomePage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/20 hover:-translate-y-0.5"
               >
-                Watch the reel
+                Take a glimpse
                 <ArrowRight className="h-4 w-4" />
               </a>
               <Link href="/events/build-with-gemma-bengaluru" className="inline-flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">

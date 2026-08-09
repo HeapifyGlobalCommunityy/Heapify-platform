@@ -346,7 +346,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           </button>
         ))}
       </div>
-      <div className="relative z-0 space-y-5">
+      <div className="relative z-0 space-y-8">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => <EventCardSkeleton key={i} />)
         ) : filtered.length === 0 ? (
