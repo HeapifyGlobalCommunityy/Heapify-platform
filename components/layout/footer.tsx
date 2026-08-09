@@ -38,11 +38,11 @@ export function Footer() {
   const filteredColumns = columns.map((col) => ({
     ...col,
     links: col.links.filter((l) => {
-      if (isProd) {
-        return !["/challenges", "/open-source", "/resources"].includes(l.href);
-      }
-      return true;
-    }),
+        if (isProd) {
+          return !["/challenges", "/open-source", "/resources", "/internships", "/sponsor"].includes(l.href);
+        }
+        return true;
+      }),
   }));
 
   return (

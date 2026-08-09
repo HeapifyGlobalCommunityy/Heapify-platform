@@ -304,7 +304,7 @@ export const teamSections = [
       {
         name: "Md Oveaz",
         role: "Tech Lead",
-        bio: "Full-stack developer building Heapify's core platform.",
+        bio: "Owns the database schema, access control, and platform security — keeping Heapify's backend robust and reliable.",
         links: ["GitHub", "LinkedIn"],
       },
       {
@@ -320,9 +320,9 @@ export const teamSections = [
         links: ["GitHub", "LinkedIn"],
       },
       {
-        name: "Krish",
+        name: "Harshith",
         role: "Technology",
-        bio: "Contributes to platform features and community tooling.",
+        bio: "Frontend developer shaping the interfaces and interactions that bring Heapify to life.",
         links: ["GitHub"],
       },
       {
@@ -366,27 +366,22 @@ export const socialChannels = [
   {
     title: "WhatsApp",
     href: "https://chat.whatsapp.com/EiPms0OwtDY87nkjuplDiZ",
-    description: "Join the Heapify builder community on WhatsApp.",
+    description: "Join the Heapify builder group on WhatsApp — quick updates, event reminders, and community check-ins.",
   },
   {
     title: "Instagram",
     href: "https://www.instagram.com/heapify_",
-    description: "Event recaps, community moments, and builder highlights.",
+    description: "Event recaps, behind-the-scenes moments, and highlights from the Heapify builder community.",
   },
   {
     title: "Twitter / X",
     href: "https://x.com/Heapifyy",
-    description: "Quick updates, announcements, and event highlights.",
+    description: "Real-time announcements, event drops, and updates straight from the Heapify team.",
   },
   {
     title: "LinkedIn",
     href: "https://www.linkedin.com/in/heapify-global-community-7bb767414/",
-    description: "Community news, opportunities, and partner-facing updates.",
-  },
-  {
-    title: "GitHub",
-    href: "https://github.com/HeapifyGlobalCommunityy",
-    description: "Open-source repos, contributions, and community projects.",
+    description: "Community milestones, partner updates, and professional opportunities for builders.",
   },
 ];
 

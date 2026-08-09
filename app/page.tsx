@@ -1,9 +1,35 @@
 import { Suspense } from "react";
-import { brand, communityJourney, featuredEvents, partners, stats, whatWeDo } from "@/lib/site-content";
-import { CTAComponent, EventCard, FeatureCard, Hero, SectionWrapper, StatsComponent } from "@/components/site/ui";
+import { brand, communityJourney, partners, stats, whatWeDo } from "@/lib/site-content";
+import { CTAComponent, FeatureCard, Hero, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
+import { getEvents } from "@/lib/supabase/queries";
 import Link from "next/link";
+import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+// ─── Helpers (mirrored from events/page.tsx) ─────────────────────────────
+function formatCategory(cat: string): string {
+  const map: Record<string, string> = {
+    web3: "Web3", blockchain: "Blockchain", hackathon: "Hackathon",
+    open_source: "Open Source", workshop: "Workshop", internship_session: "Internship Session",
+  };
+  return map[cat] ?? cat;
+}
+
+function computeEventStatus(db_status: string, start_at: string, end_at: string | null): string {
+  if (db_status === "cancelled") return "Cancelled";
+  const now = new Date();
+  const start = new Date(start_at);
+  const end = end_at ? new Date(end_at) : start;
+  if (now > end) return "Past";
+  if (now >= start && now <= end) return "Ongoing";
+  return "Upcoming";
+}
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+}
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -14,6 +40,24 @@ export default async function HomePage() {
   }
 
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
+
+  // Fetch the single most recent/upcoming event from DB
+  const { data: dbEvents } = await getEvents(0, 5);
+  const latestEvent = dbEvents && dbEvents.length > 0
+    ? (() => {
+        const ev = dbEvents[0];
+        return {
+          slug: ev.slug,
+          title: ev.title,
+          category: formatCategory(ev.category),
+          status: computeEventStatus(ev.status, ev.start_at, ev.end_at),
+          date: formatDate(ev.start_at),
+          location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+          format: ev.is_virtual ? "Virtual" : "In-Person",
+          description: ev.description || "",
+        };
+      })()
+    : null;
 
   return (
     <>
@@ -31,51 +75,6 @@ export default async function HomePage() {
         <StatsComponent stats={stats} />
       </SectionWrapper>
 
-      {/* Flagship Hackathon Card */}
-      <SectionWrapper eyebrow="Flagship Event" title="Build with Gemma: Bengaluru AI Sprint">
-        <div className="relative overflow-hidden rounded-[2rem] border border-primary/30 bg-[linear-gradient(135deg,rgba(255,122,0,0.10),rgba(255,255,255,0.02))] p-8 md:p-12 backdrop-blur-xl">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.12),transparent)]" />
-          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            <div className="max-w-2xl space-y-4">
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">Hackathon</span>
-                <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">Past Event</span>
-                <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">Offline</span>
-              </div>
-              <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-                Build with Gemma:<br className="hidden sm:block" /> Bengaluru AI Sprint
-              </h3>
-              <p className="text-sm leading-7 text-muted-foreground md:text-base">
-                Heapify&apos;s flagship AI hackathon — an offline sprint at Ramaiah Institute of Technology, Bengaluru, where builders came together to develop innovative solutions using Google&apos;s Gemma ecosystem.
-              </p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
-                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Date</div>
-                  <div className="mt-1 text-sm font-medium">July 18, 2026</div>
-                </div>
-                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
-                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Location</div>
-                  <div className="mt-1 text-sm font-medium">MSRIT, Bengaluru</div>
-                </div>
-                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
-                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Participants</div>
-                  <div className="mt-1 text-sm font-medium">~250 builders</div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 md:items-end md:shrink-0">
-              <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-5 py-4 text-center md:text-right">
-                <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Prize Pool</div>
-                <div className="mt-1 font-display text-2xl font-semibold text-primary">$1,000</div>
-              </div>
-              <Link href="/events/build-with-gemma-bengaluru" className="inline-flex items-center gap-2 rounded-lg border border-glass-border bg-glass-bg px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
-                View event details →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </SectionWrapper>
-
       <SectionWrapper eyebrow="What We Do" title="A community built around action" description="Everything Heapify does is about builders — people who learn, ship, and create.">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {whatWeDo.map((item) => (
@@ -84,12 +83,42 @@ export default async function HomePage() {
         </div>
       </SectionWrapper>
 
+      {/* Latest event from DB — full-width spotlight */}
       <SectionWrapper eyebrow="Events" title="Where builders show up" action={{ label: "See all events", href: "/events", variant: "ghost" }}>
-        <div className="grid gap-5 lg:grid-cols-3">
-          {featuredEvents.map((event) => (
-            <EventCard key={event.slug} event={event} />
-          ))}
-        </div>
+        {latestEvent ? (
+          <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl">
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_70%_50%,rgba(255,122,0,0.08),transparent)]" />
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl space-y-5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{latestEvent.category}</span>
+                  <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.status}</span>
+                  <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.format}</span>
+                </div>
+                <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">{latestEvent.title}</h3>
+                {latestEvent.description && (
+                  <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">{latestEvent.description}</p>
+                )}
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-primary" />{latestEvent.date}</span>
+                  <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" />{latestEvent.location}</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 md:shrink-0 md:items-end">
+                <Button asChild>
+                  <Link href={`/events/${latestEvent.slug}`}>View event <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/events">All events</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-12 text-center text-sm text-muted-foreground">
+            No upcoming events right now — check back soon.
+          </div>
+        )}
       </SectionWrapper>
 
       <SectionWrapper
@@ -139,8 +168,58 @@ export default async function HomePage() {
         </div>
       </SectionWrapper>
 
-      {/* Built by the Community — replaces fake testimonials */}
+      {/* Built by the Community */}
       <SectionWrapper eyebrow="Community" title="Built by the Community" description="From hackathons and technical sessions to collaborative projects and open-source initiatives, Heapify is shaped by the builders who participate in it." />
+
+      {/* Flagship event — at the bottom, above CTA */}
+      <SectionWrapper eyebrow="Our Flagship Event" title="A glimpse into where we&apos;ve been">
+        <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(255,122,0,0.07),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.10),transparent)]" />
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div className="max-w-2xl space-y-5">
+              <div className="flex flex-wrap gap-2">
+                <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">Hackathon</span>
+                <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">Past Event</span>
+                <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">MSRIT, Bengaluru</span>
+              </div>
+              <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+                Build with Gemma:<br className="hidden sm:block" /> Bengaluru AI Sprint
+              </h3>
+              <p className="text-sm leading-7 text-muted-foreground md:text-base">
+                250 builders. One offline AI sprint. Heapify&apos;s first flagship hackathon brought together students and developers at MSRIT to build innovative solutions using Google&apos;s Gemma ecosystem — and it was just the beginning.
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
+                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Date</div>
+                  <div className="mt-1 text-sm font-medium">July 18, 2026</div>
+                </div>
+                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
+                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Participants</div>
+                  <div className="mt-1 text-sm font-medium">~250 builders</div>
+                </div>
+                <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
+                  <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Prize Pool</div>
+                  <div className="mt-1 font-display text-sm font-semibold text-primary">$1,000</div>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3 md:items-end md:shrink-0">
+              <a
+                href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/20 hover:-translate-y-0.5"
+              >
+                Watch the reel
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <Link href="/events/build-with-gemma-bengaluru" className="inline-flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">
+                Event details →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
 
       <CTAComponent
         title="Ready to Build Something?"
