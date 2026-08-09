@@ -1,8 +1,8 @@
 export const brand = {
   name: "Heapify Global Community",
   tagline: "For Builders, Not Spectators",
-  mission: "To build a community where students, developers, and creators have a real space to learn by doing — through events, collaboration, open-source work, and initiatives that prioritize shipping over spectating.",
-  vision: "A world where every builder, regardless of background or geography, has access to a community that helps them grow, contribute, and create meaningful impact through technology.",
+  mission: "To build a space where developers and creators learn by doing—prioritizing shipping over spectating.",
+  vision: "A world where every builder has the community they need to create meaningful impact.",
 };
 
 export const navigationLinks = [
