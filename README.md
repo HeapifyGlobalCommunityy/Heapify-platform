@@ -8,6 +8,8 @@ A product-grade community operating system featuring event directories, challeng
 
 The platform uses a hybrid server/client model to deliver speed, security, and real-time interaction:
 
+For contributor-oriented documentation, start with the [documentation index](docs/README.md). It links to the architecture overview, local development guide, database notes, and event-registration flow.
+
 ```mermaid
 graph TD
     User([User Browser])
@@ -26,7 +28,7 @@ graph TD
 
 1. **Next.js 15 App Router**: Focuses on Server-First design using React Server Components (RSC) to handle page data queries directly in Node.js, combined with Client Components for dynamic slide drawers and forms.
 2. **Supabase SSR**: Session management is cookie-driven. The middleware ([middleware.ts](file:///c:/Coding/heapify/middleware.ts)) refreshes expired auth tokens on the fly, while [server.ts](file:///c:/Coding/heapify/lib/supabase/server.ts) allows server-side pages to authenticate requests safely.
-3. **Turnstile Captcha Verification**: Sign-up, Sign-in, and reset flows are secured with Cloudflare Turnstile token validation via internal APIs to prevent automated bot requests.
+3. **Turnstile CAPTCHA Verification**: Sign-up, sign-in, and reset flows are secured with Cloudflare Turnstile token validation via internal APIs to prevent automated bot requests.
 4. **Environment-Based Feature Flags**: To support clean releases, non-production features are filtered from navigation menus and landing screens on production builds.
 
 ---
