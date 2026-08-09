@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createEvent, CreateEventPayload } from "@/lib/actions/events";
+import { STORAGE_BUCKETS, uploadPublicImage } from "@/lib/storage/client";
 
 export type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
 
@@ -61,6 +62,7 @@ export function CreateEventForm() {
 
   // UI States
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -169,8 +171,25 @@ export function CreateEventForm() {
     setSpeakers(speakers.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
+  const handleBannerUpload = async (file: File | undefined) => {
+    if (!file) return;
+
+    setError(null);
+    setIsUploadingBanner(true);
+
+    try {
+      const bannerUrl = await uploadPublicImage(STORAGE_BUCKETS.eventBanners, file);
+      setBannerUrl(bannerUrl);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Banner upload failed.");
+    } finally {
+      setIsUploadingBanner(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading || isUploadingBanner) return;
     setIsLoading(true);
     setError(null);
     setSuccess(null);
@@ -411,13 +430,23 @@ export function CreateEventForm() {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="bannerUrl">Banner Image URL</Label>
+          <Label htmlFor="bannerFile">Banner Image</Label>
+          <Input
+            id="bannerFile"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => handleBannerUpload(e.target.files?.[0])}
+            disabled={isLoading || isUploadingBanner}
+          />
+          <p className="text-xs text-muted-foreground">
+            {isUploadingBanner ? "Uploading banner..." : "PNG, JPG, or WebP up to 5 MB."}
+          </p>
           <Input 
             id="bannerUrl"
-            placeholder="https://images.unsplash.com/..."
+            placeholder="Or paste an external image URL"
             value={bannerUrl}
             onChange={(e) => setBannerUrl(e.target.value)}
-            disabled={isLoading}
+            disabled={isLoading || isUploadingBanner}
           />
         </div>
 
