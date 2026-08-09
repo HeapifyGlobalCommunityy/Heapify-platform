@@ -149,7 +149,7 @@ export default async function HomePage() {
       <SectionWrapper eyebrow="Community Journey" title="From discovery to leadership" description="The path every Heapify builder takes — from first event to community leader.">
         <div className="grid gap-4 md:grid-cols-4">
           {communityJourney.map((step) => (
-            <div key={step.step} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+            <div key={step.step} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(255,122,0,0.08)]">
               <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/80">{step.step}</div>
               <h3 className="mt-4 font-display text-2xl font-semibold tracking-tight">{step.title}</h3>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.description}</p>
@@ -173,7 +173,7 @@ export default async function HomePage() {
 
       {/* Flagship event — at the bottom, above CTA */}
       <SectionWrapper eyebrow="Our Flagship Event" title="A glimpse into where we&apos;ve been">
-        <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(255,122,0,0.07),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(255,122,0,0.07),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.10),transparent)]" />
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-2xl space-y-5">

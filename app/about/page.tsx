@@ -11,11 +11,11 @@ export default function AboutPage() {
         className="pt-40"
       >
         <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl">
+          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
             <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-primary">Mission</h3>
             <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.mission}</p>
           </div>
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl">
+          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_12px_40px_rgba(59,130,246,0.12)]">
             <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-blue-400">Vision</h3>
             <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.vision}</p>
           </div>

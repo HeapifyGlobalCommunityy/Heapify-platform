@@ -16,7 +16,7 @@ import { HeapifyLogo } from "@/components/layout/logo";
 
 export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("px-6 py-24", className)}>
+    <section className={cn("px-6 py-16 md:py-20", className)}>
       <div className="mx-auto w-full max-w-6xl">
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6 }} className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl space-y-3">
