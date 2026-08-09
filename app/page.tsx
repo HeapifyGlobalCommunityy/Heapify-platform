@@ -213,7 +213,7 @@ export default async function HomePage() {
                 Take a glimpse
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <Link href="/events/build-with-gemma-bengaluru" className="inline-flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/events/build-with-gemma" className="inline-flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">
                 Event details →
               </Link>
             </div>

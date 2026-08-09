@@ -184,6 +184,13 @@ export const partners = [
   "Kaggle",
   "MSRIT — ISE Dept.",
   "Nexus Spring of Code",
+  "AI Mobile Coders",
+  "RedBull",
+  "Google for Developers",
+  "Devfolio",
+  "Enetopia",
+  "Open Source Connect",
+  "Hackhere",
 ];
 
 export const testimonials: Array<{ quote: string; name: string; role: string }> = [];
@@ -223,6 +230,30 @@ export const timeline = [
     title: "500+ builders joined",
     description:
       "The community grew to 500+ members through events, hackathons, and word-of-mouth among students and developers.",
+  },
+  {
+    year: "Jun 2026",
+    title: "Web3 to GSoC'27 – Session 01",
+    description:
+      "First session under the Web3 to GSoC'27 Initiative. Speaker: Suryansh Maurya, GSoC Contributor. Host: Madhusudan LS, NHCE.",
+  },
+  {
+    year: "Jun 2026",
+    title: "Web3 to GSoC'27 – Session 02",
+    description:
+      "From First Issue to First Merge: Building a Strong Open Source Profile. Speaker: Priyanshu Yadav, GSoC 2026 & 2025 Contributor.",
+  },
+  {
+    year: "2026",
+    title: "Mission BAH'26: From Earth to Orbit",
+    description:
+      "A comprehensive session to help students navigate the Bhartiya Antariksh Hackathon 2026, with insights from national winners and researchers.",
+  },
+  {
+    year: "2026",
+    title: "Builder Talks #01 – Freelancing & Builder Meet",
+    description:
+      "Community session on freelancing and building a sustainable tech career. Speakers: Harsha Nandi (NSoC) and Aman Singh, Founder NSoC & GSSoC'25 Rank #3.",
   },
   {
     year: "Jul 2026",
