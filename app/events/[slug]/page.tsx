@@ -80,6 +80,7 @@ export default async function EventDetailPage({
   const { register } = await searchParams;
 
   // 1. Fetch main event by slug
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let ev: any = null;
   const { data: dbEv, error } = await getEventBySlug(slug);
   
