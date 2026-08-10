@@ -11,11 +11,11 @@ export default function AboutPage() {
         className="pt-40"
       >
         <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl">
+          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
             <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-primary">Mission</h3>
             <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.mission}</p>
           </div>
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl">
+          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_12px_40px_rgba(59,130,246,0.12)]">
             <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-blue-400">Vision</h3>
             <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.vision}</p>
           </div>
@@ -45,7 +45,7 @@ export default function AboutPage() {
       >
         <div className="relative mt-12 max-w-4xl space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
           {timeline.map((item) => (
-            <div key={item.year} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
+            <div key={item.title} className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active`}>
               <div className="flex items-center justify-center w-10 h-10 rounded-full border border-glass-border bg-black shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
                 <div className="w-3 h-3 bg-primary rounded-full shadow-[0_0_12px_rgba(255,122,0,0.8)]" />
               </div>

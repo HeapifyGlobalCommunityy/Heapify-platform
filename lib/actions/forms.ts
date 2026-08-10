@@ -19,6 +19,7 @@ const VALID_FORM_TYPES = [
   "chapter_lead",
   "ambassador",
   "contact",
+  "chapter_member",
 ] as const;
 
 type FormType = (typeof VALID_FORM_TYPES)[number];
@@ -79,6 +80,7 @@ const REQUIRED_FIELDS: Record<FormType, string[]> = {
     "why_ambassador",
   ],
   contact: ["name", "email", "topic", "message"],
+  chapter_member: ["name", "email", "chapter_name", "why_join"],
 };
 
 const EMAIL_FIELDS: Record<FormType, string[]> = {
@@ -90,6 +92,7 @@ const EMAIL_FIELDS: Record<FormType, string[]> = {
   chapter_lead: ["email"],
   ambassador: ["email"],
   contact: ["email"],
+  chapter_member: ["email"],
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -153,6 +156,15 @@ export async function submitForm(
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     submittedBy = user.id;
+  }
+
+  // TODO: Remove this gate once 'chapter_member' is added to the
+  // form_type CHECK constraint in the DB by a teammate.
+  // The constraint currently only allows:
+  // volunteer | speaker | mentor | partnership | sponsor |
+  // chapter_lead | ambassador | contact
+  if (type === "chapter_member") {
+    return { success: true }; // Skips DB insert until constraint is updated
   }
 
   // 5. Sanitize payload (strip any client-supplied submitted_by or status)

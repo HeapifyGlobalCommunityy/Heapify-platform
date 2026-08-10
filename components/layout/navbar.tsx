@@ -4,7 +4,7 @@ import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeapifyLogo } from "@/components/layout/logo";
@@ -15,6 +15,8 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const router = useRouter();
@@ -27,6 +29,28 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     }
     return true;
   });
+
+  // Hide on scroll down, reveal on scroll up
+  useEffect(() => {
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      // Always show when near the top
+      if (currentY < 80) {
+        setVisible(true);
+      } else if (currentY > lastScrollY.current + 4) {
+        // Scrolling down — hide
+        setVisible(false);
+        setOpen(false); // close mobile menu if open
+      } else if (currentY < lastScrollY.current - 4) {
+        // Scrolling up — show
+        setVisible(true);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -82,7 +106,13 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   };
 
   return (
-    <nav className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2">
+    <nav
+      className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2 transition-all duration-300 ease-in-out"
+      style={{
+        transform: `translateX(-50%) translateY(${visible ? "0" : "-130%"})`,
+        opacity: visible ? 1 : 0,
+      }}
+    >
       <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <HeapifyLogo className="h-5 w-5" />
@@ -115,7 +145,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           >
             {mounted ? (theme === "dark" ? <Sun size={15} /> : <Moon size={15} />) : <div className="h-[15px] w-[15px]" />}
           </button>
-          
+
           {mounted && user ? (
             <>
               {!isProd && (
@@ -126,10 +156,10 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                 <Link href="/profile">Profile</Link>
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="ghost"
-                className="hidden sm:inline-flex" 
+                className="hidden sm:inline-flex"
                 onClick={handleSignOut}
                 disabled={isSigningOut}
               >

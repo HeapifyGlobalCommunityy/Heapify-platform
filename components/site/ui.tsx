@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, CalendarDays, ExternalLink, Filter, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Dropdown from "@/components/ui/dropdown";
@@ -16,7 +16,7 @@ import { HeapifyLogo } from "@/components/layout/logo";
 
 export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("px-6 py-24", className)}>
+    <section className={cn("px-6 py-16 md:py-20", className)}>
       <div className="mx-auto w-full max-w-6xl">
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6 }} className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-3xl space-y-3">
@@ -88,7 +88,7 @@ function AnimatedValue({ value }: { value: number }) {
 
 export function StatsComponent({ stats }: { stats: Array<{ label: string; value: number; detail: string }> }) {
   return (
-    <div className="grid gap-4 md:grid-cols-5">
+    <div className={`grid gap-4 ${stats.length <= 2 ? "max-w-2xl md:grid-cols-2" : "md:grid-cols-5"}`}>
       {stats.map((stat, index) => (
         <motion.div key={stat.label} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.45, delay: index * 0.05 }} whileHover={{ y: -4 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
           <div className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl"><AnimatedValue value={stat.value} /></div>
@@ -135,6 +135,44 @@ export function EventCard({ event, compact = false }: { event: { slug: string; t
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
+      </div>
+    </motion.article>
+  );
+}
+
+export function EventCardWide({ event }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; format?: string; description?: string; summary?: string; spotlight?: string } }) {
+  return (
+    <motion.article
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.25 }}
+      className="group relative overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-8 backdrop-blur-xl"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(255,122,0,0.10),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex-1 space-y-4 min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{event.category}</span>
+            <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.status}</span>
+            {event.format && <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.format}</span>}
+          </div>
+          <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">{event.title}</h3>
+          {(event.summary || event.description) && (
+            <p className="text-sm leading-7 text-muted-foreground max-w-2xl line-clamp-2">{event.summary ?? event.description}</p>
+          )}
+          <div className="flex flex-wrap gap-3">
+            <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground">
+              <CalendarDays className="h-3.5 w-3.5 text-primary" />{event.date}
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5 text-primary" />{event.location}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row gap-3 md:flex-col md:items-end md:shrink-0">
+          <Button asChild>
+            <Link href={`/events/${event.slug}`}>View event <ArrowRight className="ml-2 h-4 w-4" /></Link>
+          </Button>
+        </div>
       </div>
     </motion.article>
   );
@@ -196,16 +234,23 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
   );
 }
 
-export function SocialCard({ title, description }: { title: string; description: string }) {
+export function SocialCard({ title, description, href }: { title: string; description: string; href: string }) {
   return (
-    <motion.article whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      whileHover={{ y: -6, scale: 1.01 }}
+      transition={{ duration: 0.25 }}
+      className="block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl cursor-pointer"
+    >
       <h3 className="font-display text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
       <div className="mt-6 inline-flex items-center gap-2 text-sm text-primary">
         Open channel
         <ExternalLink className="h-4 w-4" />
       </div>
-    </motion.article>
+    </motion.a>
   );
 }
 
@@ -272,7 +317,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
+      <div className="relative z-10 grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
         <label className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-sm text-muted-foreground">
           <Search className="h-4 w-4 text-primary" />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
@@ -301,9 +346,9 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           </button>
         ))}
       </div>
-      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="relative z-0 space-y-8">
         {isLoading ? (
-          Array.from({ length: 6 }).map((_, i) => <EventCardSkeleton key={i} />)
+          Array.from({ length: 3 }).map((_, i) => <EventCardSkeleton key={i} />)
         ) : filtered.length === 0 ? (
           <EmptyState
             title="No events found"
@@ -313,8 +358,8 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           />
         ) : (
           filtered.map((event, index) => (
-            <motion.div key={event.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }} className="flex">
-              <EventCard event={event} compact />
+            <motion.div key={event.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }}>
+              <EventCardWide event={event} />
             </motion.div>
           ))
         )}
