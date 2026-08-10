@@ -43,6 +43,7 @@ next-env.d.ts
 # Project planning docs (not part of the codebase)
 *.md
 !README.md
+!SITE_STRUCTURE.md
 *.docx
 *.pdf
 context.txt

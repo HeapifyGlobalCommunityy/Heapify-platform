@@ -61,7 +61,7 @@ export const whatWeDo = [
 
 export const featuredEvents = [
   {
-    slug: "build-with-gemma-bengaluru",
+    slug: "build-with-gemma",
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
@@ -87,21 +87,69 @@ export const eventStatuses = ["All", "Upcoming", "Ongoing", "Past"];
 
 export const eventCatalog = [
   {
-    slug: "build-with-gemma-bengaluru",
+    slug: "build-with-gemma",
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 18, 2026",
-    time: "All day",
-    format: "Offline",
+    date: "Jul 12, 2026",
+    time: "3:30 PM – 5:00 PM IST",
+    format: "Offline + Virtual",
     location: "MSRIT, Bengaluru",
     description:
-      "Heapify's flagship AI hackathon — an offline sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+      "Heapify's flagship AI hackathon briefing and sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+  },
+  {
+    slug: "web3-gsoc27-session-1",
+    title: "Web3 to GSoC'27 Initiative — Session 01",
+    category: "Open Source",
+    status: "Past",
+    date: "Jun 07, 2026",
+    time: "2:00 PM – 3:30 PM IST",
+    format: "Virtual",
+    location: "Google Meet",
+    description:
+      "Initiative session on open source contributions, GSoC preparation, and building a contributor profile. Speaker: Suryansh Maurya (GSoC Contributor). Host: Madhusudhan LS (NHCE).",
+  },
+  {
+    slug: "web3-gsoc27-session-2",
+    title: "Web3 to GSoC'27 — Session 02: From First Issue to First Merge",
+    category: "Open Source",
+    status: "Past",
+    date: "Jun 14, 2026",
+    time: "3:00 PM – 4:30 PM IST",
+    format: "Virtual",
+    location: "Google Meet",
+    description:
+      "Understanding open-source workflows, navigating GitHub projects, and building a strong contributor profile. Speaker: Priyanshu Yadav (GSoC '26 @ OSIPI, GSoC '25 @ DBpedia). Host: Madhusudhan LS.",
+  },
+  {
+    slug: "mission-bah-2026",
+    title: "Mission BAH'26: From Earth to Orbit",
+    category: "Hackathon",
+    status: "Past",
+    date: "Jun 21, 2026",
+    time: "3:00 PM – 4:30 PM IST",
+    format: "Virtual",
+    location: "Google Meet",
+    description:
+      "A complete roadmap to the Bhartiya Antariksh Hackathon 2026 with insights from national winners and space tech researchers.",
+  },
+  {
+    slug: "builder-talks-01",
+    title: "Builder Talks #01 — Freelancing & Developer Career Building",
+    category: "Community",
+    status: "Past",
+    date: "Jul 05, 2026",
+    time: "4:00 PM – 5:30 PM IST",
+    format: "Virtual",
+    location: "Google Meet",
+    description:
+      "Collaborative session with Nexus Spring of Code (NSoC) focusing on freelancing, developer profile building, and ecosystem growth. Speakers: Harsha Nandi & Aman Singh.",
   },
 ];
 
 export const eventDetail = {
-  slug: "build-with-gemma-bengaluru",
+  slug: "build-with-gemma",
   title: "Build with Gemma: Bengaluru AI Sprint",
   banner: "",
   category: "Hackathon",
