@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles, Github, Linkedin } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Dropdown from "@/components/ui/dropdown";
@@ -214,7 +214,7 @@ export function ProjectCard({ project }: { project: { slug: string; title: strin
   );
 }
 
-export function TeamCard({ member }: { member: { name: string; role: string; bio: string; links: string[] } }) {
+export function TeamCard({ member }: { member: { name: string; role: string; bio: string; links: Array<{ platform: string; url: string }> } }) {
   return (
     <motion.article whileHover={{ y: -5 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
       <div className="flex items-start justify-between gap-4">
@@ -225,10 +225,21 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
         <div className="h-12 w-12 rounded-2xl border border-glass-border bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_62%)]" />
       </div>
       <p className="mt-4 text-sm leading-7 text-muted-foreground">{member.bio}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {member.links.map((link) => (
-          <span key={link} className="rounded-full border border-glass-border px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{link}</span>
-        ))}
+      <div className="mt-5 flex items-center gap-3">
+        {member.links.map((link) => {
+          const Icon = link.platform === "github" ? Github : Linkedin;
+          return (
+            <a
+              key={link.platform}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-glass-border bg-glass-bg text-muted-foreground hover:text-white hover:border-primary/40 hover:shadow-[0_0_15px_rgba(255,122,0,0.2)] transition-all duration-300"
+            >
+              <Icon className="h-4 w-4" />
+            </a>
+          );
+        })}
       </div>
     </motion.article>
   );
