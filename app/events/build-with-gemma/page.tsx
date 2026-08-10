@@ -10,9 +10,7 @@ import {
   Laptop,
   Camera,
 } from "lucide-react";
-import { SectionWrapper } from "@/components/site/ui";
-import { cn } from "@/lib/utils";
-import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
+
 
 export default async function BuildWithGemmaPage() {
   const agendaItems = [
