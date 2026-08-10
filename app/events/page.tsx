@@ -15,6 +15,7 @@ export const revalidate = 60;
 
 import { getEvents } from "@/lib/supabase/queries";
 import { EventsExplorer, SectionWrapper } from "@/components/site/ui";
+import { eventCatalog } from "@/lib/site-content";
 
 // Helper to format database category enum value to UI label
 function formatCategory(category: string): string {
@@ -83,7 +84,7 @@ export default async function EventsPage() {
   }
 
   // Map database rows to UI structure
-  const mappedEvents = dbEvents.map((ev: {
+  const mappedDbEvents = dbEvents.map((ev: {
     slug: string;
     title: string;
     category: string;
@@ -110,10 +111,21 @@ export default async function EventsPage() {
     };
   });
 
+  // Combine database events and pre-configured static events, avoiding duplicate slugs
+  const allEvents = [...mappedDbEvents];
+  for (const staticEv of eventCatalog) {
+    if (!allEvents.some((e) => e.slug === staticEv.slug)) {
+      allEvents.push({
+        ...staticEv,
+        summary: staticEv.description,
+      });
+    }
+  }
+
   // Construct dynamic category list based on existing events
   const dynamicCategories: string[] = [
     "All",
-    ...Array.from(new Set(mappedEvents.map((e: { category: string }) => e.category))) as string[],
+    ...Array.from(new Set(allEvents.map((e: { category: string }) => e.category))) as string[],
   ];
 
   return (
@@ -124,7 +136,7 @@ export default async function EventsPage() {
         className="pt-40 pb-12"
       >
         <div className="mt-8">
-          <EventsExplorer events={mappedEvents} categories={dynamicCategories} />
+          <EventsExplorer events={allEvents} categories={dynamicCategories} />
         </div>
       </SectionWrapper>
     </>

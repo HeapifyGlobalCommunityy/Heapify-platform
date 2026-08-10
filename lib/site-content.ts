@@ -87,16 +87,28 @@ export const eventStatuses = ["All", "Upcoming", "Ongoing", "Past"];
 
 export const eventCatalog = [
   {
-    slug: "build-with-gemma",
+    slug: "build-with-gemma-sprint",
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 12, 2026",
-    time: "3:30 PM – 5:00 PM IST",
-    format: "Offline + Virtual",
+    date: "Jul 18, 2026",
+    time: "All day",
+    format: "Offline",
     location: "MSRIT, Bengaluru",
     description:
-      "Heapify's flagship AI hackathon briefing and sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+      "Heapify's flagship offline AI hackathon sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+  },
+  {
+    slug: "build-with-gemma",
+    title: "Build with Gemma: Official Briefing Session",
+    category: "Workshop",
+    status: "Past",
+    date: "Jul 12, 2026",
+    time: "3:30 PM – 5:00 PM IST",
+    format: "Virtual",
+    location: "Online",
+    description:
+      "Official briefing and orientation session for the Build with Gemma hackathon with speaker Atharva Patwardhan.",
   },
   {
     slug: "web3-gsoc27-session-1",
@@ -341,6 +353,12 @@ export const teamSections = [
     title: "Co-Founders",
     members: [
       {
+        name: "Avishkar More",
+        role: "Co-Founder & Tech Lead",
+        bio: "Co-founder of Heapify Global Community, leading the technical architecture and platform development.",
+        links: ["GitHub", "LinkedIn"],
+      },
+      {
         name: "Junaid",
         role: "Co-Founder",
         bio: "Contributes to community operations and builder initiatives.",
@@ -374,12 +392,6 @@ export const teamSections = [
   {
     title: "Technology",
     members: [
-      {
-        name: "Avishkar More",
-        role: "Tech Lead",
-        bio: "Leads the technical architecture and platform development.",
-        links: ["GitHub", "LinkedIn"],
-      },
       {
         name: "Md Oveaz",
         role: "Tech Lead",
