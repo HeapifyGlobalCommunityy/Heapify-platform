@@ -15,6 +15,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const router = useRouter();
 
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
