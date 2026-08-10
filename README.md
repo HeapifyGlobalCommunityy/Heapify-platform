@@ -12,7 +12,7 @@ The platform uses a hybrid server/client model to deliver speed, security, and r
 graph TD
     User([User Browser])
     NextJS[Next.js App Router]
-    SupabaseSSR[supabase/ssr client/server]
+    SupabaseSSR["@supabase/ssr client/server"]
     SupabaseDB[(Supabase Database)]
     Turnstile[Cloudflare Turnstile API]
 
