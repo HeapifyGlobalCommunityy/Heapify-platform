@@ -87,8 +87,9 @@ export default function DynamicForm({ formType, config }: Props) {
           Submission Received
         </h2>
         <p className="text-sm text-muted-foreground leading-7 max-w-md mx-auto">
-          Your submission is currently pending review. We will reach out to you
-          shortly — keep an eye on your inbox.
+          Your <span className="text-foreground font-medium capitalize">{formType.replace(/_/g, " ")}</span> submission
+          is currently pending review. We will reach out to you shortly — keep
+          an eye on your inbox.
         </p>
       </div>
     );
@@ -108,7 +109,7 @@ export default function DynamicForm({ formType, config }: Props) {
       {config.fields.map((field) => {
         const error = fieldErrors[field.name];
         const baseInputClass = cn(
-          "w-full rounded-xl border bg-glass-bg px-4 py-3 text-sm text-white placeholder:text-muted-foreground outline-none transition-colors backdrop-blur-sm",
+          "w-full rounded-xl border bg-glass-bg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors backdrop-blur-sm",
           "focus:ring-2 focus:ring-primary/40",
           error ? "border-red-500/60" : "border-glass-border focus:border-primary/60"
         );
@@ -117,7 +118,7 @@ export default function DynamicForm({ formType, config }: Props) {
           <div key={field.name} className="space-y-2">
             <label
               htmlFor={field.name}
-              className="text-sm font-medium text-zinc-300"
+              className="text-sm font-medium text-foreground"
             >
               {field.label}
               {field.required && (
@@ -165,11 +166,11 @@ export default function DynamicForm({ formType, config }: Props) {
                 required={field.required}
                 className={cn(baseInputClass, "cursor-pointer")}
               >
-                <option value="" disabled>
+                <option value="" disabled className="bg-background text-foreground">
                   — Select one —
                 </option>
                 {field.options?.map((opt) => (
-                  <option key={opt} value={opt.toLowerCase().replace(/\s+/g, "_")}>
+                  <option key={opt} value={opt.toLowerCase().replace(/\s+/g, "_")} className="bg-background text-foreground">
                     {opt}
                   </option>
                 ))}

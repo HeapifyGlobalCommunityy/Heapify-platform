@@ -279,7 +279,7 @@ function EventDetailFull({
   bannerUrl: string | null;
 }) {
   return (
-    <article className="pt-40 pb-16 lg:pt-44">
+    <article className="pt-20 pb-16 lg:pt-24">
       <div className="mx-auto max-w-4xl px-6">
         <Link
           href="/events"
@@ -321,9 +321,6 @@ function EventDetailFull({
                  Organized by {event.chapterName}
                </p>
              )}
-            {event.banner && (
-              <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{event.banner}</p>
-            )}
             <div className="mt-10 flex flex-wrap gap-6">
               {[
                 { icon: <Calendar className="h-4 w-4 text-primary" />, label: "Date", value: event.date },

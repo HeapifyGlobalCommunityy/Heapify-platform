@@ -1,5 +1,5 @@
 import { BentoCard, BentoGrid, CTAComponent, SectionWrapper } from "@/components/site/ui";
-
+import { requireRole } from "@/lib/auth/authorization";
 const controls = [
   { title: "Events Management", description: "Review and approve Luma-grade events." },
   { title: "Projects Review", description: "Moderate open-source submissions." },
@@ -9,7 +9,8 @@ const controls = [
   { title: "Content Engine", description: "Publish resources, blogs, and roadmaps." },
 ];
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  await requireRole(["core_team","super_admin"]);
   return (
     <>
       <SectionWrapper eyebrow="Admin" title="Command Center" description="Role-based management represented as a premium control dashboard placeholder." className="pt-36">

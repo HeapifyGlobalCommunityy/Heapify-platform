@@ -38,11 +38,11 @@ export function Footer() {
   const filteredColumns = columns.map((col) => ({
     ...col,
     links: col.links.filter((l) => {
-      if (isProd) {
-        return !["/challenges", "/open-source", "/resources"].includes(l.href);
-      }
-      return true;
-    }),
+        if (isProd) {
+          return !["/challenges", "/open-source", "/resources", "/internships", "/sponsor"].includes(l.href);
+        }
+        return true;
+      }),
   }));
 
   return (
@@ -54,7 +54,7 @@ export function Footer() {
             <span className="font-display text-sm font-semibold">Heapify Global Community</span>
           </div>
           <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-            A premium frontend foundation for a global builders network, designed to scale into Supabase-powered community infrastructure.
+            For Builders, Not Spectators. A technology community for students, developers, and builders to learn, collaborate, compete, and create.
           </p>
           <div className="flex flex-wrap gap-2">
             {partners.map((partner) => (
