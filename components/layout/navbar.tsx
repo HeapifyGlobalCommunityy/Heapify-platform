@@ -2,6 +2,7 @@
 
 import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
@@ -14,8 +15,6 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [visible, setVisible] = useState(true);
-  const lastScrollY = useRef(0);
 
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
@@ -72,6 +71,35 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     return () => subscription?.unsubscribe();
   }, []);
 
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    setSignOutError(null);
+
+    try {
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+
+      if (!supabase) {
+        throw new Error("Supabase is not configured.");
+      }
+
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      setUser(null);
+      setOpen(false);
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      setSignOutError("Unable to sign out. Please try again.");
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
+
   return (
     <nav
       className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2 transition-all duration-300 ease-in-out"
@@ -112,7 +140,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           >
             {mounted ? (theme === "dark" ? <Sun size={15} /> : <Moon size={15} />) : <div className="h-[15px] w-[15px]" />}
           </button>
-          
+
           {mounted && user ? (
             <>
               {!isProd && (
@@ -123,18 +151,14 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                 <Link href="/profile">Profile</Link>
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="ghost"
-                className="hidden sm:inline-flex" 
-                onClick={async () => {
-                  setUser(null);
-                  const { createClient } = await import("@/lib/supabase/client");
-                  const supabase = createClient();
-                  await supabase?.auth.signOut();
-                }}
+                className="hidden sm:inline-flex"
+                onClick={handleSignOut}
+                disabled={isSigningOut}
               >
-                Sign Out
+                {isSigningOut ? "Signing Out..." : "Sign Out"}
               </Button>
             </>
           ) : (
@@ -157,6 +181,15 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           </button>
         </div>
       </div>
+
+      {signOutError && (
+        <p
+          role="alert"
+          className="mt-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-center text-sm text-red-400"
+        >
+          {signOutError}
+        </p>
+      )}
 
       {open && (
         <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/85 p-4 backdrop-blur-xl lg:hidden">
@@ -205,16 +238,12 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                 Profile
               </Link>
               <button
-                onClick={async () => {
-                  setOpen(false);
-                  setUser(null);
-                  const { createClient } = await import("@/lib/supabase/client");
-                  const supabase = createClient();
-                  await supabase?.auth.signOut();
-                }}
+                onClick={handleSignOut}
+                disabled={isSigningOut}
+                aria-busy={isSigningOut}
                 className="text-left text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
-                Sign Out
+                {isSigningOut ? "Signing Out..." : "Sign Out"}
               </button>
             </>
           ) : (
