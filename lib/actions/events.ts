@@ -199,15 +199,25 @@ export async function createEvent(
     return { success: false, error: "You must be logged in to create an event." };
   }
 
-  // 2. Fetch chapter led by this user
-  const { data: chapter, error: chapterError } = await supabase
+  // 2. Fetch user profile role and chapter led by user
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const { data: chapter } = await supabase
     .from("chapters")
     .select("id")
     .eq("lead_id", user.id)
     .maybeSingle();
 
-  if (chapterError || !chapter) {
-    return { success: false, error: "Unauthorized. Only chapter leads can create events." };
+  const isAuthorized =
+    (profile && ["admin", "community_admin", "chapter_lead"].includes(profile.role)) ||
+    !!chapter;
+
+  if (!isAuthorized) {
+    return { success: false, error: "Unauthorized. Only admins, community admins, and chapter leads can create events." };
   }
 
   // 3. Validation
@@ -299,7 +309,7 @@ export async function createEvent(
       custom_questions: payload.customQuestions || [],
       agenda: payload.agenda || [],
       speakers: payload.speakers || [],
-      chapter_id: chapter.id,
+      chapter_id: chapter?.id || null,
       created_by: user.id,
       status: "upcoming"
     });

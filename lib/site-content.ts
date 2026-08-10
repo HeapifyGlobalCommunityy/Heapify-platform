@@ -341,12 +341,6 @@ export const teamSections = [
         bio: "Co-drives Heapify's community strategy, events, and growth.",
         links: ["LinkedIn"],
       },
-      {
-        name: "Aahana Mohanty",
-        role: "Founding Member",
-        bio: "Founding contributor to Heapify's community and programs.",
-        links: ["LinkedIn"],
-      },
     ],
   },
   {
@@ -385,6 +379,12 @@ export const teamSections = [
         name: "Krish",
         role: "Community Admin",
         bio: "Supports community programs and member engagement.",
+        links: ["LinkedIn"],
+      },
+      {
+        name: "Aahana Mohanty",
+        role: "Community Lead",
+        bio: "Co-drives community operations, events, and builder engagement.",
         links: ["LinkedIn"],
       },
     ],

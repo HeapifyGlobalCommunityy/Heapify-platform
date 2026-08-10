@@ -16,6 +16,7 @@ export const revalidate = 60;
 import { getEvents } from "@/lib/supabase/queries";
 import { EventsExplorer, SectionWrapper } from "@/components/site/ui";
 import { eventCatalog } from "@/lib/site-content";
+import { Calendar, Trophy, Sparkles, Flame } from "lucide-react";
 
 // Helper to format database category enum value to UI label
 function formatCategory(category: string): string {
@@ -83,8 +84,18 @@ export default async function EventsPage() {
     );
   }
 
+  // Filter out mock / example events from the database query results
+  const actualDbEvents = dbEvents.filter((ev: {
+    title: string;
+    slug: string;
+    description: string | null;
+  }) => {
+    const text = (ev.title + " " + ev.slug + " " + (ev.description || "")).toLowerCase();
+    return !text.includes("example") && !text.includes("test") && !text.includes("mock");
+  });
+
   // Map database rows to UI structure
-  const mappedDbEvents = dbEvents.map((ev: {
+  const mappedDbEvents = actualDbEvents.map((ev: {
     slug: string;
     title: string;
     category: string;
@@ -122,6 +133,9 @@ export default async function EventsPage() {
     }
   }
 
+  // Sort chronologically with the latest event at the top (descending)
+  allEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   // Construct dynamic category list based on existing events
   const dynamicCategories: string[] = [
     "All",
@@ -132,10 +146,45 @@ export default async function EventsPage() {
     <>
       <SectionWrapper
         title="Events & Experiences"
-        description="Join sessions, workshops, and flagship community events happening globally."
+        description="Join our developer workshops, space hackathons, and flagship community sprints happening globally."
         className="pt-40 pb-12"
       >
-        <div className="mt-8">
+        {/* Dynamic Events Quick Stats Ribbon */}
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4 max-w-5xl mt-6 mb-12">
+          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+            <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
+              <Trophy className="h-4 w-4" /> Flagship Sprints
+            </div>
+            <div className="mt-2 text-2xl font-bold font-display">1 Concluded</div>
+            <div className="text-[10px] text-muted-foreground mt-1">Build with Gemma AI Sprint</div>
+          </div>
+
+          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+            <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
+              <Calendar className="h-4 w-4" /> Learning Sessions
+            </div>
+            <div className="mt-2 text-2xl font-bold font-display">5 Conducted</div>
+            <div className="text-[10px] text-muted-foreground mt-1">GSoC prep, Space tech, Career talks</div>
+          </div>
+
+          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+            <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
+              <Flame className="h-4 w-4" /> Active Chapters
+            </div>
+            <div className="mt-2 text-2xl font-bold font-display">4 Chapters</div>
+            <div className="text-[10px] text-muted-foreground mt-1">Spanning multiple institutions</div>
+          </div>
+
+          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+            <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
+              <Sparkles className="h-4 w-4" /> Global Scope
+            </div>
+            <div className="mt-2 text-2xl font-bold font-display">Hybrid Format</div>
+            <div className="text-[10px] text-muted-foreground mt-1">Virtual orientative + physical hackathons</div>
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-glass-border/40 pt-8">
           <EventsExplorer events={allEvents} categories={dynamicCategories} />
         </div>
       </SectionWrapper>

@@ -19,6 +19,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventBySlug } from "@/lib/supabase/queries";
 import EventDetailClient from "@/components/events/EventDetailClient";
+import { eventCatalog } from "@/lib/site-content";
 
 // Helper to format database category enum value to UI label
 function formatCategory(category: string): string {
@@ -79,7 +80,40 @@ export default async function EventDetailPage({
   const { register } = await searchParams;
 
   // 1. Fetch main event by slug
-  const { data: ev, error } = await getEventBySlug(slug);
+  let ev: any = null;
+  const { data: dbEv, error } = await getEventBySlug(slug);
+  
+  if (dbEv) {
+    ev = dbEv;
+  } else {
+    // Check fallback static catalog
+    const staticEv = eventCatalog.find((e) => e.slug === slug);
+    if (staticEv) {
+      // Parse dates safely
+      const parsedDate = new Date(staticEv.date).toString() !== "Invalid Date"
+        ? new Date(staticEv.date).toISOString()
+        : new Date().toISOString();
+
+      ev = {
+        id: "00000000-0000-0000-0000-000000000000",
+        title: staticEv.title,
+        category: staticEv.category.toLowerCase().replace(" ", "_"),
+        status: staticEv.status.toLowerCase() === "past" ? "completed" : staticEv.status.toLowerCase(),
+        start_at: parsedDate,
+        end_at: parsedDate,
+        is_virtual: staticEv.format.toLowerCase() === "virtual",
+        location: staticEv.location,
+        description: staticEv.description,
+        capacity: 0,
+        banner_url: null,
+        host_name: "Heapify Global Community",
+        registration_state: "concluded",
+        agenda: [],
+        speakers: [],
+      };
+    }
+  }
+
   if (error || !ev) {
     notFound();
   }
@@ -114,27 +148,34 @@ export default async function EventDetailPage({
       .from("events")
       .select("slug, title, category, status, start_at, location")
       .neq("slug", slug)
-      .order("start_at", { ascending: false })
       .limit(2);
-
     if (relatedEvents) {
-      related = relatedEvents.map((r: {
-        slug: string;
-        title: string;
-        category: string;
-        status: string;
-        start_at: string;
-        location: string | null;
-      }) => ({
+      related = relatedEvents.map((r) => ({
         slug: r.slug,
         title: r.title,
         category: formatCategory(r.category),
-        status: formatStatus(r.status),
+        status: formatStatus(computeEventStatus(r.status, r.start_at, r.start_at)),
         date: formatEventDate(r.start_at),
         time: formatEventTime(r.start_at),
         location: r.location || "TBD",
       }));
     }
+  }
+
+  // Fallback to static related events if database returns none
+  if (related.length === 0) {
+    related = eventCatalog
+      .filter((e) => e.slug !== slug)
+      .slice(0, 2)
+      .map((e) => ({
+        slug: e.slug,
+        title: e.title,
+        category: e.category,
+        status: e.status,
+        date: e.date,
+        time: e.time,
+        location: e.location,
+      }));
   }
 
   const computedStatus = computeEventStatus(ev.status, ev.start_at, ev.end_at);

@@ -15,6 +15,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [canCreateEvents, setCanCreateEvents] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -62,6 +63,25 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          const { data: chapter } = await supabase
+            .from("chapters")
+            .select("id")
+            .eq("lead_id", user.id)
+            .maybeSingle();
+
+          if ((profile && ["admin", "community_admin", "chapter_lead"].includes(profile.role)) || chapter) {
+            setCanCreateEvents(true);
+          }
+        }
+
         const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
           (_event: AuthChangeEvent, session: Session | null) => {
             setUser(session?.user ?? null);
@@ -148,6 +168,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
 
           {mounted && user ? (
             <>
+              {canCreateEvents && (
+                <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-primary font-semibold hover:text-primary" asChild>
+                  <Link href="/chapter/events/new">+ Event</Link>
+                </Button>
+              )}
               {!isProd && (
                 <Button variant="ghost" size="sm" className="hidden sm:inline-flex text-muted-foreground hover:text-foreground" asChild>
                   <Link href="/dashboard">Dashboard</Link>
