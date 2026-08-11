@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles, Github, Linkedin } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Dropdown from "@/components/ui/dropdown";
 import { EventCardSkeleton } from "@/components/ui/skeleton";
@@ -16,16 +16,16 @@ import { HeapifyLogo } from "@/components/layout/logo";
 
 export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("px-6 py-16 md:py-20", className)}>
+    <section className={cn("px-4 py-12 sm:px-6 md:py-20", className)}>
       <div className="mx-auto w-full max-w-6xl">
-        <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.6 }} className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-3xl space-y-3">
+        <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.5 }} className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-3xl space-y-2.5 sm:space-y-3">
             {eyebrow ? <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</div> : null}
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-5xl">{title}</h2>
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl">{title}</h2>
             {description ? <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p> : null}
           </div>
           {action ? (
-            <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"}>
+            <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto">
               <Link href={action.href}>{action.label}</Link>
             </Button>
           ) : null}
@@ -38,21 +38,21 @@ export function SectionWrapper({ eyebrow, title, description, action, children, 
 
 export function CTAComponent({ title, description, actions }: { title: string; description: string; actions: Action[] }) {
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ duration: 0.7 }} className="px-6 py-6">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] md:p-12">
+    <motion.section initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.55 }} className="px-4 py-6 sm:px-6">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-6 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.06)] dark:shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] sm:p-8 md:p-12">
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            premium community infrastructure
+            <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+            <span className="truncate">premium community infrastructure</span>
           </div>
-          <h3 className="font-display text-3xl font-semibold tracking-tight md:text-5xl">{title}</h3>
+          <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-5xl">{title}</h3>
           <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
-          <div className="flex flex-wrap gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
             {actions.map((action) => (
-              <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild>
+              <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild className="w-full sm:w-auto">
                 <Link href={action.href}>
                   {action.label}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
                 </Link>
               </Button>
             ))}
@@ -63,37 +63,70 @@ export function CTAComponent({ title, description, actions }: { title: string; d
   );
 }
 
+import { useInView } from "framer-motion";
+
 function AnimatedValue({ value }: { value: number }) {
   const [current, setCurrent] = useState(0);
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.15], [0.7, 1]);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -50px 0px" });
 
   useEffect(() => {
-    const duration = 900;
+    if (!isInView) return;
+
+    const duration = 2200;
     const startedAt = performance.now();
     let raf = 0;
 
     const tick = (time: number) => {
-      const progress = Math.min(1, (time - startedAt) / duration);
-      setCurrent(Math.round(value * progress));
+      const elapsed = time - startedAt;
+      const progress = Math.min(1, elapsed / duration);
+      // Smooth cubic ease-out curve
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      setCurrent(Math.round(value * easeOut));
       if (progress < 1) raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [value]);
+  }, [isInView, value]);
 
-  return <motion.span style={{ opacity }}>{current.toLocaleString()}+</motion.span>;
+  return <span ref={ref}>{current.toLocaleString()}+</span>;
 }
 
 export function StatsComponent({ stats }: { stats: Array<{ label: string; value: number; detail: string }> }) {
+  const gridCols =
+    stats.length === 1
+      ? "max-w-md mx-auto grid-cols-1"
+      : stats.length === 2
+      ? "max-w-2xl mx-auto sm:grid-cols-2"
+      : stats.length === 3
+      ? "sm:grid-cols-3"
+      : "sm:grid-cols-2 lg:grid-cols-4";
+
   return (
-    <div className={`grid gap-4 ${stats.length <= 2 ? "max-w-2xl md:grid-cols-2" : "md:grid-cols-5"}`}>
+    <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
       {stats.map((stat, index) => (
-        <motion.div key={stat.label} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.45, delay: index * 0.05 }} whileHover={{ y: -4 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
-          <div className="font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl"><AnimatedValue value={stat.value} /></div>
-          <div className="mt-2 text-xs uppercase tracking-[0.28em] text-primary/80">{stat.label}</div>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">{stat.detail}</p>
+        <motion.div
+          key={stat.label}
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: index * 0.05 }}
+          whileHover={{ y: -4 }}
+          className="group relative overflow-hidden rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_40px_-20px_rgba(255,122,0,0.2)] flex flex-col justify-between"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_50%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="relative z-10">
+            <div className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              <AnimatedValue value={stat.value} />
+            </div>
+            <div className="mt-2 text-[11px] font-mono uppercase tracking-[0.24em] text-primary/90 font-medium">
+              {stat.label}
+            </div>
+            <p className="mt-2.5 text-xs leading-5 text-muted-foreground line-clamp-2">
+              {stat.detail}
+            </p>
+          </div>
         </motion.div>
       ))}
     </div>
@@ -102,7 +135,7 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
 
 export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return (
-    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] backdrop-blur-xl">
+    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] backdrop-blur-xl">
       <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/75">{eyebrow}</div>
       <h3 className="mt-4 font-display text-xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
@@ -281,23 +314,28 @@ export function FormCard({ title, description, type }: { title: string; descript
 
 export function Hero({ title, tagline, description, actions }: { title: string; tagline: string; description: string; actions: Action[] }) {
   return (
-    <section className="relative isolate overflow-hidden px-6 pb-24 pt-32 md:pb-32 md:pt-40">
+    <section className="relative isolate overflow-hidden px-4 pb-20 pt-28 sm:px-6 md:pb-32 md:pt-40">
       <AnimatedNetworkBackground />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),rgba(255,255,255,0.8)_65%,rgba(255,255,255,1))] dark:bg-[linear-gradient(180deg,rgba(10,10,10,0.2),rgba(10,10,10,0.65)_65%,rgba(10,10,10,1))]" />
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="relative mx-auto flex max-w-6xl flex-col items-center text-center">
-        <div className="mb-8 flex items-center gap-4 rounded-full border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground backdrop-blur-md">
-          <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
-          Premium builder community platform
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(180deg, var(--hero-overlay-from), var(--hero-overlay-mid) 65%, var(--hero-overlay-to))`,
+        }}
+      />
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative mx-auto flex max-w-6xl flex-col items-center text-center">
+        <div className="mb-6 flex max-w-full items-center gap-3 rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-md sm:mb-8 sm:gap-4 sm:px-4 sm:py-2 sm:text-xs">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
+          <span className="truncate">Premium builder community platform</span>
         </div>
-        <HeapifyLogo className="h-20 w-20 shadow-[0_0_60px_rgba(255,122,0,0.22)]" />
-        <div className="mt-8 max-w-5xl space-y-6">
-          <h1 className="font-display text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">{title}</h1>
-          <p className="mx-auto max-w-3xl text-base leading-8 text-muted-foreground md:text-lg">{tagline}</p>
-          <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
+        <HeapifyLogo className="h-16 w-16 sm:h-20 sm:w-20 shadow-[0_0_60px_rgba(255,122,0,0.22)]" />
+        <div className="mt-6 max-w-5xl space-y-4 sm:mt-8 sm:space-y-6">
+          <h1 className="font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl md:text-7xl">{title}</h1>
+          <p className="mx-auto max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{tagline}</p>
+          <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground sm:leading-7 md:text-base">{description}</p>
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row">
           {actions.map((action) => (
-            <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild size="lg">
+            <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild size="lg" className="w-full sm:w-auto">
               <Link href={action.href}>{action.label}</Link>
             </Button>
           ))}
@@ -369,7 +407,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           />
         ) : (
           filtered.map((event, index) => (
-            <motion.div key={event.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }}>
+            <motion.div key={event.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.45, delay: index * 0.04 }}>
               <EventCardWide event={event} />
             </motion.div>
           ))
@@ -392,7 +430,7 @@ export function ResourcesExplorer({ resources }: { resources: Array<{ title: str
       </label>
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {filtered.map((resource, index) => (
-          <motion.article key={resource.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.45, delay: index * 0.04 }} whileHover={{ y: -4 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
+          <motion.article key={resource.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.45, delay: index * 0.04 }} whileHover={{ y: -4 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
             <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">{resource.meta}</div>
             <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{resource.title}</h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">{resource.description}</p>
@@ -412,6 +450,20 @@ export function ResourcesExplorer({ resources }: { resources: Array<{ title: str
 export function PageTransition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease: "easeOut" }} className="relative">
+      {children}
+    </motion.div>
+  );
+}
+
+export function ScrollReveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.45, delay, ease: "easeOut" }}
+      className={className}
+    >
       {children}
     </motion.div>
   );

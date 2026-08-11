@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { brand, communityJourney, partners, stats, whatWeDo } from "@/lib/site-content";
-import { CTAComponent, FeatureCard, Hero, SectionWrapper, StatsComponent } from "@/components/site/ui";
+import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
 import { getEvents } from "@/lib/supabase/queries";
@@ -86,36 +86,38 @@ export default async function HomePage() {
       {/* Latest event from DB — full-width spotlight */}
       <SectionWrapper eyebrow="Events" title="Where builders show up" action={{ label: "See all events", href: "/events", variant: "ghost" }}>
         {latestEvent ? (
-          <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl">
+          <ScrollReveal>
+          <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 sm:p-8 md:p-12 backdrop-blur-xl">
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_70%_50%,rgba(255,122,0,0.08),transparent)]" />
-            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-              <div className="max-w-2xl space-y-5">
+            <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl space-y-4 sm:space-y-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{latestEvent.category}</span>
                   <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.status}</span>
                   <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.format}</span>
                 </div>
-                <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">{latestEvent.title}</h3>
+                <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{latestEvent.title}</h3>
                 {latestEvent.description && (
                   <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">{latestEvent.description}</p>
                 )}
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-primary" />{latestEvent.date}</span>
-                  <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" />{latestEvent.location}</span>
+                  <span className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-primary shrink-0" />{latestEvent.date}</span>
+                  <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary shrink-0" />{latestEvent.location}</span>
                 </div>
               </div>
-              <div className="flex flex-col gap-3 md:shrink-0 md:items-end">
-                <Button asChild>
-                  <Link href={`/events/${latestEvent.slug}`}>View event <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
+                <Button asChild className="w-full sm:w-auto">
+                  <Link href={`/events/${latestEvent.slug}`}>View event <ArrowRight className="ml-2 h-4 w-4 shrink-0" /></Link>
                 </Button>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="w-full sm:w-auto">
                   <Link href="/events">All events</Link>
                 </Button>
               </div>
             </div>
           </div>
+          </ScrollReveal>
         ) : (
-          <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-12 text-center text-sm text-muted-foreground">
+          <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-8 sm:p-12 text-center text-sm text-muted-foreground">
             No upcoming events right now — check back soon.
           </div>
         )}
@@ -147,23 +149,27 @@ export default async function HomePage() {
       </SectionWrapper>
 
       <SectionWrapper eyebrow="Community Journey" title="From discovery to leadership" description="The path every Heapify builder takes — from first event to community leader.">
-        <div className="grid gap-4 md:grid-cols-4">
-          {communityJourney.map((step) => (
-            <div key={step.step} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(255,122,0,0.08)]">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+          {communityJourney.map((step, index) => (
+            <ScrollReveal key={step.step} delay={index * 0.08}>
+            <div className="h-full rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(255,122,0,0.08)]">
               <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/80">{step.step}</div>
-              <h3 className="mt-4 font-display text-2xl font-semibold tracking-tight">{step.title}</h3>
+              <h3 className="mt-4 font-display text-xl sm:text-2xl font-semibold tracking-tight">{step.title}</h3>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.description}</p>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </SectionWrapper>
 
       <SectionWrapper eyebrow="Collaborations" title="In good company" description="Communities, institutions, and ecosystems Heapify has collaborated with.">
-        <div className="flex flex-wrap gap-3">
-          {partners.map((partner) => (
-            <span key={partner} className="rounded-full border border-glass-border bg-glass-bg px-4 py-2 text-xs uppercase tracking-[0.24em] text-muted-foreground">
+        <div className="flex flex-wrap gap-2.5 sm:gap-3">
+          {partners.map((partner, index) => (
+            <ScrollReveal key={partner} delay={index * 0.03} className="inline-flex">
+            <span className="rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.24em] text-muted-foreground transition-colors duration-300 hover:border-primary/30 hover:text-foreground">
               {partner}
             </span>
+            </ScrollReveal>
           ))}
         </div>
       </SectionWrapper>
@@ -173,52 +179,60 @@ export default async function HomePage() {
 
       {/* Flagship event — at the bottom, above CTA */}
       <SectionWrapper eyebrow="Our Flagship Event" title="A glimpse into where we&apos;ve been">
-        <div className="relative overflow-hidden rounded-[2rem] border border-primary/20 bg-[linear-gradient(135deg,rgba(255,122,0,0.07),rgba(255,255,255,0.01))] p-8 md:p-12 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.10),transparent)]" />
-          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-            <div className="max-w-2xl space-y-5">
+        <ScrollReveal>
+        <div className="relative overflow-hidden rounded-[2rem] border border-primary/25 bg-[linear-gradient(135deg,rgba(255,122,0,0.28),rgba(255,255,255,0.05))] dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.07),rgba(255,255,255,0.01))] p-6 sm:p-8 md:p-12 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_12px_40px_rgba(255,122,0,0.16)]">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.30),transparent)] dark:bg-[radial-gradient(ellipse_80%_60%_at_60%_40%,rgba(255,122,0,0.10),transparent)]" />
+          <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-start md:justify-between">
+            <div className="max-w-2xl space-y-4 sm:space-y-5">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">Hackathon</span>
                 <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">Past Event</span>
                 <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">MSRIT, Bengaluru</span>
               </div>
-              <h3 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
                 Build with Gemma:<br className="hidden sm:block" /> Bengaluru AI Sprint
               </h3>
               <p className="text-sm leading-7 text-muted-foreground md:text-base">
                 250 builders. One offline AI sprint. Heapify&apos;s first flagship hackathon brought together students and developers at MSRIT to build innovative solutions using Google&apos;s Gemma ecosystem — and it was just the beginning.
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
+                <ScrollReveal delay={0.1}>
                 <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
                   <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Date</div>
                   <div className="mt-1 text-sm font-medium">July 18, 2026</div>
                 </div>
+                </ScrollReveal>
+                <ScrollReveal delay={0.2}>
                 <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
                   <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Participants</div>
                   <div className="mt-1 text-sm font-medium">~250 builders</div>
                 </div>
+                </ScrollReveal>
+                <ScrollReveal delay={0.3}>
                 <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
                   <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Prize Pool</div>
                   <div className="mt-1 font-display text-sm font-semibold text-primary">$1,000</div>
                 </div>
+                </ScrollReveal>
               </div>
             </div>
-            <div className="flex flex-col gap-3 md:items-end md:shrink-0">
+            <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:items-end md:shrink-0">
               <a
                 href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/20 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white transition-all hover:bg-[#ea6a0e] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(255,122,0,0.6)]"
               >
                 Take a glimpse
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 shrink-0" />
               </a>
-              <Link href="/events/build-with-gemma" className="inline-flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/events/build-with-gemma" className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-6 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground">
                 Event details →
               </Link>
             </div>
           </div>
         </div>
+        </ScrollReveal>
       </SectionWrapper>
 
       <CTAComponent

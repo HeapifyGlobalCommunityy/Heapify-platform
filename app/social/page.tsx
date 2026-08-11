@@ -52,7 +52,7 @@ const hoverBorderMap: Record<string, string> = {
 
 export default function SocialHubPage() {
   return (
-    <div className="min-h-screen bg-black text-white pb-24">
+    <div className="min-h-screen pb-24">
       {/* Social Page Hero Banner */}
       <SectionWrapper
         title="Connect & Collaborate"
@@ -62,25 +62,25 @@ export default function SocialHubPage() {
       >
         {/* Quick Stats Ribbon */}
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3 max-w-4xl mt-6">
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-glass-border bg-glass-bg p-5 backdrop-blur-md">
             <div className="flex items-center gap-2.5 text-primary text-sm font-mono uppercase tracking-wider">
               <Users className="h-4 w-4" /> Global Builders
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">1,200+ Members</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">1,200+ Members</div>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-glass-border bg-glass-bg p-5 backdrop-blur-md">
             <div className="flex items-center gap-2.5 text-primary text-sm font-mono uppercase tracking-wider">
               <MessageSquare className="h-4 w-4" /> Daily Active Talks
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">Async Discussions</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">Async Discussions</div>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md col-span-2 md:col-span-1">
+          <div className="rounded-2xl border border-glass-border bg-glass-bg p-5 backdrop-blur-md col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 text-primary text-sm font-mono uppercase tracking-wider">
               <Sparkles className="h-4 w-4" /> Platform Scope
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">4 Core Networks</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">4 Core Networks</div>
           </div>
         </div>
 
@@ -103,20 +103,20 @@ export default function SocialHubPage() {
 
               <div className="relative z-10 flex flex-col h-full justify-between gap-6">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-glass-border bg-black/40 group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-glass-border bg-muted/40 group-hover:scale-105 transition-transform duration-300">
                     {iconMap[channel.title] || <Sparkles className="h-7 w-7 text-primary" />}
                   </div>
                   
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-glass-border bg-black/30 text-muted-foreground group-hover:text-white group-hover:border-white/30 transition-all duration-300">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-glass-border bg-muted/30 text-muted-foreground group-hover:text-foreground group-hover:border-primary/30 transition-all duration-300">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="font-display text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors">
+                  <h3 className="font-display text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
                     {channel.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-zinc-300 transition-colors">
+                  <p className="text-sm leading-relaxed text-muted-foreground group-hover:text-foreground transition-colors">
                     {channel.description}
                   </p>
                 </div>

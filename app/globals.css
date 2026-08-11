@@ -4,16 +4,27 @@
 
 @layer base {
   :root {
-    --background: 212 100% 95%; /* More noticeable light blue */
-    --foreground: 24 20% 15%;
-    --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 24 20% 15%;
-    --muted: 212 100% 90%; /* Distinct blue for muted elements */
-    --muted-foreground: 24 40% 45%;
-    --border: 24 30% 90%;
+    --background: 36 14% 97%; /* Warm greyish-white — #F8F7F4 */
+    --foreground: 240 10% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 12%;
+    --muted: 36 8% 93%;
+    --muted-foreground: 240 5% 42%;
+    --border: 36 8% 88%;
     --radius: 0.75rem;
-    --glass-border: rgba(255, 122, 0, 0.15);
-    --glass-bg: rgba(255, 122, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.07);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --hero-overlay-from: rgba(248, 247, 244, 0.05);
+    --hero-overlay-mid: rgba(248, 247, 244, 0.15);
+    --hero-overlay-to: transparent;
+    --canvas-fill: rgba(0, 0, 0, 0.008);
+    --node-primary: rgba(249, 115, 22, 0.45);
+    --node-accent: rgba(59, 130, 246, 0.35);
+    --line-color: rgba(249, 115, 22, 0.08);
+    /* Sunrise background for light mode (starts warm orange at top, shades gently down) */
+    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.14) 0%, rgba(255, 166, 77, 0.05) 25%, transparent 55%);
+    --bg-glow-white: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 255, 255, 0.8), transparent 70%);
+    --bg-warmth: radial-gradient(ellipse 100% 60% at 100% 0%, rgba(251, 191, 36, 0.12), transparent 50%);
   }
 
   .dark {
@@ -26,6 +37,16 @@
     --border: 240 6% 16%;
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-bg: rgba(255, 255, 255, 0.03);
+    --hero-overlay-from: rgba(10, 10, 10, 0.2);
+    --hero-overlay-mid: rgba(10, 10, 10, 0.4);
+    --hero-overlay-to: transparent;
+    --canvas-fill: rgba(255, 255, 255, 0.02);
+    --node-primary: rgba(255, 122, 0, 0.68);
+    --node-accent: rgba(59, 130, 246, 0.5);
+    --line-color: rgba(255, 122, 0, 0.12);
+    --bg-sunrise: none;
+    --bg-glow-white: none;
+    --bg-warmth: none;
   }
 
   * {
@@ -36,27 +57,28 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
     background-image:
-      radial-gradient(circle at 20% 10%, rgba(255, 122, 0, 0.12), transparent 24%),
-      radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.08), transparent 16%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent 20%);
+      var(--bg-sunrise),
+      var(--bg-glow-white),
+      var(--bg-warmth);
+    background-repeat: no-repeat;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   ::selection {
-    background: rgba(255, 122, 0, 0.25);
+    background: rgba(249, 115, 22, 0.2);
     color: #fff;
   }
 }
 
 @layer utilities {
   .text-glow {
-    background: linear-gradient(120deg, #ff7a00, #ffa64d);
+    background: linear-gradient(120deg, #f97316, #fb923c);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
   .glass-panel {
-    @apply border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+    @apply border border-glass-border bg-glass-bg backdrop-blur-xl;
   }
 }

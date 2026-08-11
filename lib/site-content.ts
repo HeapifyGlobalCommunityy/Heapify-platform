@@ -16,8 +16,10 @@ export const navigationLinks = [
 ];
 
 export const stats = [
-  { label: "Community Members", value: 500, detail: "Students, developers, and builders in the network" },
-  { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
+  { label: "Active Builders", value: 500, detail: "Students, developers, and creators in the network" },
+  { label: "Events Hosted", value: 10, detail: "Hackathons, workshops, and builder sessions" },
+  { label: "Active Contributors", value: 25, detail: "Members regularly showing up and building together" },
+  { label: "Cities Connected", value: 8, detail: "A growing distributed network of builders" },
 ];
 
 export const whatWeDo = [
