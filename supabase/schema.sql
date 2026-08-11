@@ -309,6 +309,26 @@ create policy "public read resources" on resources for select using (true);
 create policy "users update own profile" on profiles for update using (auth.uid() = id);
 create policy "users select own registrations" on event_registrations
   for select using (auth.uid() = user_id);
+create policy "authorized staff read event registrations" on event_registrations
+  for select using (
+    exists (
+      select 1
+      from events
+      left join chapters on chapters.id = events.chapter_id
+      where events.id = event_registrations.event_id
+        and (
+          (select has_role('core_team'::user_role))
+          or chapters.lead_id = (select auth.uid())
+          or exists (
+            select 1
+            from profiles
+            where profiles.id = (select auth.uid())
+              and profiles.role = 'chapter_admin'::user_role
+              and profiles.chapter_id = events.chapter_id
+          )
+        )
+    )
+  );
 create policy "users insert own registrations" on event_registrations
   for insert with check (auth.uid() = user_id);
 create policy "users update own registrations" on event_registrations
