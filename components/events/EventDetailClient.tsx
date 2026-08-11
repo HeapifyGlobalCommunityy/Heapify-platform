@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EventCard, SectionWrapper } from "@/components/site/ui";
 import RegistrationForm from "@/components/registration/RegistrationForm";
+import { ExportRegistrationsButton } from "@/components/events/ExportRegistrationsButton";
 import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -70,6 +71,7 @@ interface Props {
   }[];
   isPast: boolean;
   initialRegistering: boolean;
+  canExportRegistrations: boolean;
 }
 
 function useIsDesktop() {
@@ -85,7 +87,7 @@ function useIsDesktop() {
 }
 
 export default function EventDetailClient({
-  event, mergedEvent, slug, related, isPast, initialRegistering,
+  event, mergedEvent, slug, related, isPast, initialRegistering, canExportRegistrations,
 }: Props) {
   const isDesktop = useIsDesktop();
   const [isRegistering, setIsRegistering] = useState(initialRegistering);
@@ -166,6 +168,7 @@ export default function EventDetailClient({
             related={related}
             onRegister={openRegistration}
             bannerUrl={safeEvent.bannerUrl}
+            canExportRegistrations={canExportRegistrations}
           />
         ) : (
           <div className="flex flex-col">
@@ -222,6 +225,7 @@ export default function EventDetailClient({
               related={related}
               onRegister={openRegistration}
               bannerUrl={safeEvent.bannerUrl}
+              canExportRegistrations={canExportRegistrations}
             />
           </div>
 
@@ -270,13 +274,14 @@ export default function EventDetailClient({
 // ─── Full event detail (Frame 1 content) ───────────────────────────────────
 
 function EventDetailFull({
-  event, isPast, related, onRegister, bannerUrl,
+  event, isPast, related, onRegister, bannerUrl, canExportRegistrations,
 }: {
   event: EventDetailProps;
   isPast: boolean;
   related: Props["related"];
   onRegister: () => void;
   bannerUrl: string | null;
+  canExportRegistrations: boolean;
 }) {
   return (
     <article className="pt-20 pb-16 lg:pt-24">
@@ -414,6 +419,9 @@ function EventDetailFull({
               <div className="text-center text-xs text-muted-foreground mt-2">
                 Registration is managed securely.
               </div>
+              {canExportRegistrations && (
+                <ExportRegistrationsButton slug={event.slug} />
+              )}
             </div>
           </div>
         </div>
