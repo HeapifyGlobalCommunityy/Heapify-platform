@@ -15,13 +15,16 @@ export type FieldType =
   | "select"
   | "multi_select";
 
+export type FieldOption = string | { label: string; value: string };
+
 export interface FieldConfig {
   name: string;
   label: string;
   type: FieldType;
   required: boolean;
   placeholder?: string;
-  options?: string[]; // for select / multi_select
+  options?: FieldOption[]; // for select / multi_select
+  submitLabelAs?: string; // stores the selected label under an additional payload key
 }
 
 export interface FormConfig {
@@ -198,7 +201,14 @@ const FORM_CONFIG: Record<string, FormConfig> = {
     fields: [
       { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Your full name" },
       { name: "email", label: "Email Address", type: "email", required: true, placeholder: "you@example.com" },
-      { name: "chapter_name", label: "Chapter", type: "select", required: true, options: [] },
+      {
+        name: "chapter_id",
+        label: "Chapter",
+        type: "select",
+        required: true,
+        options: [],
+        submitLabelAs: "chapter_name",
+      },
       { name: "why_join", label: "Why do you want to join this chapter?", type: "textarea", required: true, placeholder: "Tell us a bit about yourself and your interest." },
       { name: "linkedin_github", label: "LinkedIn or GitHub (optional)", type: "text", required: false, placeholder: "https://..." },
     ],
@@ -213,15 +223,18 @@ export default async function FormPage({
 }) {
   const { type } = await params;
 
-  let chapterOptions: string[] = [];
+  let chapterOptions: Array<{ label: string; value: string }> = [];
   if (type === "chapter_member") {
     const supabase = await createClient();
     const { data } = await supabase
       .from("chapters")
-      .select("name")
+      .select("id, name")
       .eq("status", "active")
       .order("name", { ascending: true });
-    chapterOptions = data?.map((c) => c.name) ?? [];
+    chapterOptions = data?.map((chapter) => ({
+      label: chapter.name,
+      value: chapter.id,
+    })) ?? [];
   }
 
   const config = FORM_CONFIG[type];
@@ -231,7 +244,7 @@ export default async function FormPage({
   }
 
   if (type === "chapter_member" && config) {
-    const chapterField = config.fields.find((f) => f.name === "chapter_name");
+    const chapterField = config.fields.find((f) => f.name === "chapter_id");
     if (chapterField) chapterField.options = chapterOptions;
   }
 

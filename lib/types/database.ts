@@ -1,11 +1,4 @@
-/**
- * TypeScript types mirroring the Supabase database schema.
- * Source of truth: supabase/schema.sql
- *
- * These types are used for Phase 0 mock data and will be
- * swapped to Supabase-generated types in Phase 1 without
- * needing to rewrite any component.
- */
+
 
 export type UserRole =
   | "member"
@@ -117,3 +110,12 @@ export interface Resource {
   added_by: string | null;
   created_at: string;
 }
+
+export const APPLICATION_STATUSES = [
+  "pending",
+  "reviewed",
+  "accepted",
+  "rejected",
+] as const;
+
+export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
