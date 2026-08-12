@@ -14,6 +14,8 @@ import { SectionWrapper } from "@/components/site/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getChapterMembershipRequests } from "@/lib/actions/chapter-membership";
+import { ChapterMembershipRequests } from "@/components/chapter/ChapterMembershipRequests";
 
 // Supported leaderboard categories
 const CATEGORIES = [
@@ -174,6 +176,7 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
     .limit(5);
 
   const events: ChapterEvent[] = (eventsData || []) as unknown as ChapterEvent[];
+  const membershipRequests = await getChapterMembershipRequests();
 
   return (
     <div className="min-h-screen bg-background">
@@ -218,6 +221,10 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mb-8">
+          <ChapterMembershipRequests requests={membershipRequests} />
         </div>
 
         {/* Dashboard Sections Grid */}
