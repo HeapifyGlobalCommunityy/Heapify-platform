@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
-import { Navbar } from "@/components/layout/navbar";
+import NavbarWithAuth from "@/components/layout/NavbarWithAuth";
 import { Footer } from "@/components/layout/footer";
 import { PageTransition } from "@/components/site/ui";
 
@@ -64,10 +64,11 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <Navbar isChapterLead={isChapterLead} />
+          <NavbarWithAuth isChapterLead={isChapterLead} />
           <main className="min-h-screen pt-20">
             <PageTransition>{children}</PageTransition>
           </main>

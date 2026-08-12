@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import { brand, communityJourney, partners, stats, whatWeDo } from "@/lib/site-content";
+import { brand, communityJourney, gemmaSprintDate, partners, whatWeDo } from "@/lib/site-content";
 import { CTAComponent, FeatureCard, Hero, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
-import { getEvents } from "@/lib/supabase/queries";
+import { getEvents, getSiteStats } from "@/lib/supabase/queries";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,20 +33,59 @@ function formatDate(d: string) {
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const isSupabaseConfigured = !!supabase;
+
   let isAuthenticated = false;
-  if (supabase) {
+  if (isSupabaseConfigured) {
     const { data: { user } } = await supabase.auth.getUser();
     isAuthenticated = !!user;
   }
 
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
-  // Fetch the single most recent/upcoming event from DB
-  const { data: dbEvents } = await getEvents(0, 5);
-  const latestEvent = dbEvents && dbEvents.length > 0
-    ? (() => {
+  let statsData = [
+    { label: "Community Members", value: 500, detail: "Students, developers, and builders in the network" },
+    { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
+  ];
+
+  if (isSupabaseConfigured) {
+    try {
+      const { data: dbStats, error: statsError } = await getSiteStats();
+      if (statsError) {
+        if (
+          statsError.message.includes("Supabase is not configured") ||
+          statsError.message.includes("placeholder")
+        ) {
+          console.warn("[HomePage] site stats are disabled because Supabase is not configured or is using placeholder env values.");
+        } else {
+          console.error("[HomePage] failed loading site stats:", statsError.message);
+        }
+      } else if (dbStats) {
+        const statsDetailMap: Record<string, string> = {
+          "Community Members": "Students, developers, and builders in the network",
+          Events: "Hackathons, workshops, technical sessions, and builder initiatives",
+        };
+
+        statsData = dbStats.map((row) => ({
+          label: row.label,
+          value: row.value ?? 0,
+          detail: statsDetailMap[row.label] ?? "",
+        }));
+      }
+    } catch (error) {
+      console.error("[HomePage] unexpected error loading site stats:", error);
+    }
+  }
+
+  let latestEvent = null;
+  if (isSupabaseConfigured) {
+    try {
+      const { data: dbEvents, error: eventsError } = await getEvents(0, 5);
+      if (eventsError) {
+        console.warn("[HomePage] failed loading latest event:", eventsError.message);
+      } else if (dbEvents && dbEvents.length > 0) {
         const ev = dbEvents[0];
-        return {
+        latestEvent = {
           slug: ev.slug,
           title: ev.title,
           category: formatCategory(ev.category),
@@ -56,8 +95,11 @@ export default async function HomePage() {
           format: ev.is_virtual ? "Virtual" : "In-Person",
           description: ev.description || "",
         };
-      })()
-    : null;
+      }
+    } catch (error) {
+      console.error("[HomePage] unexpected error loading latest event:", error);
+    }
+  }
 
   return (
     <>
@@ -72,7 +114,7 @@ export default async function HomePage() {
       />
 
       <SectionWrapper eyebrow="Community Stats" title="A growing builder network" description="Real numbers from a community built around action, not hype.">
-        <StatsComponent stats={stats} />
+        <StatsComponent stats={statsData} />
       </SectionWrapper>
 
       <SectionWrapper eyebrow="What We Do" title="A community built around action" description="Everything Heapify does is about builders — people who learn, ship, and create.">
@@ -191,7 +233,7 @@ export default async function HomePage() {
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
                   <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Date</div>
-                  <div className="mt-1 text-sm font-medium">July 18, 2026</div>
+                  <div className="mt-1 text-sm font-medium">{gemmaSprintDate}</div>
                 </div>
                 <div className="rounded-xl border border-glass-border bg-glass-bg/60 px-4 py-3">
                   <div className="text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">Participants</div>

@@ -20,6 +20,7 @@ export function GoogleSignInButton({
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -84,7 +85,7 @@ export function GoogleSignInButton({
       )}
       <Button 
         onClick={handleSignIn} 
-        disabled={isLoading || !captchaToken}
+        disabled={isLoading || (siteKey ? !captchaToken : false)}
         variant="ghost"
         className="w-full"
       >

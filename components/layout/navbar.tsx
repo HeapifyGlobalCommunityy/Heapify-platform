@@ -1,6 +1,6 @@
 "use client";
 
-import type { User, Session, AuthChangeEvent } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -9,12 +9,15 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const auth = useAuth();
+  const user = auth.user;
+  const profile = auth.profile;
   const [canCreateEvents, setCanCreateEvents] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -55,46 +58,12 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
 
   useEffect(() => {
     setMounted(true);
-    let subscription: { unsubscribe: () => void } | null = null;
-
-    const loadSession = async () => {
-      const { createClient } = await import("@/lib/supabase/client");
-      const supabase = createClient();
-      if (supabase) {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
-
-        if (user) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", user.id)
-            .maybeSingle();
-
-          const { data: chapter } = await supabase
-            .from("chapters")
-            .select("id")
-            .eq("lead_id", user.id)
-            .maybeSingle();
-
-          if ((profile && ["admin", "community_admin", "chapter_lead"].includes(profile.role)) || chapter) {
-            setCanCreateEvents(true);
-          }
-        }
-
-        const { data: { subscription: sub } } = supabase.auth.onAuthStateChange(
-          (_event: AuthChangeEvent, session: Session | null) => {
-            setUser(session?.user ?? null);
-          }
-        );
-        subscription = sub;
-      }
-    };
-
-    loadSession();
-
-    return () => subscription?.unsubscribe();
-  }, []);
+    if (profile && (['admin', 'community_admin', 'chapter_lead'].includes(profile.role) || isChapterLead)) {
+      setCanCreateEvents(true);
+    } else {
+      setCanCreateEvents(false);
+    }
+  }, [profile, isChapterLead]);
 
   const handleSignOut = async () => {
     if (isSigningOut) return;
@@ -103,17 +72,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     setSignOutError(null);
 
     try {
-      const { createClient } = await import("@/lib/supabase/client");
-      const supabase = createClient();
-
-      if (!supabase) {
-        throw new Error("Supabase is not configured.");
-      }
-
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-      setUser(null);
+      await auth.signOut();
       setOpen(false);
       router.replace("/");
       router.refresh();
@@ -128,6 +87,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   return (
     <nav
       className="fixed top-4 left-1/2 z-50 w-[94%] max-w-7xl -translate-x-1/2 transition-all duration-300 ease-in-out"
+      suppressHydrationWarning={true}
       style={{
         transform: `translateX(-50%) translateY(${visible ? "0" : "-130%"})`,
         opacity: visible ? 1 : 0,

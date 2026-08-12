@@ -20,6 +20,8 @@ export const stats = [
   { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
 ];
 
+export const gemmaSprintDate = "18 July 2026";
+
 export const whatWeDo = [
   {
     eyebrow: "01",
@@ -65,7 +67,7 @@ export const featuredEvents = [
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 18, 2026",
+    date: gemmaSprintDate,
     time: "All day",
     location: "MSRIT, Bengaluru",
     summary:
@@ -91,7 +93,7 @@ export const eventCatalog = [
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 18, 2026",
+    date: gemmaSprintDate,
     time: "All day",
     format: "Offline",
     location: "MSRIT, Bengaluru",
@@ -103,7 +105,7 @@ export const eventCatalog = [
     title: "Build with Gemma: Official Briefing Session",
     category: "Workshop",
     status: "Past",
-    date: "Jul 12, 2026",
+    date: "18 July 2026",
     time: "3:30 PM – 5:00 PM IST",
     format: "Virtual",
     location: "Online",
@@ -166,7 +168,7 @@ export const eventDetail = {
   banner: "",
   category: "Hackathon",
   status: "Past",
-  date: "Jul 18, 2026",
+  date: gemmaSprintDate,
   time: "All day",
   location: "MSRIT, Bengaluru",
   host: "Heapify Global Community",

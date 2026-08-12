@@ -23,6 +23,20 @@ export async function getPublicAnnouncements(limit = 6) {
     .limit(limit);
 }
 
+export async function getSiteStats() {
+  const supabase = await createClient();
+  if (!supabase) return { data: null, error: new Error("Supabase not configured") };
+
+  try {
+    return await supabase
+      .from("site_stats")
+      .select("key, label, value")
+      .order("key", { ascending: true });
+  } catch (error) {
+    return { data: null, error: error instanceof Error ? error : new Error(String(error)) };
+  }
+}
+
 // ─── Challenges ───────────────────────────────────────────────────────────
 // DB NOTE: challenges has no RLS. Public reads work as-is.
 export async function getActiveChallenges() {
@@ -155,7 +169,9 @@ export async function getEvents(page = 0, limit = 20) {
 
   return supabase
     .from("events")
-    .select("*")
+    .select(
+      "id, slug, title, category, status, start_at, end_at, is_virtual, location, description, banner_url, capacity, is_hackathon"
+    )
     .or(`end_at.gte.${now},end_at.is.null`)
     .order("start_at", { ascending: false })
     .range(from, to);
@@ -167,7 +183,9 @@ export async function getEventBySlug(slug: string) {
 
   return supabase
     .from("events")
-    .select("*, chapters(name)")
+    .select(
+      "id, slug, title, category, status, start_at, end_at, is_virtual, location, description, banner_url, capacity, is_hackathon, team_config, custom_questions, agenda, speakers, chapter_id, chapters(name)"
+    )
     .eq("slug", slug)
     .maybeSingle();
 }

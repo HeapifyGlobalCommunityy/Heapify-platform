@@ -15,6 +15,40 @@ export async function GET(request: Request) {
       const { error } = await supabase.auth.exchangeCodeForSession(code);
       
       if (!error) {
+        // After exchange, ensure a `profiles` row exists for this user.
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            // Check if profile exists
+            const { data: existing } = await supabase
+              .from("profiles")
+              .select("id")
+              .eq("id", user.id)
+              .maybeSingle();
+
+            if (!existing) {
+              // Build profile from available metadata
+              const meta = (user.user_metadata || {}) as Record<string, any>;
+              const full_name = meta.full_name || meta.name || user.user_metadata?.name || user.email || null;
+              const avatar_url = meta.avatar_url || meta.picture || null;
+              const username = (user.email || "").split("@")[0] || null;
+
+              await supabase
+                .from("profiles")
+                .insert({
+                  id: user.id,
+                  username,
+                  full_name,
+                  avatar_url,
+                  created_at: new Date().toISOString(),
+                });
+            }
+          }
+        } catch (e) {
+          // non-fatal: proceed to redirect even if profile creation fails
+          console.error("Profile creation after OAuth failed:", e);
+        }
+
         return NextResponse.redirect(`${origin}${next}`);
       }
     }
