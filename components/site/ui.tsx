@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles, Github, Linkedin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
