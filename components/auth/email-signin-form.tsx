@@ -44,23 +44,26 @@ export function EmailSignInForm({
     }
 
     try {
-      const captchaResponse = await fetch("/api/captcha", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: captchaToken }),
-      });
+      // Skip captcha verification in development
+      if (process.env.NODE_ENV !== "development") {
+        const captchaResponse = await fetch("/api/captcha", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: captchaToken }),
+        });
 
-      const captchaResult = (await captchaResponse.json()) as {
-        success: boolean;
-        message?: string;
-      };
+        const captchaResult = (await captchaResponse.json()) as {
+          success: boolean;
+          message?: string;
+        };
 
-      if (!captchaResponse.ok || !captchaResult.success) {
-        setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
-        onCaptchaReset();
-        return;
+        if (!captchaResponse.ok || !captchaResult.success) {
+          setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
+          onCaptchaReset();
+          return;
+        }
       }
 
       if (isForgotPassword) {
@@ -241,7 +244,7 @@ export function EmailSignInForm({
             isLoading ||
             !email ||
             !password ||
-            (siteKey ? !captchaToken : false) ||
+            (process.env.NODE_ENV !== "development" && siteKey ? !captchaToken : false) ||
             (mode === "signup" && !fullName)
           }
           className="w-full"
