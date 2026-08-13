@@ -146,7 +146,7 @@ export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; 
 
 export function EventCard({ event, compact = false }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; summary?: string; spotlight?: string; format?: string; description?: string }; compact?: boolean }) {
   return (
-    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
+    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative flex items-start justify-between gap-4">
         <div>
