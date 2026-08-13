@@ -82,7 +82,7 @@ export default async function DashboardPage() {
                 <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-0.5 text-xs text-primary font-mono uppercase tracking-wider">
                   {userRole}
                 </div>
-                <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-white">
+                <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                   Welcome back, {displayName}
                 </h1>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
                     <span className="text-primary uppercase tracking-wider">{ev.category}</span>
                     <span className="text-muted-foreground">{reg.status}</span>
                   </div>
-                  <h3 className="font-display text-xl font-semibold text-white">{ev.title}</h3>
+                  <h3 className="font-display text-xl font-semibold text-foreground">{ev.title}</h3>
                   <div className="text-xs text-muted-foreground">
                     Registered on: {new Date(reg.registered_at).toLocaleDateString()}
                   </div>
@@ -158,7 +158,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-4">
             <Calendar className="mx-auto h-10 w-10 text-muted-foreground" />
-            <p className="font-display text-lg font-semibold text-white">No registered events yet</p>
+            <p className="font-display text-lg font-semibold text-foreground">No registered events yet</p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               Browse upcoming community events, workshops, and hackathons to join the schedule.
             </p>

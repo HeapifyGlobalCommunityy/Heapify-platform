@@ -77,7 +77,7 @@ export default async function EventsPage() {
         description="Join sessions, workshops, and flagship community events happening globally."
         className="pt-40 pb-12"
       >
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
           {error?.message ?? "Service temporarily unavailable. Please try again later."}
         </div>
       </SectionWrapper>
@@ -151,35 +151,35 @@ export default async function EventsPage() {
       >
         {/* Dynamic Events Quick Stats Ribbon */}
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4 max-w-5xl mt-6 mb-12">
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:border-primary/25 hover:shadow-[0_8px_24px_-8px_rgba(255,122,0,0.12)] dark:border-glass-border dark:bg-glass-bg/40 dark:backdrop-blur-md">
             <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
               <Trophy className="h-4 w-4" /> Flagship Sprints
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">1 Concluded</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">1 Concluded</div>
             <div className="text-[10px] text-muted-foreground mt-1">Build with Gemma AI Sprint</div>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:border-primary/25 hover:shadow-[0_8px_24px_-8px_rgba(255,122,0,0.12)] dark:border-glass-border dark:bg-glass-bg/40 dark:backdrop-blur-md">
             <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
               <Calendar className="h-4 w-4" /> Learning Sessions
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">5 Conducted</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">5 Conducted</div>
             <div className="text-[10px] text-muted-foreground mt-1">GSoC prep, Space tech, Career talks</div>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:border-primary/25 hover:shadow-[0_8px_24px_-8px_rgba(255,122,0,0.12)] dark:border-glass-border dark:bg-glass-bg/40 dark:backdrop-blur-md">
             <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
               <Flame className="h-4 w-4" /> Active Chapters
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">4 Chapters</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">4 Chapters</div>
             <div className="text-[10px] text-muted-foreground mt-1">Spanning multiple institutions</div>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-glass-bg/40 p-5 backdrop-blur-md">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:border-primary/25 hover:shadow-[0_8px_24px_-8px_rgba(255,122,0,0.12)] dark:border-glass-border dark:bg-glass-bg/40 dark:backdrop-blur-md">
             <div className="flex items-center gap-2 text-primary text-xs font-mono uppercase tracking-wider">
               <Sparkles className="h-4 w-4" /> Global Scope
             </div>
-            <div className="mt-2 text-2xl font-bold font-display">Hybrid Format</div>
+            <div className="mt-2 text-2xl font-bold font-display text-foreground">Hybrid Format</div>
             <div className="text-[10px] text-muted-foreground mt-1">Virtual orientative + physical hackathons</div>
           </div>
         </div>

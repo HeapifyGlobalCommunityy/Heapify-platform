@@ -61,6 +61,11 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        float: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(12px, -18px) scale(1.05)" },
+          "66%": { transform: "translate(-10px, 10px) scale(0.97)" },
+        },
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
@@ -71,6 +76,8 @@ const config: Config = {
         },
       },
       animation: {
+        float: "float 12s ease-in-out infinite",
+        "float-slow": "float 16s ease-in-out infinite reverse",
         "fade-up": "fade-up 0.7s ease forwards",
         "fadeIn": "fadeIn 0.25s ease-out",
       },

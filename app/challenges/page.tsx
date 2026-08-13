@@ -46,18 +46,18 @@ function ChallengeSkeleton() {
         >
           <div className="flex justify-between items-start">
             <div className="space-y-2">
-              <div className="h-3 w-28 rounded bg-zinc-800/60" />
-              <div className="h-7 w-48 rounded-lg bg-zinc-800/60" />
+              <div className="h-3 w-28 rounded bg-muted/60" />
+              <div className="h-7 w-48 rounded-lg bg-muted/60" />
             </div>
-            <div className="h-6 w-14 rounded-full bg-zinc-800/50" />
+            <div className="h-6 w-14 rounded-full bg-muted/50" />
           </div>
           <div className="space-y-2">
-            <div className="h-3.5 w-full rounded bg-zinc-800/40" />
-            <div className="h-3.5 w-4/5 rounded bg-zinc-800/40" />
-            <div className="h-3.5 w-3/5 rounded bg-zinc-800/30" />
+            <div className="h-3.5 w-full rounded bg-muted/40" />
+            <div className="h-3.5 w-4/5 rounded bg-muted/40" />
+            <div className="h-3.5 w-3/5 rounded bg-muted/30" />
           </div>
           <div className="flex gap-2 pt-2">
-            <div className="h-8 w-40 rounded-xl bg-zinc-800/40" />
+            <div className="h-8 w-40 rounded-xl bg-muted/40" />
           </div>
         </div>
       ))}
@@ -81,7 +81,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
   if (!data || data.length === 0) {
     return (
       <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-12 text-center space-y-2">
-        <p className="font-display text-lg font-semibold text-white">No active challenges right now.</p>
+        <p className="font-display text-lg font-semibold text-foreground">No active challenges right now.</p>
         <p className="text-sm text-muted-foreground">
           New challenges drop monthly — check back soon or follow us on socials.
         </p>
@@ -112,7 +112,7 @@ async function PastChallenges() {
   if (!data || data.length === 0) {
     return (
       <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-2">
-        <p className="font-display text-lg font-semibold text-white">No past challenges yet.</p>
+        <p className="font-display text-lg font-semibold text-foreground">No past challenges yet.</p>
         <p className="text-sm text-muted-foreground">Be the first to participate when we launch.</p>
       </div>
     );
