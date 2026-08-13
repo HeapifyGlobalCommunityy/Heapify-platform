@@ -10,8 +10,14 @@ export async function createClient() {
   console.log("URL:", supabaseUrl);
   console.log("KEY:", supabaseKey ? "FOUND" : "NOT FOUND");
 
-  if (!supabaseUrl || !supabaseKey) {
-    console.warn("Supabase is not configured.");
+  const invalidUrl = !supabaseUrl || supabaseUrl.includes("your-project.supabase.co");
+  const invalidKey = !supabaseKey || supabaseKey.includes("your-anon-key");
+
+  if (invalidUrl || invalidKey) {
+    console.warn(
+      "Supabase is not configured or is using placeholder environment values. " +
+      "Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to real credentials."
+    );
     return null as unknown as ReturnType<typeof createServerClient>;
   }
 

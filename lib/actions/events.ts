@@ -99,7 +99,7 @@ export async function registerForEvent(
   if (event.capacity !== null && event.capacity > 0) {
     const { count, error: countError } = await supabase
       .from("event_registrations")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("event_id", event.id);
 
     if (countError) {

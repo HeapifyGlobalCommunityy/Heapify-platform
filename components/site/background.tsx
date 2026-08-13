@@ -20,6 +20,25 @@ export function AnimatedNetworkBackground() {
     let mouse = { x: 0, y: 0, active: false };
     const nodes: Node[] = [];
 
+    // Read theme-aware colors from CSS custom properties
+    const getColors = () => {
+      const style = getComputedStyle(document.documentElement);
+      return {
+        canvasFill: style.getPropertyValue("--canvas-fill").trim() || "rgba(255,255,255,0.02)",
+        nodePrimary: style.getPropertyValue("--node-primary").trim() || "rgba(255,122,0,0.68)",
+        nodeAccent: style.getPropertyValue("--node-accent").trim() || "rgba(59,130,246,0.5)",
+        lineColor: style.getPropertyValue("--line-color").trim() || "rgba(255,122,0,0.12)",
+      };
+    };
+
+    let colors = getColors();
+
+    // Re-read colors when theme changes
+    const observer = new MutationObserver(() => {
+      colors = getColors();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
     const resize = () => {
       width = canvas.width = canvas.offsetWidth;
       height = canvas.height = canvas.offsetHeight;
@@ -51,7 +70,7 @@ export function AnimatedNetworkBackground() {
 
     const draw = () => {
       context.clearRect(0, 0, width, height);
-      context.fillStyle = "rgba(255,255,255,0.02)";
+      context.fillStyle = colors.canvasFill;
       context.fillRect(0, 0, width, height);
 
       nodes.forEach((node) => {
@@ -80,10 +99,11 @@ export function AnimatedNetworkBackground() {
           const second = nodes[j];
           const distance = Math.hypot(first.x - second.x, first.y - second.y);
           if (distance < 160) {
+            const alpha = 0.12 * (1 - distance / 160);
             context.beginPath();
             context.moveTo(first.x, first.y);
             context.lineTo(second.x, second.y);
-            context.strokeStyle = `rgba(255,122,0,${0.12 * (1 - distance / 160)})`;
+            context.strokeStyle = colors.lineColor.replace(/[\d.]+\)$/, `${alpha})`);
             context.lineWidth = 1;
             context.stroke();
           }
@@ -93,7 +113,7 @@ export function AnimatedNetworkBackground() {
       nodes.forEach((node, index) => {
         context.beginPath();
         context.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-        context.fillStyle = index % 9 === 0 ? "rgba(59,130,246,0.5)" : "rgba(255,122,0,0.68)";
+        context.fillStyle = index % 9 === 0 ? colors.nodeAccent : colors.nodePrimary;
         context.fill();
       });
 
@@ -104,6 +124,7 @@ export function AnimatedNetworkBackground() {
 
     return () => {
       cancelAnimationFrame(frame);
+      observer.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseleave", onLeave);
@@ -112,11 +133,19 @@ export function AnimatedNetworkBackground() {
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.18),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_bottom,rgba(255,122,0,0.08),transparent_45%)]" />
+      {/* Ambient glow — theme-aware via Tailwind dark: prefix */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.06),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.04),transparent_28%)] dark:bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.18),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.14),transparent_28%)]" />
+      {/* Canvas network */}
       <div className="absolute inset-0 opacity-55 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]">
         <canvas ref={canvasRef} className="h-full w-full" aria-hidden="true" />
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(transparent_0%,transparent_78%,rgba(255,255,255,0.8)_100%)] dark:bg-[linear-gradient(transparent_0%,transparent_78%,rgba(10,10,10,0.3)_100%)]" />
+      {/* Bottom fade to page background — uses CSS variable */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(transparent 0%, transparent 78%, var(--hero-overlay-to) 100%)`,
+        }}
+      />
     </div>
   );
 }

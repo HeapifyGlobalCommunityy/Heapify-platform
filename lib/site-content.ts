@@ -16,9 +16,13 @@ export const navigationLinks = [
 ];
 
 export const stats = [
-  { label: "Community Members", value: 500, detail: "Students, developers, and builders in the network" },
-  { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
+  { label: "Active Builders", value: 500, detail: "Students, developers, and creators in the network" },
+  { label: "Events Hosted", value: 10, detail: "Hackathons, workshops, and builder sessions" },
+  { label: "Active Contributors", value: 25, detail: "Members regularly showing up and building together" },
+  { label: "Cities Connected", value: 8, detail: "A growing distributed network of builders" },
 ];
+
+export const gemmaSprintDate = "18 July 2026";
 
 export const whatWeDo = [
   {
@@ -65,7 +69,7 @@ export const featuredEvents = [
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 18, 2026",
+    date: gemmaSprintDate,
     time: "All day",
     location: "MSRIT, Bengaluru",
     summary:
@@ -91,7 +95,7 @@ export const eventCatalog = [
     title: "Build with Gemma: Bengaluru AI Sprint",
     category: "Hackathon",
     status: "Past",
-    date: "Jul 18, 2026",
+    date: gemmaSprintDate,
     time: "All day",
     format: "Offline",
     location: "MSRIT, Bengaluru",
@@ -103,7 +107,7 @@ export const eventCatalog = [
     title: "Build with Gemma: Official Briefing Session",
     category: "Workshop",
     status: "Past",
-    date: "Jul 12, 2026",
+    date: "18 July 2026",
     time: "3:30 PM – 5:00 PM IST",
     format: "Virtual",
     location: "Online",
@@ -166,7 +170,7 @@ export const eventDetail = {
   banner: "",
   category: "Hackathon",
   status: "Past",
-  date: "Jul 18, 2026",
+  date: gemmaSprintDate,
   time: "All day",
   location: "MSRIT, Bengaluru",
   host: "Heapify Global Community",

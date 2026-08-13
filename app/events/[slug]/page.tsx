@@ -13,13 +13,14 @@
 //    Uses the event's database fields directly for capacity, hackathon settings,
 //    team requirements, and custom questions.
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getEventBySlug } from "@/lib/supabase/queries";
 import EventDetailClient from "@/components/events/EventDetailClient";
 import { eventCatalog } from "@/lib/site-content";
+import { canExportEventRegistrations } from "@/lib/auth/event-registration-export";
 
 // Helper to format database category enum value to UI label
 function formatCategory(category: string): string {
@@ -126,7 +127,7 @@ export default async function EventDetailPage({
     if (supabase) {
       const { count, error: countError } = await supabase
         .from("event_registrations")
-        .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
         .eq("event_id", ev.id);
       if (!countError && count !== null) {
         registeredCount = count;
@@ -160,6 +161,18 @@ export default async function EventDetailPage({
         time: formatEventTime(r.start_at),
         location: r.location || "TBD",
       }));
+    }
+  }
+
+  let canExportRegistrations = false;
+  if (supabase && ev.id !== "00000000-0000-0000-0000-000000000000") {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      canExportRegistrations = await canExportEventRegistrations(supabase, user.id, {
+        chapter_id: ev.chapter_id ?? null,
+      });
     }
   }
 
@@ -238,6 +251,7 @@ export default async function EventDetailPage({
       related={related}
       isPast={isPast}
       initialRegistering={initialRegistering}
+      canExportRegistrations={canExportRegistrations}
     />
   );
 }

@@ -9,7 +9,7 @@
 
 import { useState, useTransition } from "react";
 import { submitForm } from "@/lib/actions/forms";
-import type { FormConfig } from "./page";
+import type { FieldOption, FormConfig } from "./page";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,8 +32,12 @@ export default function DynamicForm({ formType, config }: Props) {
     return init;
   });
 
-  function handleChange(name: string, value: string) {
-    setValues((prev) => ({ ...prev, [name]: value }));
+  function handleChange(name: string, value: string, selectedLabel?: string, labelField?: string) {
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(selectedLabel && labelField ? { [labelField]: selectedLabel } : {}),
+    }));
     if (fieldErrors[name]) {
       setFieldErrors((prev) => {
         const next = { ...prev };
@@ -41,6 +45,14 @@ export default function DynamicForm({ formType, config }: Props) {
         return next;
       });
     }
+  }
+
+  function optionValue(option: FieldOption): string {
+    return typeof option === "string" ? option.toLowerCase().replace(/\s+/g, "_") : option.value;
+  }
+
+  function optionLabel(option: FieldOption): string {
+    return typeof option === "string" ? option : option.label;
   }
 
   function handleMultiChange(name: string, option: string) {
@@ -135,7 +147,17 @@ export default function DynamicForm({ formType, config }: Props) {
                 type={field.type}
                 name={field.name}
                 value={values[field.name] as string}
-                onChange={(e) => handleChange(field.name, e.target.value)}
+                onChange={(e) => {
+                  const selected = field.options?.find(
+                    (option) => optionValue(option) === e.target.value
+                  );
+                  handleChange(
+                    field.name,
+                    e.target.value,
+                    selected ? optionLabel(selected) : undefined,
+                    field.submitLabelAs
+                  );
+                }}
                 placeholder={field.placeholder}
                 required={field.required}
                 className={baseInputClass}
@@ -170,8 +192,8 @@ export default function DynamicForm({ formType, config }: Props) {
                   — Select one —
                 </option>
                 {field.options?.map((opt) => (
-                  <option key={opt} value={opt.toLowerCase().replace(/\s+/g, "_")} className="bg-background text-foreground">
-                    {opt}
+                  <option key={optionValue(opt)} value={optionValue(opt)} className="bg-background text-foreground">
+                    {optionLabel(opt)}
                   </option>
                 ))}
               </select>
@@ -189,11 +211,11 @@ export default function DynamicForm({ formType, config }: Props) {
                   Select all that apply
                 </p>
                 {field.options?.map((opt) => {
-                  const val = opt.toLowerCase().replace(/\s+/g, "_");
+                  const val = optionValue(opt);
                   const checked = (values[field.name] as string[]).includes(val);
                   return (
                     <label
-                      key={opt}
+                      key={val}
                       className="flex items-center gap-3 cursor-pointer group"
                     >
                       <div
@@ -221,7 +243,7 @@ export default function DynamicForm({ formType, config }: Props) {
                         )}
                       </div>
                       <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
-                        {opt}
+                        {optionLabel(opt)}
                       </span>
                     </label>
                   );

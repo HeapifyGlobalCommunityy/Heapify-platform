@@ -48,7 +48,7 @@ console.log("Payload:", payload);
 const { data, error } = await supabase
   .from("form_submissions")
   .insert(payload)
-  .select();
+  .select("id, form_type, submitted_by, submitted_at");
 
 console.log("Data:", data);
 console.log("Error:", error);

@@ -371,7 +371,7 @@ export async function POST(
       team_members: teamMembers,
       answers,
     })
-    .select()
+    .select("id, event_id, user_id, status, registered_at, team_name, team_members")
     .single();
 
   if (insertError) {

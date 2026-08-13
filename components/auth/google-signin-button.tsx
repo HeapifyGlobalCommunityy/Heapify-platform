@@ -20,6 +20,7 @@ export function GoogleSignInButton({
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -33,24 +34,27 @@ export function GoogleSignInButton({
     }
 
     try {
-      const captchaResponse = await fetch("/api/captcha", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: captchaToken }),
-      });
+      // Skip captcha verification in development
+      if (process.env.NODE_ENV !== "development") {
+        const captchaResponse = await fetch("/api/captcha", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: captchaToken }),
+        });
 
-      const captchaResult = (await captchaResponse.json()) as {
-        success: boolean;
-        message?: string;
-      };
+        const captchaResult = (await captchaResponse.json()) as {
+          success: boolean;
+          message?: string;
+        };
 
-      if (!captchaResponse.ok || !captchaResult.success) {
-        setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
-        onCaptchaReset();
-        setIsLoading(false);
-        return;
+        if (!captchaResponse.ok || !captchaResult.success) {
+          setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
+          onCaptchaReset();
+          setIsLoading(false);
+          return;
+        }
       }
 
       const nextParam = redirectTo ? `?next=${encodeURIComponent(redirectTo)}` : "";
@@ -84,7 +88,7 @@ export function GoogleSignInButton({
       )}
       <Button 
         onClick={handleSignIn} 
-        disabled={isLoading || !captchaToken}
+        disabled={isLoading || (process.env.NODE_ENV !== "development" && siteKey ? !captchaToken : false)}
         variant="ghost"
         className="w-full"
       >

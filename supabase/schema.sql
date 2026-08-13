@@ -248,7 +248,7 @@ create table form_submissions (
   id uuid primary key default uuid_generate_v4(),
   form_type text not null check (form_type in
     ('volunteer','speaker','mentor','partnership','sponsor',
-     'chapter_lead','ambassador','contact')),
+     'chapter_lead','ambassador','contact','chapter_member')),
   submitted_by uuid references profiles(id),
   payload jsonb not null,
   status text not null default 'pending' check (status in ('pending','reviewed','accepted','rejected')),
@@ -309,6 +309,26 @@ create policy "public read resources" on resources for select using (true);
 create policy "users update own profile" on profiles for update using (auth.uid() = id);
 create policy "users select own registrations" on event_registrations
   for select using (auth.uid() = user_id);
+create policy "authorized staff read event registrations" on event_registrations
+  for select using (
+    exists (
+      select 1
+      from events
+      left join chapters on chapters.id = events.chapter_id
+      where events.id = event_registrations.event_id
+        and (
+          (select has_role('core_team'::user_role))
+          or chapters.lead_id = (select auth.uid())
+          or exists (
+            select 1
+            from profiles
+            where profiles.id = (select auth.uid())
+              and profiles.role = 'chapter_admin'::user_role
+              and profiles.chapter_id = events.chapter_id
+          )
+        )
+    )
+  );
 create policy "users insert own registrations" on event_registrations
   for insert with check (auth.uid() = user_id);
 create policy "users update own registrations" on event_registrations
@@ -325,6 +345,42 @@ create policy "users submit forms" on form_submissions
   for insert with check (auth.uid() = submitted_by or submitted_by is null);
 create policy "users read own form submissions" on form_submissions
   for select using (auth.uid() = submitted_by);
+create policy "core team read all submissions" on form_submissions
+  for select to authenticated
+  using ((select has_role('core_team'::user_role)));
+create policy "core team update submissions" on form_submissions
+  for update to authenticated
+  using ((select has_role('core_team'::user_role)))
+  with check ((select has_role('core_team'::user_role)));
+
+create policy "chapter leads read membership requests" on form_submissions
+  for select to authenticated
+  using (
+    form_type = 'chapter_member'
+    and exists (
+      select 1 from chapters
+      where chapters.id::text = form_submissions.payload->>'chapter_id'
+        and chapters.lead_id = (select auth.uid())
+    )
+  );
+create policy "chapter leads update membership requests" on form_submissions
+  for update to authenticated
+  using (
+    form_type = 'chapter_member'
+    and exists (
+      select 1 from chapters
+      where chapters.id::text = form_submissions.payload->>'chapter_id'
+        and chapters.lead_id = (select auth.uid())
+    )
+  )
+  with check (
+    form_type = 'chapter_member'
+    and exists (
+      select 1 from chapters
+      where chapters.id::text = form_submissions.payload->>'chapter_id'
+        and chapters.lead_id = (select auth.uid())
+    )
+  );
 
 -- Core team / super admin elevated access is handled via a `has_role()`
 -- helper function checked in policies on admin-only tables (sponsors,
