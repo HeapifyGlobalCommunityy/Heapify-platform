@@ -338,7 +338,7 @@ export const teamSections = [
         role: "Founder",
         bio: "Co-drives Heapify's community strategy, events, and growth.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/rohan-chand-m-ab184832a/" }
         ],
       },
       {
@@ -346,7 +346,7 @@ export const teamSections = [
         role: "Founder",
         bio: "Leads the vision and direction of Heapify Global Community.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/venkatesh-reddy-k-6aba34333?utm_source=share_via&utm_content=profile&utm_medium=member_android" }
         ],
       },
     ],
@@ -364,11 +364,11 @@ export const teamSections = [
         ],
       },
       {
-        name: "Junaid",
+        name: "Junaid Mollah",
         role: "Co-Founder",
         bio: "Contributes to community operations and builder initiatives.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/junaid-mollah-a59150319" }
         ],
       },
       {
@@ -376,7 +376,7 @@ export const teamSections = [
         role: "Co-Founder",
         bio: "Drives community growth, partnerships, and builder programs.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/karthik-280b84331/" }
         ],
       },
     ],
@@ -385,19 +385,19 @@ export const teamSections = [
     title: "Community",
     members: [
       {
-        name: "Madhusudhan",
+        name: "Madhusudan LS",
         role: "Community Admin",
         bio: "Keeps the community running smoothly day-to-day.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/madhusudanls/" }
         ],
       },
       {
-        name: "Krish",
+        name: "Krish Kumar Sharma",
         role: "Community Admin",
         bio: "Supports community programs and member engagement.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/krish-kumar-sharma-842419378/" }
         ],
       },
       {
@@ -405,7 +405,7 @@ export const teamSections = [
         role: "Community Lead",
         bio: "Co-drives community operations, events, and builder engagement.",
         links: [
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "linkedin", url: "https://www.linkedin.com/in/aahana-mohanty-9a151a30b/" }
         ],
       },
     ],
@@ -414,46 +414,47 @@ export const teamSections = [
     title: "Technology",
     members: [
       {
-        name: "Md Oveaz",
-        role: "Tech Lead",
-        bio: "Owns the database schema, access control, and platform security — keeping Heapify's backend robust and reliable.",
-        links: [
-          { platform: "github", url: "https://github.com" },
-          { platform: "linkedin", url: "https://www.linkedin.com" }
-        ],
-      },
-      {
         name: "Stavan Rahul Khobare",
         role: "Tech Lead",
         bio: "Platform engineer focused on backend systems and developer experience.",
         links: [
-          { platform: "github", url: "https://github.com" },
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "github", url: "https://github.com/StavanRKhobare" },
+          { platform: "linkedin", url: "https://www.linkedin.com/in/stavan-rahul-khobare-463231386/" }
         ],
       },
       {
-        name: "Kishor Krishna",
+        name: "Mohammed Oveaz Khan",
         role: "Tech Lead",
-        bio: "Frontend engineer crafting the community's digital experience.",
+        bio: "Owns the database schema, access control, and platform security — keeping Heapify's backend robust and reliable.",
         links: [
-          { platform: "github", url: "https://github.com" },
-          { platform: "linkedin", url: "https://www.linkedin.com" }
+          { platform: "github", url: "https://github.com/mddragon18" },
+          { platform: "linkedin", url: "https://www.linkedin.com/in/mohammed-oveaz-khan-8a020030a/" }
         ],
       },
       {
-        name: "Harshith",
+        name: "Harshith Gowda G S",
         role: "Technology",
         bio: "Frontend developer shaping the interfaces and interactions that bring Heapify to life.",
         links: [
-          { platform: "github", url: "https://github.com" }
+          { platform: "github", url: "https://github.com/harshithGowda735" },
+          { platform: "linkedin", url: "https://www.linkedin.com/in/harshith-gowda-g-s-834b64377/" }
         ],
       },
       {
-        name: "Swati",
+        name: "Swati Shinde",
         role: "Technology",
         bio: "Builds and maintains core features of the Heapify platform.",
         links: [
-          { platform: "github", url: "https://github.com" }
+          { platform: "github", url: "https://github.com/swati0602" },
+          { platform: "linkedin", url: "https://www.linkedin.com/in/swati-shinde-tech/" }
+        ],
+      },
+      {
+        name: "Kishore",
+        role: "Tech Lead",
+        bio: "Frontend engineer crafting the community's digital experience.",
+        links: [
+          { platform: "github", url: "https://github.com/KISHOR-glitch" }
         ],
       },
     ],
