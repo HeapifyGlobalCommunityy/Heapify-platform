@@ -18,6 +18,7 @@ export function EmailSignInForm({
   captchaToken,
   onCaptchaReset,
 }: EmailSignInFormProps) {
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -43,23 +44,26 @@ export function EmailSignInForm({
     }
 
     try {
-      const captchaResponse = await fetch("/api/captcha", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: captchaToken }),
-      });
+      // Skip captcha verification in development
+      if (process.env.NODE_ENV !== "development") {
+        const captchaResponse = await fetch("/api/captcha", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: captchaToken }),
+        });
 
-      const captchaResult = (await captchaResponse.json()) as {
-        success: boolean;
-        message?: string;
-      };
+        const captchaResult = (await captchaResponse.json()) as {
+          success: boolean;
+          message?: string;
+        };
 
-      if (!captchaResponse.ok || !captchaResult.success) {
-        setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
-        onCaptchaReset();
-        return;
+        if (!captchaResponse.ok || !captchaResult.success) {
+          setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
+          onCaptchaReset();
+          return;
+        }
       }
 
       if (isForgotPassword) {
@@ -117,7 +121,7 @@ export function EmailSignInForm({
 
   if (isForgotPassword) {
     return (
-      <div className="grid gap-4">
+      <div className="grid gap-4" suppressHydrationWarning={true}>
         {error && (
           <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
             {error}
@@ -145,7 +149,7 @@ export function EmailSignInForm({
         <div className="flex flex-col gap-4 mt-2">
           <Button
             onClick={() => handleAuth(mode)}
-            disabled={isLoading || !email || !captchaToken}
+            disabled={isLoading || !email || (siteKey ? !captchaToken : false)}
             className="w-full"
           >
             {isLoading ? "Sending..." : "Send Reset Link"}
@@ -169,7 +173,7 @@ export function EmailSignInForm({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4" suppressHydrationWarning={true}>
       {error && (
         <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
           {error}
@@ -240,7 +244,7 @@ export function EmailSignInForm({
             isLoading ||
             !email ||
             !password ||
-            !captchaToken ||
+            (process.env.NODE_ENV !== "development" && siteKey ? !captchaToken : false) ||
             (mode === "signup" && !fullName)
           }
           className="w-full"

@@ -127,7 +127,7 @@ export default async function EventDetailPage({
     if (supabase) {
       const { count, error: countError } = await supabase
         .from("event_registrations")
-        .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
         .eq("event_id", ev.id);
       if (!countError && count !== null) {
         registeredCount = count;

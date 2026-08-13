@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { gemmaSprintDate } from "@/lib/site-content";
 import { SectionWrapper } from "@/components/site/ui";
 import {
   CheckCircle2,
@@ -8,7 +9,6 @@ import {
   Sparkles,
   ArrowLeft,
   Laptop,
-  Camera,
 } from "lucide-react";
 
 
@@ -37,6 +37,7 @@ export default async function BuildWithGemmaPage() {
     "Hackhere",
     "IEEE CIS Bangalore",
   ];
+  const uniqueCollaborators = Array.from(new Set(collaborators));
 
   const highlights = [
     { label: "Format", value: "Offline Sprint + Virtual Briefing", detail: "MSRIT Bengaluru + Online Q&A" },
@@ -74,8 +75,8 @@ export default async function BuildWithGemmaPage() {
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/20 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary backdrop-blur-md">
                 <Trophy className="h-3.5 w-3.5" /> Flagship Event Success Story · Concluded
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 text-xs font-mono text-muted-foreground backdrop-blur-md">
-                12 July 2026 · MSRIT, Bengaluru
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-black/60 px-3.5 py-1.5 text-xs font-mono text-zinc-300 backdrop-blur-md">
+                {gemmaSprintDate} · MSRIT, Bengaluru
               </span>
             </div>
 
@@ -223,15 +224,17 @@ export default async function BuildWithGemmaPage() {
               </p>
             </div>
 
-            {/* Image Placeholder */}
-            <div className="relative w-full h-48 rounded-xl overflow-hidden border border-dashed border-zinc-700 bg-zinc-900/60 flex flex-col items-center justify-center text-center p-6 group hover:border-primary/50 transition-colors">
-              <Camera className="h-8 w-8 text-zinc-500 group-hover:text-primary transition-colors mb-2" />
-              <span className="text-xs font-mono font-semibold text-zinc-300">
-                [Image Placeholder: AI Mobile Coders Workshop Session]
-              </span>
-              <span className="text-[11px] text-zinc-500 mt-1">
-                Upload session photo to public/images/ai-mobile-coders.jpg
-              </span>
+            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
+              <Image
+                src="/images/guygivingspeech.jpg"
+                alt="AI Mobile Coders Workshop Session"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
+                <span className="text-xs font-mono font-medium text-white">AI Mobile Coders Workshop Session</span>
+              </div>
             </div>
           </div>
 
@@ -251,15 +254,17 @@ export default async function BuildWithGemmaPage() {
               </p>
             </div>
 
-            {/* Image Placeholder */}
-            <div className="relative w-full h-48 rounded-xl overflow-hidden border border-dashed border-zinc-700 bg-zinc-900/60 flex flex-col items-center justify-center text-center p-6 group hover:border-primary/50 transition-colors">
-              <Camera className="h-8 w-8 text-zinc-500 group-hover:text-primary transition-colors mb-2" />
-              <span className="text-xs font-mono font-semibold text-zinc-300">
-                [Image Placeholder: Founder Meet & Community Networking]
-              </span>
-              <span className="text-[11px] text-zinc-500 mt-1">
-                Upload founder photo to public/images/founder-meet.jpg
-              </span>
+            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
+              <Image
+                src="/images/picofallparticipants.jpg"
+                alt="Founder Meet and Community Networking"
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
+                <span className="text-xs font-mono font-medium text-white">Founder Meet & Community Networking</span>
+              </div>
             </div>
           </div>
         </div>
@@ -334,14 +339,17 @@ export default async function BuildWithGemmaPage() {
           </div>
 
           {/* Photo 6: General Community Placeholder */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-dashed border-zinc-700 bg-zinc-900/50 flex flex-col items-center justify-center p-6 text-center hover:border-primary/50 transition-colors">
-            <Camera className="h-7 w-7 text-zinc-500 group-hover:text-primary transition-colors mb-2" />
-            <span className="text-xs font-mono font-medium text-zinc-300">
-              [Image Placeholder: Hackathon Floor & Mentorship]
-            </span>
-            <span className="text-[10px] text-zinc-500 mt-1">
-              Add more event photos to public/images/
-            </span>
+            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
+            <Image
+              src="/images/placeholder-hackathon-floor.jpg"
+              alt="Hackathon floor and mentorship sessions"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
+              <span className="text-xs font-mono font-medium text-white">Hackathon Floor & Mentorship</span>
+            </div>
           </div>
         </div>
       </SectionWrapper>
@@ -354,7 +362,7 @@ export default async function BuildWithGemmaPage() {
         className="py-12"
       >
         <div className="flex flex-wrap gap-3 max-w-5xl">
-          {collaborators.map((partner) => (
+          {uniqueCollaborators.map((partner) => (
             <span
               key={partner}
               className="rounded-full border border-glass-border bg-glass-bg px-5 py-2.5 text-xs font-mono font-semibold uppercase tracking-[0.2em] text-zinc-300 transition-all duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_20px_rgba(255,122,0,0.2)]"
