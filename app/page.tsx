@@ -60,7 +60,7 @@ export default async function HomePage() {
         } else {
           console.error("[HomePage] failed loading site stats:", statsError.message);
         }
-      } else if (dbStats) {
+      } else if (dbStats && dbStats.length > 0) {
         const statsDetailMap: Record<string, string> = {
           "Community Members": "Students, developers, and builders in the network",
           Events: "Hackathons, workshops, technical sessions, and builder initiatives",
