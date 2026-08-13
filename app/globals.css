@@ -4,27 +4,28 @@
 
 @layer base {
   :root {
-    --background: 36 14% 97%; /* Warm greyish-white — #F8F7F4 */
-    --foreground: 240 10% 12%;
+    --background: 0 0% 98%;
+    /* Neutral off-white, no sand tone */
+    --foreground: 240 10% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 12%;
-    --muted: 36 8% 93%;
-    --muted-foreground: 240 5% 42%;
-    --border: 36 8% 88%;
+    --card-foreground: 240 10% 10%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 240 5% 36%;
+    --border: 0 0% 86%;
     --radius: 0.75rem;
-    --glass-border: rgba(0, 0, 0, 0.07);
-    --glass-bg: rgba(255, 255, 255, 0.65);
-    --hero-overlay-from: rgba(248, 247, 244, 0.05);
-    --hero-overlay-mid: rgba(248, 247, 244, 0.15);
+    --glass-border: rgba(0, 0, 0, 0.09);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --hero-overlay-from: transparent;
+    --hero-overlay-mid: transparent;
     --hero-overlay-to: transparent;
-    --canvas-fill: rgba(0, 0, 0, 0.008);
+    --canvas-fill: rgba(0, 0, 0, 0.006);
     --node-primary: rgba(249, 115, 22, 0.45);
     --node-accent: rgba(59, 130, 246, 0.35);
     --line-color: rgba(249, 115, 22, 0.08);
-    /* Sunrise background for light mode (starts warm orange at top, shades gently down) */
-    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.14) 0%, rgba(255, 166, 77, 0.05) 25%, transparent 55%);
-    --bg-glow-white: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 255, 255, 0.8), transparent 70%);
-    --bg-warmth: radial-gradient(ellipse 100% 60% at 100% 0%, rgba(251, 191, 36, 0.12), transparent 50%);
+    /* Subtle sunrise — just a whisper of orange at the very top, fading fast */
+    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.09) 0%, rgba(255, 150, 40, 0.04) 18%, transparent 40%);
+    --bg-glow-white: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 65%);
+    --bg-warmth: none;
   }
 
   .dark {

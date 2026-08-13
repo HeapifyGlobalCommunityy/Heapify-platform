@@ -178,25 +178,25 @@ export function EventCardWide({ event }: { event: { slug: string; title: string;
     <motion.article
       whileHover={{ y: -4 }}
       transition={{ duration: 0.25 }}
-      className="group relative overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-8 backdrop-blur-xl"
+      className="group relative overflow-hidden rounded-[1.75rem] border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_12px_40px_-16px_rgba(255,122,0,0.18)] dark:border-glass-border dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] dark:hover:shadow-[0_12px_40px_-16px_rgba(255,122,0,0.28)]"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(255,122,0,0.10),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(255,122,0,0.08),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="flex-1 space-y-4 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{event.category}</span>
-            <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.status}</span>
-            {event.format && <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.format}</span>}
+            <span className="rounded-full border border-border bg-muted/60 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.status}</span>
+            {event.format && <span className="rounded-full border border-border bg-muted/60 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.format}</span>}
           </div>
-          <h3 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">{event.title}</h3>
+          <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">{event.title}</h3>
           {(event.summary || event.description) && (
             <p className="text-sm leading-7 text-muted-foreground max-w-2xl line-clamp-2">{event.summary ?? event.description}</p>
           )}
           <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2 text-xs text-foreground/70">
               <CalendarDays className="h-3.5 w-3.5 text-primary" />{event.date}
             </div>
-            <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-4 py-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2 text-xs text-foreground/70">
               <MapPin className="h-3.5 w-3.5 text-primary" />{event.location}
             </div>
           </div>
@@ -267,7 +267,7 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-glass-border bg-glass-bg text-muted-foreground hover:text-white hover:border-primary/40 hover:shadow-[0_0_15px_rgba(255,122,0,0.2)] transition-all duration-300"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:shadow-[0_0_15px_rgba(255,122,0,0.2)] transition-all duration-300 dark:border-glass-border dark:bg-glass-bg"
             >
               <Icon className="h-4 w-4" />
             </a>
@@ -366,10 +366,10 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
 
   return (
     <div className="space-y-6">
-      <div className="relative z-10 grid gap-4 rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
-        <label className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-sm text-muted-foreground">
-          <Search className="h-4 w-4 text-primary" />
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
+      <div className="relative z-10 grid gap-4 rounded-[1.5rem] border border-border bg-card p-4 shadow-sm dark:border-glass-border dark:bg-glass-bg dark:backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
+        <label className="flex items-center gap-3 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-sm text-foreground dark:border-glass-border dark:bg-black/20">
+          <Search className="h-4 w-4 text-primary shrink-0" />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none text-foreground placeholder:text-muted-foreground" />
         </label>
         <div className="grid gap-3 sm:grid-cols-2">
           <Dropdown
@@ -377,20 +377,20 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
             value={activeCategory}
             onChange={setActiveCategory}
             icon={<Filter className="h-4 w-4 text-primary" />}
-            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-xs text-muted-foreground hover:text-white transition-all duration-150"
+            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-xs text-foreground hover:border-primary/30 hover:text-primary transition-all duration-150 dark:border-glass-border dark:bg-black/20 dark:text-muted-foreground dark:hover:text-foreground"
           />
           <Dropdown
             options={["All", "Upcoming", "Ongoing", "Past"]}
             value={activeStatus}
             onChange={setActiveStatus}
             icon={<Sparkles className="h-4 w-4 text-primary" />}
-            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/20 px-4 py-3 text-xs text-muted-foreground hover:text-white transition-all duration-150"
+            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-xs text-foreground hover:border-primary/30 hover:text-primary transition-all duration-150 dark:border-glass-border dark:bg-black/20 dark:text-muted-foreground dark:hover:text-foreground"
           />
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
-          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition-colors", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground")}>
+          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition-colors", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-muted/40 text-muted-foreground hover:border-primary/30 hover:text-foreground dark:border-glass-border dark:bg-glass-bg")}>
             {category}
           </button>
         ))}
@@ -619,7 +619,7 @@ export function CategoryResourcesClient({
                     <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                   </div>
                   
-                  <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-white transition-colors">
+                  <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                     {resource.title}
                   </h3>
                   
