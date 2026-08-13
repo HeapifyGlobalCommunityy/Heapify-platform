@@ -44,8 +44,8 @@ export default async function HomePage() {
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
   let statsData = [
-    { label: "Community Members", value: 500, detail: "Students, developers, and builders in the network" },
-    { label: "Events", value: 10, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
+    { label: "Community Members", value: 450, detail: "Students, developers, and builders in the network" },
+    { label: "Events", value: 5, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
   ];
 
   if (isSupabaseConfigured) {
@@ -220,141 +220,141 @@ export default async function HomePage() {
       <SectionWrapper eyebrow="Community" title="Built by the Community" description="From hackathons and technical sessions to collaborative projects and open-source initiatives, Heapify is shaped by the builders who participate in it." />
 
       {/* Flagship event — at the bottom, above CTA */}
-{/* Flagship event — at the bottom, above CTA */}
-<SectionWrapper
-  eyebrow="Our Flagship Event"
-  title="A glimpse into where we&apos;ve been"
->
-  <ScrollReveal>
-    <div className="group relative overflow-hidden rounded-[2rem] border border-border/70 bg-card p-6 sm:p-8 md:p-12 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_rgba(255,122,0,0.35)] dark:border-primary/25 dark:bg-[linear-gradient(145deg,rgba(255,122,0,0.12)_0%,rgba(255,122,0,0.04)_45%,transparent_100%)] dark:hover:border-primary/55 dark:hover:shadow-[0_28px_70px_-18px_rgba(255,122,0,0.45)]">
-      
-      {/* ── Ambient glow layers ── */}
-      {/* Large primary orb — top right */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary/25 blur-3xl opacity-40 transition-all duration-700 group-hover:opacity-70 group-hover:scale-110 dark:opacity-70 dark:group-hover:opacity-100"
-      />
-      {/* Secondary orb — bottom left */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-28 -left-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl opacity-30 transition-all duration-700 group-hover:opacity-60 group-hover:scale-105 dark:opacity-50 dark:group-hover:opacity-80"
-      />
-      {/* Center soft wash */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,122,0,0.12),transparent_65%)] opacity-50 transition-opacity duration-700 group-hover:opacity-80 dark:opacity-70 dark:group-hover:opacity-100"
-      />
-
-      {/* Animated drifting glow (slow float) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden"
+      {/* Flagship event — at the bottom, above CTA */}
+      <SectionWrapper
+        eyebrow="Our Flagship Event"
+        title="A glimpse into where we&apos;ve been"
       >
-        <div className="absolute -left-1/4 top-1/3 h-64 w-64 animate-[float_12s_ease-in-out_infinite] rounded-full bg-primary/20 blur-3xl opacity-40 dark:opacity-60" />
-        <div className="absolute -right-1/4 bottom-1/4 h-56 w-56 animate-[float_16s_ease-in-out_infinite_reverse] rounded-full bg-orange-400/15 blur-3xl opacity-30 dark:opacity-50" />
-      </div>
+        <ScrollReveal>
+          <div className="group relative overflow-hidden rounded-[2rem] border border-border/70 bg-card p-6 sm:p-8 md:p-12 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_rgba(255,122,0,0.35)] dark:border-primary/25 dark:bg-[linear-gradient(145deg,rgba(255,122,0,0.12)_0%,rgba(255,122,0,0.04)_45%,transparent_100%)] dark:hover:border-primary/55 dark:hover:shadow-[0_28px_70px_-18px_rgba(255,122,0,0.45)]">
 
-      {/* Soft top edge line */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-70 dark:opacity-90"
-      />
+            {/* ── Ambient glow layers ── */}
+            {/* Large primary orb — top right */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary/25 blur-3xl opacity-40 transition-all duration-700 group-hover:opacity-70 group-hover:scale-110 dark:opacity-70 dark:group-hover:opacity-100"
+            />
+            {/* Secondary orb — bottom left */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-28 -left-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl opacity-30 transition-all duration-700 group-hover:opacity-60 group-hover:scale-105 dark:opacity-50 dark:group-hover:opacity-80"
+            />
+            {/* Center soft wash */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,122,0,0.12),transparent_65%)] opacity-50 transition-opacity duration-700 group-hover:opacity-80 dark:opacity-70 dark:group-hover:opacity-100"
+            />
 
-      {/* Subtle inner grid texture (optional depth) */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-          backgroundSize: "24px 24px",
-        }}
-      />
+            {/* Animated drifting glow (slow float) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 overflow-hidden"
+            >
+              <div className="absolute -left-1/4 top-1/3 h-64 w-64 animate-[float_12s_ease-in-out_infinite] rounded-full bg-primary/20 blur-3xl opacity-40 dark:opacity-60" />
+              <div className="absolute -right-1/4 bottom-1/4 h-56 w-56 animate-[float_16s_ease-in-out_infinite_reverse] rounded-full bg-orange-400/15 blur-3xl opacity-30 dark:opacity-50" />
+            </div>
 
-      {/* Content */}
-      <div className="relative flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-10">
-        {/* Left */}
-        <div className="max-w-2xl space-y-5">
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-primary shadow-[0_0_12px_-2px_rgba(255,122,0,0.35)]">
-              Hackathon
-            </span>
-            <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
-              Past Event
-            </span>
-            <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
-              MSRIT, Bengaluru
-            </span>
+            {/* Soft top edge line */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-70 dark:opacity-90"
+            />
+
+            {/* Subtle inner grid texture (optional depth) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
+              style={{
+                backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+                backgroundSize: "24px 24px",
+              }}
+            />
+
+            {/* Content */}
+            <div className="relative flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-10">
+              {/* Left */}
+              <div className="max-w-2xl space-y-5">
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-primary shadow-[0_0_12px_-2px_rgba(255,122,0,0.35)]">
+                    Hackathon
+                  </span>
+                  <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                    Past Event
+                  </span>
+                  <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                    MSRIT, Bengaluru
+                  </span>
+                </div>
+
+                <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                  Build with Gemma:
+                  <br className="hidden sm:block" /> Bengaluru AI Sprint
+                </h3>
+
+                <p className="text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
+                  250 builders. One offline AI sprint. Heapify&apos;s first flagship
+                  hackathon brought together students and developers at MSRIT to build
+                  innovative solutions using Google&apos;s Gemma ecosystem — and it was
+                  just the beginning.
+                </p>
+
+                {/* Stats */}
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <ScrollReveal delay={0.1}>
+                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
+                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                        Date
+                      </div>
+                      <div className="mt-1.5 text-sm font-medium text-foreground">
+                        {gemmaSprintDate || "July 18, 2026"}
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                  <ScrollReveal delay={0.2}>
+                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
+                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                        Participants
+                      </div>
+                      <div className="mt-1.5 text-sm font-medium text-foreground">
+                        ~250 builders
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                  <ScrollReveal delay={0.3}>
+                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
+                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                        Prize Pool
+                      </div>
+                      <div className="mt-1.5 font-display text-sm font-semibold text-primary">
+                        $1,000
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col md:items-end">
+                <a
+                  href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white shadow-[0_0_20px_-4px_rgba(255,122,0,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ea6a0e] hover:shadow-[0_0_32px_-4px_rgba(255,122,0,0.7)]"
+                >
+                  Take a glimpse
+                  <ArrowRight className="h-4 w-4 shrink-0" />
+                </a>
+                <Link
+                  href="/events/build-with-gemma"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/80 px-6 py-3 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:text-foreground dark:bg-white/[0.04] dark:hover:bg-white/[0.07]"
+                >
+                  Event details →
+                </Link>
+              </div>
+            </div>
           </div>
-
-          <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-            Build with Gemma:
-            <br className="hidden sm:block" /> Bengaluru AI Sprint
-          </h3>
-
-          <p className="text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
-            250 builders. One offline AI sprint. Heapify&apos;s first flagship
-            hackathon brought together students and developers at MSRIT to build
-            innovative solutions using Google&apos;s Gemma ecosystem — and it was
-            just the beginning.
-          </p>
-
-          {/* Stats */}
-          <div className="grid gap-3 sm:grid-cols-3">
-            <ScrollReveal delay={0.1}>
-              <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                  Date
-                </div>
-                <div className="mt-1.5 text-sm font-medium text-foreground">
-                  {gemmaSprintDate || "July 18, 2026"}
-                </div>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                  Participants
-                </div>
-                <div className="mt-1.5 text-sm font-medium text-foreground">
-                  ~250 builders
-                </div>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.3}>
-              <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                  Prize Pool
-                </div>
-                <div className="mt-1.5 font-display text-sm font-semibold text-primary">
-                  $1,000
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col md:items-end">
-          <a
-            href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white shadow-[0_0_20px_-4px_rgba(255,122,0,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ea6a0e] hover:shadow-[0_0_32px_-4px_rgba(255,122,0,0.7)]"
-          >
-            Take a glimpse
-            <ArrowRight className="h-4 w-4 shrink-0" />
-          </a>
-          <Link
-            href="/events/build-with-gemma"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/80 px-6 py-3 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:text-foreground dark:bg-white/[0.04] dark:hover:bg-white/[0.07]"
-          >
-            Event details →
-          </Link>
-        </div>
-      </div>
-    </div>
-  </ScrollReveal>
-</SectionWrapper>
+        </ScrollReveal>
+      </SectionWrapper>
 
       <CTAComponent
         title="Ready to Build Something?"
