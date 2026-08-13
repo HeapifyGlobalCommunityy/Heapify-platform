@@ -28,6 +28,7 @@ export async function GET(request: Request) {
 
             if (!existing) {
               // Build profile from available metadata
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const meta = (user.user_metadata || {}) as Record<string, any>;
               const full_name = meta.full_name || meta.name || user.user_metadata?.name || user.email || null;
               const avatar_url = meta.avatar_url || meta.picture || null;

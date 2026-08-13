@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Profile = any;
 
 interface AuthContextType {
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const client = supabase;
     let mounted = true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let subscription: any = null;
 
     async function init() {
