@@ -47,7 +47,7 @@ export default async function BuildWithGemmaPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-20">
+    <div className="min-h-screen pt-24 pb-20">
       {/* Top Back Navigation Bar */}
       <div className="mx-auto max-w-6xl px-6 pt-4 pb-2">
         <Link
@@ -68,7 +68,7 @@ export default async function BuildWithGemmaPage() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
           
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -80,11 +80,11 @@ export default async function BuildWithGemmaPage() {
               </span>
             </div>
 
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl leading-[1.1]">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.1]">
               Build with Gemma: Bengaluru AI Sprint
             </h1>
             
-            <p className="max-w-3xl text-base md:text-lg text-zinc-300 font-normal leading-relaxed">
+            <p className="max-w-3xl text-base md:text-lg text-muted-foreground font-normal leading-relaxed">
               Official Hackathon Briefing Session & Sprint — bringing together developers, student builders, volunteers, and mentors at Ramaiah Institute of Technology to build groundbreaking AI applications using Google&apos;s Gemma ecosystem.
             </p>
           </div>

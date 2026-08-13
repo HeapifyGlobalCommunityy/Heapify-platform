@@ -2,7 +2,7 @@
 
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
@@ -13,6 +13,12 @@ import { useAuth } from "@/components/auth/AuthProvider";
 
 export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const auth = useAuth();
@@ -93,7 +99,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
         opacity: visible ? 1 : 0,
       }}
     >
-      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
+      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <HeapifyLogo className="h-5 w-5" />
           <span className="font-display font-semibold text-sm tracking-tight whitespace-nowrap">
@@ -102,17 +108,20 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
         </Link>
 
         <div className="hidden items-center gap-4 xl:gap-6 text-sm text-muted-foreground lg:flex">
-          <Link href="/" className="transition-colors hover:text-foreground">
+          <Link href="/" className={`relative transition-colors hover:text-foreground ${isActive("/") ? "text-primary font-medium" : ""}`}>
             Home
+            {isActive("/") && <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-primary" />}
           </Link>
           {isChapterLead && (
-            <Link href="/chapter" className="transition-colors hover:text-foreground">
+            <Link href="/chapter" className={`relative transition-colors hover:text-foreground ${isActive("/chapter") ? "text-primary font-medium" : ""}`}>
               Chapter
+              {isActive("/chapter") && <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-primary" />}
             </Link>
           )}
           {filteredLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
+            <Link key={link.href} href={link.href} className={`relative transition-colors hover:text-foreground ${isActive(link.href) ? "text-primary font-medium" : ""}`}>
               {link.label}
+              {isActive(link.href) && <span className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-primary" />}
             </Link>
           ))}
         </div>
@@ -182,11 +191,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
       )}
 
       {open && (
-        <div className="mt-2 flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/85 p-4 backdrop-blur-xl lg:hidden">
+        <div className="mt-2 flex max-h-[75vh] flex-col gap-3 overflow-y-auto rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/90 p-4 backdrop-blur-xl lg:hidden">
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className={`text-sm transition-colors hover:text-foreground ${isActive("/") ? "text-primary font-medium" : "text-muted-foreground"}`}
           >
             Home
           </Link>
@@ -194,7 +203,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             <Link
               href="/chapter"
               onClick={() => setOpen(false)}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className={`text-sm transition-colors hover:text-foreground ${isActive("/chapter") ? "text-primary font-medium" : "text-muted-foreground"}`}
             >
               Chapter
             </Link>
@@ -204,7 +213,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className={`text-sm transition-colors hover:text-foreground ${isActive(link.href) ? "text-primary font-medium" : "text-muted-foreground"}`}
             >
               {link.label}
             </Link>

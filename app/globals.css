@@ -4,16 +4,28 @@
 
 @layer base {
   :root {
-    --background: 212 100% 95%; /* More noticeable light blue */
-    --foreground: 24 20% 15%;
-    --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 24 20% 15%;
-    --muted: 212 100% 90%; /* Distinct blue for muted elements */
-    --muted-foreground: 24 40% 45%;
-    --border: 24 30% 90%;
+    --background: 0 0% 98%;
+    /* Neutral off-white, no sand tone */
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 240 5% 36%;
+    --border: 0 0% 86%;
     --radius: 0.75rem;
-    --glass-border: rgba(255, 122, 0, 0.15);
-    --glass-bg: rgba(255, 122, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.09);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --hero-overlay-from: transparent;
+    --hero-overlay-mid: transparent;
+    --hero-overlay-to: transparent;
+    --canvas-fill: rgba(0, 0, 0, 0.006);
+    --node-primary: rgba(249, 115, 22, 0.45);
+    --node-accent: rgba(59, 130, 246, 0.35);
+    --line-color: rgba(249, 115, 22, 0.08);
+    /* Subtle sunrise — just a whisper of orange at the very top, fading fast */
+    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.09) 0%, rgba(255, 150, 40, 0.04) 18%, transparent 40%);
+    --bg-glow-white: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 65%);
+    --bg-warmth: none;
   }
 
   .dark {
@@ -26,6 +38,16 @@
     --border: 240 6% 16%;
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-bg: rgba(255, 255, 255, 0.03);
+    --hero-overlay-from: rgba(10, 10, 10, 0.2);
+    --hero-overlay-mid: rgba(10, 10, 10, 0.4);
+    --hero-overlay-to: transparent;
+    --canvas-fill: rgba(255, 255, 255, 0.02);
+    --node-primary: rgba(255, 122, 0, 0.68);
+    --node-accent: rgba(59, 130, 246, 0.5);
+    --line-color: rgba(255, 122, 0, 0.12);
+    --bg-sunrise: none;
+    --bg-glow-white: none;
+    --bg-warmth: none;
   }
 
   * {
@@ -36,27 +58,28 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
     background-image:
-      radial-gradient(circle at 20% 10%, rgba(255, 122, 0, 0.12), transparent 24%),
-      radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.08), transparent 16%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent 20%);
+      var(--bg-sunrise),
+      var(--bg-glow-white),
+      var(--bg-warmth);
+    background-repeat: no-repeat;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   ::selection {
-    background: rgba(255, 122, 0, 0.25);
+    background: rgba(249, 115, 22, 0.2);
     color: #fff;
   }
 }
 
 @layer utilities {
   .text-glow {
-    background: linear-gradient(120deg, #ff7a00, #ffa64d);
+    background: linear-gradient(120deg, #f97316, #fb923c);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
   .glass-panel {
-    @apply border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+    @apply border border-glass-border bg-glass-bg backdrop-blur-xl;
   }
 }
