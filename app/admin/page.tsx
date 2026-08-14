@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/auth/authorization";
 import { BentoCard, BentoGrid, CTAComponent, SectionWrapper } from "@/components/site/ui";
 
 const controls = [
-  { title: "Events Management", description: "Review and approve Luma-grade events." },
+  { title: "Events Management", description: "Review and manage community events.", href: "/admin/events" },
   { title: "Projects Review", description: "Moderate open-source submissions." },
   { title: "Sponsor Portal", description: "Manage B2B partners and billing." },
   { title: "Submissions", description: "Review community inquiries and applications.", href: "/admin/submissions" },

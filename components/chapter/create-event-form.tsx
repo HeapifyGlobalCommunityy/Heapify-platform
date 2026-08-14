@@ -16,8 +16,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createEvent, CreateEventPayload } from "@/lib/actions/events";
+import { adminCreateEvent, createEvent, type ChapterOption, type CreateEventPayload } from "@/lib/actions/events";
 import { STORAGE_BUCKETS, uploadPublicImage } from "@/lib/storage/client";
+
+export type EventFormMode = "chapter" | "admin";
+
+interface CreateEventFormProps {
+  mode?: EventFormMode;
+  chapters?: ChapterOption[];
+}
 
 export type QuestionType = "short_text" | "long_text" | "single_choice" | "multiple_choice" | "number";
 
@@ -29,8 +36,12 @@ interface CustomQuestion {
   options?: string[];
 }
 
-export function CreateEventForm() {
+export function CreateEventForm({
+  mode = "chapter",
+  chapters = [],
+}: CreateEventFormProps) {
   const router = useRouter();
+  const isAdminMode = mode === "admin";
 
   // Form states
   const [title, setTitle] = useState("");
@@ -46,6 +57,7 @@ export function CreateEventForm() {
   const [location, setLocation] = useState("");
   const [capacity, setCapacity] = useState("");
   const [isHackathon, setIsHackathon] = useState(false);
+  const [chapterId, setChapterId] = useState("");
 
   // Team requirement states
   const [teamRequired, setTeamRequired] = useState(false);
@@ -326,11 +338,13 @@ export function CreateEventForm() {
     };
 
     try {
-      const result = await createEvent(payload);
+      const result = isAdminMode
+        ? await adminCreateEvent({ ...payload, chapterId: chapterId.trim() || null })
+        : await createEvent(payload);
       if (result.success) {
         setSuccess("Event created successfully! Redirecting...");
         setTimeout(() => {
-          router.push(`/events/${result.slug}`);
+          router.push(isAdminMode ? `/admin/events/${result.slug}` : `/events/${result.slug}`);
         }, 1500);
       } else {
         setError(result.error);
@@ -428,6 +442,27 @@ export function CreateEventForm() {
             </p>
           </div>
         </div>
+
+        {isAdminMode && (
+          <div className="space-y-1.5">
+            <Label htmlFor="chapterId">Assign Chapter (Optional)</Label>
+            <select
+              id="chapterId"
+              value={chapterId}
+              onChange={(e) => setChapterId(e.target.value)}
+              disabled={isLoading}
+              className="flex h-9 w-full rounded-md border border-input bg-background/50 px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="">Global event (no chapter)</option>
+              {chapters.map((chapter) => (
+                <option key={chapter.id} value={chapter.id}>{chapter.name}</option>
+              ))}
+            </select>
+            <p className="text-[10px] text-muted-foreground">
+              Leave as Global to publish community-wide, or scope this event to an existing chapter.
+            </p>
+          </div>
+        )}
 
         <div className="space-y-1.5">
           <Label htmlFor="bannerFile">Banner Image</Label>
@@ -877,7 +912,7 @@ export function CreateEventForm() {
           type="button" 
           variant="ghost"
           disabled={isLoading}
-          onClick={() => router.push("/chapter")}
+          onClick={() => router.push(isAdminMode ? "/admin/events" : "/chapter")}
         >
           Cancel
         </Button>
