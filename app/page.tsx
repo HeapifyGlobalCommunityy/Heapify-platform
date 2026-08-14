@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { brand, communityJourney, gemmaSprintDate, partners, whatWeDo } from "@/lib/site-content";
+import { brand, communityJourney, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
 import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
@@ -7,6 +7,7 @@ import { getEvents, getSiteStats } from "@/lib/supabase/queries";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CollaborationsField } from "@/components/site/collaborations-field";
 
 // ─── Helpers (mirrored from events/page.tsx) ─────────────────────────────
 function formatCategory(cat: string): string {
@@ -113,113 +114,165 @@ export default async function HomePage() {
         ]}
       />
 
-      <SectionWrapper eyebrow="Community Stats" title="A growing builder network" description="Real numbers from a community built around action, not hype.">
-        <StatsComponent stats={statsData} />
-      </SectionWrapper>
+    <SectionWrapper 
+  eyebrow="Community Stats" 
+  title="A Growing Builder Network" 
+  description="Real numbers from a community built around action, not hype."
+>
+  <StatsComponent stats={statsData} />
+</SectionWrapper>
 
-      <SectionWrapper eyebrow="What We Do" title="A community built around action" description="Everything Heapify does is about builders — people who learn, ship, and create.">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {whatWeDo.map((item) => (
-            <FeatureCard key={item.title} eyebrow={item.eyebrow} title={item.title} description={item.description} />
-          ))}
-        </div>
-      </SectionWrapper>
-
-      {/* Latest event from DB — full-width spotlight */}
-      <SectionWrapper eyebrow="Events" title="Where builders show up" action={{ label: "See all events", href: "/events", variant: "ghost" }}>
-        {latestEvent ? (
-          <ScrollReveal>
-            <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 sm:p-8 md:p-12 backdrop-blur-xl">
-              <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_70%_50%,rgba(255,122,0,0.08),transparent)]" />
-              <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
-                <div className="max-w-2xl space-y-4 sm:space-y-5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{latestEvent.category}</span>
-                    <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.status}</span>
-                    <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{latestEvent.format}</span>
-                  </div>
-                  <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{latestEvent.title}</h3>
-                  {latestEvent.description && (
-                    <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">{latestEvent.description}</p>
-                  )}
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-primary shrink-0" />{latestEvent.date}</span>
-                    <span className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary shrink-0" />{latestEvent.location}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
-                  <Button asChild className="w-full sm:w-auto">
-                    <Link href={`/events/${latestEvent.slug}`}>View event <ArrowRight className="ml-2 h-4 w-4 shrink-0" /></Link>
-                  </Button>
-                  <Button variant="ghost" asChild className="w-full sm:w-auto">
-                    <Link href="/events">All events</Link>
-                  </Button>
-                </div>
-              </div>
+<SectionWrapper 
+  eyebrow="What We Do" 
+  title="A Community Built Around Action" 
+  description="Everything Heapify does is about builders — people who learn, ship, and create."
+>
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {whatWeDo.map((item) => (
+      <FeatureCard 
+        key={item.title} 
+        eyebrow={item.eyebrow} 
+        title={item.title} 
+        description={item.description} 
+      />
+    ))}
+  </div>
+</SectionWrapper>
+{/* Latest event from DB — full-width spotlight */}
+<SectionWrapper 
+  eyebrow="Events" 
+  title="Where Builders Show Up" 
+  action={{ label: "See all events", href: "/events", variant: "ghost" }}
+>
+  {latestEvent ? (
+    <ScrollReveal>
+      <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 sm:p-8 md:p-12 backdrop-blur-xl">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_70%_50%,rgba(255,122,0,0.08),transparent)]" />
+        <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-2xl space-y-4 sm:space-y-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">
+                {latestEvent.category}
+              </span>
+              <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                {latestEvent.status}
+              </span>
+              <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                {latestEvent.format}
+              </span>
             </div>
-          </ScrollReveal>
-        ) : (
-          <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-8 sm:p-12 text-center text-sm text-muted-foreground">
-            No upcoming events right now — check back soon.
+            <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+              {latestEvent.title}
+            </h3>
+            {latestEvent.description && (
+              <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">
+                {latestEvent.description}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                {latestEvent.date}
+              </span>
+              <span className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-primary shrink-0" />
+                {latestEvent.location}
+              </span>
+            </div>
           </div>
-        )}
-      </SectionWrapper>
+          <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
+            <Button asChild className="w-full sm:w-auto">
+              <Link href={`/events/${latestEvent.slug}`}>
+                View event <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
+              </Link>
+            </Button>
+            <Button variant="ghost" asChild className="w-full sm:w-auto">
+              <Link href="/events">All events</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </ScrollReveal>
+  ) : (
+    <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-8 sm:p-12 text-center text-sm text-muted-foreground">
+      No upcoming events right now — check back soon.
+    </div>
+  )}
+</SectionWrapper>
 
-      <SectionWrapper
-        eyebrow="Community Announcements"
-        title="What&apos;s happening"
-        description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
-      >
-        <Suspense
-          fallback={
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 space-y-3 animate-pulse">
-                  <div className="h-5 w-3/4 rounded-lg bg-zinc-800/60" />
-                  <div className="space-y-2">
-                    <div className="h-3.5 w-full rounded bg-zinc-800/40" />
-                    <div className="h-3.5 w-5/6 rounded bg-zinc-800/40" />
-                    <div className="h-3.5 w-2/3 rounded bg-zinc-800/30" />
-                  </div>
-                </div>
-              ))}
+<SectionWrapper
+  eyebrow="Community Announcements"
+  title="What's Happening"
+  description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
+>
+  <Suspense
+    fallback={
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 space-y-3 animate-pulse">
+            <div className="h-5 w-3/4 rounded-lg bg-zinc-800/60" />
+            <div className="space-y-2">
+              <div className="h-3.5 w-full rounded bg-zinc-800/40" />
+              <div className="h-3.5 w-5/6 rounded bg-zinc-800/40" />
+              <div className="h-3.5 w-2/3 rounded bg-zinc-800/30" />
             </div>
-          }
-        >
-          <AnnouncementsSection />
-        </Suspense>
-      </SectionWrapper>
+          </div>
+        ))}
+      </div>
+    }
+  >
+    <AnnouncementsSection />
+  </Suspense>
+</SectionWrapper>
 
-      <SectionWrapper eyebrow="Community Journey" title="From discovery to leadership" description="The path every Heapify builder takes — from first event to community leader.">
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <SectionWrapper>
+        <ScrollReveal className="mb-12 flex max-w-3xl flex-col space-y-5 md:mb-16">
+          <div className="space-y-3">
+            <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary/80">
+              Community Journey
+            </div>
+
+            <h2 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-[3.25rem] md:leading-[1.1]">
+              From discovery to <span className="text-muted-foreground">leadership.</span>
+            </h2>
+          </div>
+
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base md:leading-8">
+            The path every Heapify builder takes — from first event to community leader.
+          </p>
+
+          <div className="h-px w-16 bg-gradient-to-r from-primary/70 to-transparent" />
+        </ScrollReveal>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {communityJourney.map((step, index) => (
             <ScrollReveal key={step.step} delay={index * 0.08}>
-              <div className="h-full rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(255,122,0,0.08)]">
-                <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/80">{step.step}</div>
-                <h3 className="mt-4 font-display text-xl sm:text-2xl font-semibold tracking-tight">{step.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.description}</p>
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-muted/40 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:bg-muted/60 hover:shadow-[0_12px_40px_rgba(255,122,0,0.10)]">
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 to-transparent" />
+
+                <div className="relative">
+                  <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">
+                    {step.step}
+                  </div>
+
+                  <h3 className="mt-4 font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                    {step.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             </ScrollReveal>
           ))}
         </div>
       </SectionWrapper>
 
-      <SectionWrapper eyebrow="Collaborations" title="In good company" description="Communities, institutions, and ecosystems Heapify has collaborated with.">
-        <div className="flex flex-wrap gap-2.5 sm:gap-3">
-          {partners.map((partner, index) => (
-            <ScrollReveal key={partner} delay={index * 0.03} className="inline-flex">
-              <span className="rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.24em] text-muted-foreground transition-colors duration-300 hover:border-primary/30 hover:text-foreground">
-                {partner}
-              </span>
-            </ScrollReveal>
-          ))}
-        </div>
+      <SectionWrapper title="">
+        <CollaborationsField />
       </SectionWrapper>
 
-      {/* Built by the Community */}
-      <SectionWrapper eyebrow="Community" title="Built by the Community" description="From hackathons and technical sessions to collaborative projects and open-source initiatives, Heapify is shaped by the builders who participate in it." />
-
-      {/* Flagship event — at the bottom, above CTA */}
       {/* Flagship event — at the bottom, above CTA */}
       <SectionWrapper
         eyebrow="Our Flagship Event"
