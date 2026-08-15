@@ -247,7 +247,7 @@ export default async function HomePage() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {communityJourney.map((step, index) => (
             <ScrollReveal key={step.step} delay={index * 0.08}>
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-muted/40 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:bg-muted/60 hover:shadow-[0_12px_40px_rgba(255,122,0,0.10)]">
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-zinc-200/70 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 dark:bg-muted/40 dark:hover:bg-muted/60 hover:shadow-[0_12px_40px_rgba(255,122,0,0.10)]">
                 <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 to-transparent" />
 
                 <div className="relative">
