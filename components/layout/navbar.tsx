@@ -2,7 +2,7 @@
 
 
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
@@ -29,8 +29,6 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const lastScrollY = useRef(0);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
-  const router = useRouter();
-
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
   const filteredLinks = navigationLinks.filter((link) => {
@@ -78,14 +76,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     setSignOutError(null);
 
     try {
-      await auth.signOut();
       setOpen(false);
-      router.replace("/");
-      router.refresh();
+      await auth.signOut();
     } catch (error) {
       console.error("Sign out failed:", error);
       setSignOutError("Unable to sign out. Please try again.");
-    } finally {
       setIsSigningOut(false);
     }
   };

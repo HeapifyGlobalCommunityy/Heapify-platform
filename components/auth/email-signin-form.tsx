@@ -44,25 +44,30 @@ export function EmailSignInForm({
     }
 
     try {
-      // Skip captcha verification in development
-      if (process.env.NODE_ENV !== "development") {
-        const captchaResponse = await fetch("/api/captcha", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token: captchaToken }),
-        });
+      // Perform Turnstile captcha verification if configured and token is provided
+      if (process.env.NODE_ENV !== "development" && siteKey && captchaToken) {
+        try {
+          const captchaResponse = await fetch("/api/captcha", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: captchaToken }),
+          });
 
-        const captchaResult = (await captchaResponse.json()) as {
-          success: boolean;
-          message?: string;
-        };
+          const captchaResult = (await captchaResponse.json()) as {
+            success: boolean;
+            message?: string;
+          };
 
-        if (!captchaResponse.ok || !captchaResult.success) {
-          setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
-          onCaptchaReset();
-          return;
+          if (!captchaResponse.ok || !captchaResult.success) {
+            setError(captchaResult.message ?? "Captcha verification failed. Please try again.");
+            onCaptchaReset();
+            setIsLoading(false);
+            return;
+          }
+        } catch (captchaErr) {
+          console.warn("[EmailSignInForm] Captcha check failed:", captchaErr);
         }
       }
 

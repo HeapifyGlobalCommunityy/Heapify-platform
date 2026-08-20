@@ -108,23 +108,20 @@ export async function getProfile(userId: string) {
   const supabase = await createClient();
   if (!supabase) return { data: null, error: new Error("Supabase not configured") };
 
-  // maybeSingle() returns { data: null, error: null } when no row exists,
-  // rather than an error — makes it easy to show a "set up profile" UI.
-  return supabase
-    .from("profiles")
-    .select(
-      `id, username, full_name, avatar_url, bio, role, contribution_score,
-       github_url, linkedin_url, twitter_url, website_url, created_at,
-       chapter:chapters!chapter_id(id, name, city, country),
-       led_chapters:chapters!lead_id(id, name, city, country),
-       team_members(title, display_name),
-       won_challenges:challenges!winner_id(id, title, status, end_at),
-       project_maintainers(project:projects(id, name, slug)),
-       project_contributors(project:projects(id, name, slug)),
-       leaderboard_entries(category, score, period)`
-    )
-    .eq("id", userId)
-    .maybeSingle();
+  try {
+    return await supabase
+      .from("profiles")
+      .select(
+        `id, username, full_name, avatar_url, bio, role, contribution_score,
+         github_url, linkedin_url, twitter_url, website_url, created_at,
+         chapter:chapters!chapter_id(id, name, city, country),
+         led_chapters:chapters!lead_id(id, name, city, country)`
+      )
+      .eq("id", userId)
+      .maybeSingle();
+  } catch (error) {
+    return { data: null, error: error instanceof Error ? error : new Error(String(error)) };
+  }
 }
 
 export async function getProfileBadges(userId: string) {
