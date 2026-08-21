@@ -237,7 +237,7 @@ export default async function EventDetailPage({
     customQuestions: ev.custom_questions || [],
   };
 
-  const isPast = computedStatus === "completed";
+  const isPast = computedStatus === "completed" || computedStatus === "cancelled";
 
   // ?register=true opens the registration panel inline.
   // Past events ignore this flag — registration is closed.
