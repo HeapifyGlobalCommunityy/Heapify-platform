@@ -14,22 +14,24 @@ import { cn } from "@/lib/utils";
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 import { HeapifyLogo } from "@/components/layout/logo";
 
-export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
+export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title?: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
     <section className={cn("px-4 py-12 sm:px-6 md:py-20", className)}>
       <div className="mx-auto w-full max-w-6xl">
-        <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.5 }} className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-3xl space-y-2.5 sm:space-y-3">
-            {eyebrow ? <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</div> : null}
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl">{title}</h2>
-            {description ? <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p> : null}
-          </div>
-          {action ? (
-            <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto">
-              <Link href={action.href}>{action.label}</Link>
-            </Button>
-          ) : null}
-        </motion.div>
+        {(eyebrow || title || description || action) && (
+          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.5 }} className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-3xl space-y-2.5 sm:space-y-3">
+              {eyebrow ? <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</div> : null}
+              {title ? <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl">{title}</h2> : null}
+              {description ? <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p> : null}
+            </div>
+            {action ? (
+              <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto">
+                <Link href={action.href}>{action.label}</Link>
+              </Button>
+            ) : null}
+          </motion.div>
+        )}
         {children}
       </div>
     </section>
@@ -98,10 +100,10 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
     stats.length === 1
       ? "max-w-md mx-auto grid-cols-1"
       : stats.length === 2
-      ? "max-w-2xl mx-auto sm:grid-cols-2"
-      : stats.length === 3
-      ? "sm:grid-cols-3"
-      : "sm:grid-cols-2 lg:grid-cols-4";
+        ? "max-w-2xl mx-auto sm:grid-cols-2"
+        : stats.length === 3
+          ? "sm:grid-cols-3"
+          : "sm:grid-cols-2 lg:grid-cols-4";
 
   return (
     <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
@@ -135,7 +137,7 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
 
 export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return (
-    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] backdrop-blur-xl">
+    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-border/60 bg-zinc-200/70 p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] dark:bg-muted/40 backdrop-blur-xl dark:hover:bg-muted/60 hover:border-primary/30 transition-colors">
       <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/75">{eyebrow}</div>
       <h3 className="mt-4 font-display text-xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
@@ -505,7 +507,7 @@ export function StatusBadge({ status, className }: { status: string; className?:
   } else if (status.toLowerCase() === "upcoming" || status.toLowerCase() === "soon") {
     colors = "border-blue-500/30 bg-blue-500/10 text-blue-400";
   }
-  
+
   return (
     <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em]", colors, className)}>
       {status}
@@ -556,26 +558,26 @@ export function CategoryResourcesClient({
             <button
               onClick={() => setActiveTag(null)}
               className={cn(
-              "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
-              !activeTag
-                ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
-            )}
-          >
-            All
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-              className={cn(
                 "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
-                tag === activeTag
+                !activeTag
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
               )}
             >
-              {tag}
+              All
+            </button>
+            {allTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(tag === activeTag ? null : tag)}
+                className={cn(
+                  "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
+                  tag === activeTag
+                    ? "border-primary/40 bg-primary/10 text-primary"
+                    : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tag}
               </button>
             ))}
           </div>
@@ -605,7 +607,7 @@ export function CategoryResourcesClient({
               className="group block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_36%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              
+
               <div className="relative z-10 flex flex-col h-full justify-between gap-6">
                 <div>
                   <div className="flex items-center justify-between gap-2">
@@ -618,11 +620,11 @@ export function CategoryResourcesClient({
                     </span>
                     <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                   </div>
-                  
+
                   <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                     {resource.title}
                   </h3>
-                  
+
                   <p className="mt-2 text-xs text-primary/80 truncate font-mono">
                     {resource.url}
                   </p>
