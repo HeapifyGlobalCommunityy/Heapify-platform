@@ -5,52 +5,52 @@ import { motion } from "framer-motion";
 const partners = [
   {
     name: "Google Developer Groups",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9GHDmt_uz87bJadw5lMFMYUAzAamB2FhJ_XML3ZAfiNLzEAOrHVK94esI&s=10",
+    logo: "/partners/gdg.png",
   },
   {
     name: "Google Gemma Community",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQN9oHAyZaI1nA8SJFFVOWtLpYi5nBkoCG6hQBHh74AWuGh_E9FGy6yv64&s=10",
+    logo: "/partners/gemma.png",
   },
   {
     name: "Kaggle",
-    logo: "https://logowik.com/content/uploads/images/kaggle4255.logowik.com.webp",
+    logo: "/partners/kaggle.webp",
   },
   {
     name: "IEEE CIS",
-    logo: "https://edu.ieee.org/in-reva/wp-content/uploads/sites/33/IEEE-CIS-logo-RGB-300ppi.png",
+    logo: "/partners/ieee.png",
   },
   {
     name: "Devfolio",
-    logo: "https://cdn.iconscout.com/icon/free/png-256/free-devfolio-logo-icon-svg-download-png-1399882.png",
+    logo: "/partners/devfolio.png",
   },
   {
     name: "Red Bull",
-    logo: "https://i.pinimg.com/originals/62/16/df/6216dff035f566b5ff43f2a4eac55f32.png",
+    logo: "/partners/redbull.png",
     scale: 1.3,
   },
   {
     name: "MSRIT — ISE",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGSxq2VcAtDEEVO0eWIlNZ9uHOnZIwrgXwkr86MaInmO5u8KYEAogrM24&s=10",
+    logo: "/partners/msrit.png",
   },
   {
     name: "Nexus SOC",
-    logo: "https://nexus.pk/wp-content/uploads/2023/12/SOC-INFOGRAPHIC.png",
+    logo: "/partners/nexus.png",
   },
   {
     name: "AI Mobile Coders",
-    logo: "https://aimobilecoders.com/assets/aimobilecoder_logo_share.png",
+    logo: "/partners/aimobile.png",
   },
   {
     name: "Enetopia",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRITdZApg6aiSW3S8zxHmx6MYVMahY5CSzKB-6BLEs_yQ&s=10",
+    logo: "/partners/enetopia.png",
   },
   {
     name: "Open Source Connect",
-    logo: "https://png.pngtree.com/png-vector/20221003/ourmid/pngtree-open-source-programming-png-image_6264096.png",
+    logo: "/partners/opensource.png",
   },
   {
     name: "Hackhere",
-    logo: "https://nexora-phi-ten.vercel.app/logo.jpeg",
+    logo: "/partners/hackhere.jpeg",
   },
 ];
 
