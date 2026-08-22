@@ -419,7 +419,7 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
             <div className="h-px flex-1 bg-glass-border" />
           </div>
           <p className="text-xs text-muted-foreground/60 text-center">
-            These events have concluded. Their detail pages and recordings remain accessible.
+            Explore past events from our community. You can still access event details, resources, and recordings anytime.
           </p>
           <div className="flex flex-col gap-4">
             {pastEvents.map((event, index) => (
