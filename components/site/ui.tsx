@@ -6,7 +6,6 @@ import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkle
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Dropdown from "@/components/ui/dropdown";
-import { EventCardSkeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { AnimatedNetworkBackground } from "@/components/site/background";
 import { cn } from "@/lib/utils";
@@ -147,7 +146,7 @@ export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; 
 
 export function EventCard({ event, compact = false }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; summary?: string; spotlight?: string; format?: string; description?: string }; compact?: boolean }) {
   return (
-    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
+    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative flex items-start justify-between gap-4">
         <div>
@@ -347,17 +346,10 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
   );
 }
 
-export function EventsExplorer({ events, categories }: { events: Array<{ slug: string; title: string; category: string; status: string; date: string; time: string; format: string; location: string; description: string }>; categories: string[] }) {
+export function EventsExplorer({ events, pastEvents = [], categories }: { events: Array<{ slug: string; title: string; category: string; status: string; date: string; time: string; format: string; location: string; description: string }>; pastEvents?: Array<{ slug: string; title: string; category: string; status: string; date: string; time: string; format: string; location: string; description: string }>; categories: string[] }) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeStatus, setActiveStatus] = useState("All");
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Simulate async data load — swap this effect out in Phase 1 for a real fetch
-  useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 700);
-    return () => clearTimeout(t);
-  }, []);
 
   const filtered = useMemo(() => events.filter((event) => {
     const matchesQuery = [event.title, event.category, event.location, event.description].join(" ").toLowerCase().includes(query.toLowerCase());
@@ -382,7 +374,7 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
             buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-xs text-foreground hover:border-primary/30 hover:text-primary transition-all duration-150 dark:border-glass-border dark:bg-black/20 dark:text-muted-foreground dark:hover:text-foreground"
           />
           <Dropdown
-            options={["All", "Upcoming", "Ongoing", "Past"]}
+            options={["All", "Upcoming", "Ongoing", "Completed"]}
             value={activeStatus}
             onChange={setActiveStatus}
             icon={<Sparkles className="h-4 w-4 text-primary" />}
@@ -397,10 +389,9 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           </button>
         ))}
       </div>
-      <div className="relative z-0 space-y-8">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => <EventCardSkeleton key={i} />)
-        ) : filtered.length === 0 ? (
+      {/* ── Active events ── */}
+      <div className="flex flex-col gap-4">
+        {filtered.length === 0 ? (
           <EmptyState
             title="No events found"
             description="No events match your current search or filters. Try clearing them."
@@ -415,6 +406,37 @@ export function EventsExplorer({ events, categories }: { events: Array<{ slug: s
           ))
         )}
       </div>
+
+      {/* ── Past events archive — always below, always full width ── */}
+      {pastEvents.length > 0 && (
+        <div className="mt-16 space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-glass-border" />
+            <div className="flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-4 py-1.5 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground">
+              <CalendarDays className="h-3 w-3" />
+              Past events
+            </div>
+            <div className="h-px flex-1 bg-glass-border" />
+          </div>
+          <p className="text-xs text-muted-foreground/60 text-center">
+            Explore past events from our community. You can still access event details, resources, and recordings anytime.
+          </p>
+          <div className="flex flex-col gap-4">
+            {pastEvents.map((event, index) => (
+              <motion.div
+                key={event.slug}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.4, delay: index * 0.03 }}
+                className="opacity-60 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300 [&_*]:pointer-events-auto"
+              >
+                <EventCardWide event={event} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
