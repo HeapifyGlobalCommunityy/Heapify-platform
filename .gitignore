@@ -44,6 +44,7 @@ next-env.d.ts
 *.md
 !README.md
 !SITE_STRUCTURE.md
+!repo_status_and_roadmap.md
 *.docx
 *.pdf
 context.txt
