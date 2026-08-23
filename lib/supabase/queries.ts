@@ -187,3 +187,16 @@ export async function getEventBySlug(slug: string) {
     .maybeSingle();
 }
 
+// ─── Chapters ─────────────────────────────────────────────────────────────
+export async function getChapters() {
+  const supabase = await createClient();
+  if (!supabase) return { data: null, error: new Error("Supabase not configured") };
+
+  return supabase
+    .from("chapters")
+    .select("id, name, type, city, country, description, member_count, status, banner_url")
+    .eq("status", "active")
+    .order("name", { ascending: true });
+}
+
+
