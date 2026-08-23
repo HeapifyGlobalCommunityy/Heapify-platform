@@ -5,7 +5,22 @@ import { getEventHistory, getProfile, getProfileBadges } from "@/lib/supabase/qu
 import { BentoCard, BentoGrid, SectionWrapper } from "@/components/site/ui";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
-import { Calendar, User as UserIcon, Trophy, Award, ArrowRight, ShieldCheck } from "lucide-react";
+import {
+  Calendar,
+  User as UserIcon,
+  Trophy,
+  Award,
+  ArrowRight,
+  ShieldCheck,
+  Building2,
+  ExternalLink,
+  Github,
+  Linkedin,
+  Twitter,
+  Globe,
+  Settings,
+  Sparkles,
+} from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -28,10 +43,15 @@ export default async function DashboardPage() {
   ]);
 
   const displayName = profile?.full_name || profile?.username || user.email?.split("@")[0] || "Builder";
-  const userRole = profile?.role || "Member";
+  const userRole = profile?.role || "member";
   const score = profile?.contribution_score ?? 0;
   const eventsCount = eventRegistrations?.length ?? 0;
   const badgesCount = badges?.length ?? 0;
+
+  const isAdmin = ["core_team", "super_admin"].includes(userRole);
+  const isChapterLead =
+    userRole === "chapter_admin" ||
+    (Array.isArray(profile?.led_chapters) && profile.led_chapters.length > 0);
 
   const metrics = [
     {
@@ -43,19 +63,19 @@ export default async function DashboardPage() {
     {
       label: "Events Registered",
       value: eventsCount.toString(),
-      detail: eventsCount > 0 ? "Upcoming & attended sessions" : "No event registrations yet",
+      detail: eventsCount > 0 ? "Upcoming & attended sessions" : "No registrations yet",
       icon: <Calendar className="h-5 w-5 text-primary" />,
     },
     {
       label: "Badges Earned",
       value: badgesCount.toString(),
-      detail: badgesCount > 0 ? "Community achievements unlocked" : "Complete events to earn badges",
+      detail: badgesCount > 0 ? "Community achievements" : "Complete events to earn badges",
       icon: <Award className="h-5 w-5 text-primary" />,
     },
     {
       label: "Account Status",
-      value: userRole.toUpperCase(),
-      detail: "Verified member account",
+      value: userRole.replace("_", " ").toUpperCase(),
+      detail: profile?.chapter ? `Member of ${profile.chapter.name}` : "Verified global builder",
       icon: <ShieldCheck className="h-5 w-5 text-primary" />,
     },
   ];
@@ -78,9 +98,16 @@ export default async function DashboardPage() {
                   {displayName.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-0.5 text-xs text-primary font-mono uppercase tracking-wider">
-                  {userRole}
+              <div className="space-y-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-0.5 text-xs text-primary font-mono uppercase tracking-wider">
+                    <Sparkles className="h-3 w-3" /> {userRole.replace("_", " ")}
+                  </span>
+                  {profile?.chapter && (
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <Building2 className="h-3 w-3" /> {profile.chapter.name}
+                    </span>
+                  )}
                 </div>
                 <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground">
                   Welcome back, {displayName}
@@ -90,18 +117,74 @@ export default async function DashboardPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button asChild variant="primary">
-                <Link href="/profile/edit">
-                  <UserIcon className="mr-2 h-4 w-4" /> Edit Profile
-                </Link>
-              </Button>
+              {isAdmin && (
+                <Button asChild variant="primary">
+                  <Link href="/admin">
+                    <ShieldCheck className="mr-2 h-4 w-4" /> Admin Portal
+                  </Link>
+                </Button>
+              )}
+              {isChapterLead && (
+                <Button asChild variant="ghost">
+                  <Link href="/chapter">
+                    <Building2 className="mr-2 h-4 w-4" /> Chapter Portal
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="ghost">
-                <Link href="/events">
-                  Explore Events <ArrowRight className="ml-2 h-4 w-4" />
+                <Link href="/profile/edit">
+                  <Settings className="mr-2 h-4 w-4" /> Edit Profile
                 </Link>
               </Button>
             </div>
           </div>
+
+          {/* Social Links Bar if configured */}
+          {(profile?.github_url || profile?.linkedin_url || profile?.twitter_url || profile?.website_url) && (
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-glass-border pt-6 text-xs text-muted-foreground">
+              <span className="font-mono uppercase tracking-wider text-[10px]">Connected Accounts:</span>
+              {profile.github_url && (
+                <a
+                  href={profile.github_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                  <Github className="h-3.5 w-3.5" /> GitHub
+                </a>
+              )}
+              {profile.linkedin_url && (
+                <a
+                  href={profile.linkedin_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                  <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+                </a>
+              )}
+              {profile.twitter_url && (
+                <a
+                  href={profile.twitter_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                  <Twitter className="h-3.5 w-3.5" /> Twitter
+                </a>
+              )}
+              {profile.website_url && (
+                <a
+                  href={profile.website_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                  <Globe className="h-3.5 w-3.5" /> Website
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -126,7 +209,8 @@ export default async function DashboardPage() {
       <SectionWrapper
         eyebrow="My Schedule"
         title="Event Registrations"
-        description="Your upcoming and past event registrations."
+        description="Your registered events and upcoming community sessions."
+        action={{ label: "Explore all events", href: "/events", variant: "ghost" }}
       >
         {eventRegistrations && eventRegistrations.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
@@ -136,19 +220,25 @@ export default async function DashboardPage() {
               return (
                 <div
                   key={reg.id}
-                  className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl space-y-3"
+                  className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl space-y-4 hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]"
                 >
                   <div className="flex justify-between items-center text-xs font-mono">
                     <span className="text-primary uppercase tracking-wider">{ev.category}</span>
-                    <span className="text-muted-foreground">{reg.status}</span>
+                    <span className="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-primary text-[10px] uppercase font-semibold">
+                      {reg.status}
+                    </span>
                   </div>
-                  <h3 className="font-display text-xl font-semibold text-foreground">{ev.title}</h3>
-                  <div className="text-xs text-muted-foreground">
-                    Registered on: {new Date(reg.registered_at).toLocaleDateString()}
+                  <div>
+                    <h3 className="font-display text-lg font-semibold text-foreground leading-snug">
+                      {ev.title}
+                    </h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Start Date: {new Date(ev.start_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
                   </div>
-                  <Button variant="ghost" asChild className="w-full justify-between mt-4">
+                  <Button variant="ghost" asChild className="w-full justify-between mt-2 border border-glass-border">
                     <Link href={`/events/${ev.slug}`}>
-                      View Event <ArrowRight className="h-4 w-4" />
+                      View Details <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -156,7 +246,7 @@ export default async function DashboardPage() {
             })}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-4">
+          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-4 mt-6">
             <Calendar className="mx-auto h-10 w-10 text-muted-foreground" />
             <p className="font-display text-lg font-semibold text-foreground">No registered events yet</p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
@@ -168,6 +258,48 @@ export default async function DashboardPage() {
           </div>
         )}
       </SectionWrapper>
+
+      {/* Badges & Achievements Section */}
+      <SectionWrapper
+        eyebrow="Achievements"
+        title="Community Badges"
+        description="Badges and recognition awarded for participation, hackathons, and contributions."
+      >
+        {badges && badges.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6">
+            {badges.map((item, idx) => {
+              const b = Array.isArray(item.badge) ? item.badge[0] : item.badge;
+              if (!b) return null;
+              return (
+                <div
+                  key={b.id || idx}
+                  className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl flex items-start gap-4"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary font-bold">
+                    <Award className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-display text-sm font-semibold">{b.name}</h4>
+                    <p className="mt-1 text-xs text-muted-foreground">{b.description || "Earned badge"}</p>
+                    <span className="mt-2 inline-block font-mono text-[10px] text-muted-foreground">
+                      Awarded: {new Date(item.awarded_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-8 text-center space-y-3 mt-6">
+            <Award className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="font-display text-base font-semibold text-foreground">No badges earned yet</p>
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              Participate in hackathons, complete challenges, or contribute to open-source initiatives to unlock badges!
+            </p>
+          </div>
+        )}
+      </SectionWrapper>
     </div>
   );
 }
+
