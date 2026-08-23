@@ -2,9 +2,12 @@ import Link from "next/link";
 import { ArrowLeft, CalendarDays, CheckCircle2, Clock3, Plus, Ticket } from "lucide-react";
 import { SectionWrapper } from "@/components/site/ui";
 import { getAdminEvents } from "@/lib/actions/events";
+import { requireRole } from "@/lib/auth/authorization";
 import { AdminEventsTable } from "./AdminEventsTable";
 
 export default async function AdminEventsPage() {
+  await requireRole(["core_team", "super_admin"]);
+
   const events = await getAdminEvents();
   const registrations = events.reduce(
     (total, event) => total + (event.registrations?.[0]?.count ?? 0),
