@@ -156,20 +156,20 @@ export async function getEventHistory(userId: string, page = 0) {
 }
 
 // ─── Events (paginated & single) ─────────────────────────────────────────
-export async function getEvents(page = 0, limit = 20) {
+// Fetches all events — both upcoming/ongoing and past — so the events page
+// can display them in separate sections. Past events are shown with a muted
+// visual treatment; their detail pages remain accessible but registration
+// is closed. Limit is 50 to comfortably cover both temporal segments.
+export async function getEvents(page = 0, limit = 50) {
   const supabase = await createClient();
   if (!supabase) return { data: null, error: new Error("Supabase not configured") };
 
   const from = page * limit;
   const to = from + limit - 1;
-  const now = new Date().toISOString();
 
   return supabase
     .from("events")
-    .select(
-      "id, slug, title, category, status, start_at, end_at, is_virtual, location, description, banner_url, capacity, is_hackathon"
-    )
-    .or(`end_at.gte.${now},end_at.is.null`)
+    .select("*")
     .order("start_at", { ascending: false })
     .range(from, to);
 }
