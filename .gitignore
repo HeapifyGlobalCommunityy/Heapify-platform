@@ -45,6 +45,8 @@ next-env.d.ts
 !README.md
 !SITE_STRUCTURE.md
 !repo_status_and_roadmap.md
+# Canonical agent-facing spec set (documentation-first workflow) lives with the code
+!docs/**/*.md
 *.docx
 *.pdf
 context.txt
