@@ -1,29 +1,36 @@
 # Challenges & Leaderboard — system contracts
 
+Architecture principle (per CL-P0 review): every state-changing write is owned by a security-definer RPC that validates inputs, derives identity from `auth.uid()`, and enforces role/lifecycle rules INSIDE Postgres. Client-side roles hold read grants only (scoped by RLS) plus `EXECUTE` on their specific functions. Server actions wrap RPC calls for UX; they confer no authority.
+
 ## Data
 
 | Entity | Fields | Owner | Validation | Retention/access |
 | --- | --- | --- | --- | --- |
-| `challenges` (existing) | id, title, description, status(active/past), start_at, end_at, winner_id → profiles | core_team | schema checks; new: RLS gates writes to core_team/super_admin | public read |
-| `challenge_submissions` (extended) | existing: id, challenge_id, user_id, submission_url, submitted_at; new: status(pending/approved/rejected) default pending, reviewed_by, reviewed_at, review_note | submitting member owns row; reviewers own status fields | UNIQUE (challenge_id, user_id); URL validity enforced server-side (`new URL()`); end_at gate server-side | anon: none; authenticated: read all, insert/update own (own edits limited to submission_url while status != approved); reviewers: status fields |
-| `point_awards` (new) | id, user_id, source_type(challenge_completion/challenge_winner), source_id, points, awarded_by, created_at | written only by `award_challenge_points` RPC | UNIQUE (source_type, source_id, user_id); points > 0 | immutable; member reads own + aggregate; admins read all; ledger IS the audit log |
-| `leaderboard_entries` (existing, constrained) | id, user_id, category(enum 4), score, period, updated_at | maintained by award/recompute RPCs only | NEW UNIQUE (user_id, category, period) | public read |
+| `challenges` (existing) | id, title, description, status(active/past), start_at, end_at, winner_id → profiles(id) ON DELETE SET NULL (migrated) | core_team via SQL/admin tooling (no member UI this slice) | schema checks | public SELECT via RLS; all client-role DML revoked |
+| `challenge_submissions` (extended) | existing: id, challenge_id, user_id, submission_url, submitted_at; new: status(pending/approved/rejected) default pending, reviewed_by ON DELETE SET NULL, reviewed_at, review_note | row owner reads own; reviewers read/write via RPC | UNIQUE (challenge_id, user_id) after preflight dedup; URL scheme http/https enforced in RPC | RLS: authenticated SELECT own, reviewers SELECT all; ALL DML revoked from anon/authenticated/service_role — writes exist only behind `submit_challenge_entry` |
+| `point_awards` (new) | id, user_id → profiles ON DELETE CASCADE, source_type(challenge_completion/challenge_winner), source_id, points>0, awarded_by ON DELETE SET NULL, created_at | written only inside review/winner RPC bodies | UNIQUE (source_type, source_id, user_id) | RLS: own-row read (authenticated), reviewer-wide read; all DML revoked from client roles; ledger IS the audit log |
+| `leaderboard_entries` (existing, constrained) | id, user_id, category(enum 4), score, period, updated_at; NEW UNIQUE (user_id, category, period) | maintained by review/winner RPCs + recompute only | public SELECT via RLS; all client-role DML revoked |
 
 ## Interfaces
 
+All functions: `SECURITY DEFINER`, `LANGUAGE plpgsql`, `set search_path = pg_catalog, public, pg_temp` (temp searched last, explicitly listed), default PUBLIC `EXECUTE` revoked, `GRANT EXECUTE` to exactly the intended role(s), all application objects schema-qualified (review F7).
+
 | Boundary | Request/input | Response/output | Auth/permission | Failure behavior |
 | --- | --- | --- | --- | --- |
-| `submitChallengeEntry` server action (extends existing `lib/actions/challenges.ts`) | challengeId, submissionUrl | `{success}` \| `{success:false,error}`; now idempotent: updates existing row's URL while status ≠ approved | session-derived user_id only; challenges.end_at must be null/future | login redirect (`?next=/challenges`) when logged out; explicit error strings otherwise |
-| `getLeaderboard(p_category?)` query (`lib/supabase/queries.ts`) | category key | top 50 rows joined `profiles(username, full_name, avatar_url, role)` + viewer `{rank,total}` when signed in | public read; viewer block needs session | error surfaced to caller → inline retry UI |
-| `getMySubmissionsWithStatus(userId)` (extends `getMyChallengeSubmissions`) | userId | rows + status, review_note, per-challenge approved counts | own rows | empty array on none |
-| `reviewSubmission(challengeId, submissionUserId, decision:'approved'\|'rejected', note?)` server action | ids + decision | `{success}`; invokes `award_challenge_points` when approved | session user must hold role ≥ core_team (checked server-side twice: in action and again inside RPC) | no-op + current status returned if already reviewed; permission error string for non-reviewers |
-| `award_challenge_points(p_user_id uuid, p_challenge_id uuid, p_source_type text, p_reviewer_id uuid)` RPC | submission identity | creates `point_awards` row + upserts `leaderboard_entries` in one transaction; returns new total | SECURITY DEFINER; executable by authenticated but internally asserts caller is core_team/super_admin; idempotent on (source_type, source_id, user_id) | exception with clear message on replay/idempotent-hit (caught as success-no-op by action), rollback on failure |
-| `set_challenge_winner(p_challenge_id uuid, p_winner_id uuid)` RPC (mechanism per open decision D2) | challenge + winner | stamp winner_id + award challenge_winner points if absent | SECURITY DEFINER, core_team/super_admin assert inside | idempotent when winner unchanged; blocks unknown winner_id |
-| `recompute_leaderboard_category(p_category text)` RPC | category | rebuilds rows from `point_awards` sum; `pg_advisory_xact_lock` on category hash | SECURITY DEFINER, super_admin-only via internal assert | refuses unknown category |
+| `submit_challenge_entry(p_challenge_id uuid, p_url text)` | challenge + proof URL | jsonb `{status:'pending'\|'approved-noop', changed:boolean}` | EXECUTE → authenticated; identity = `auth.uid()` inside | rejects unknown challenge, closed challenge (`end_at <= now()`), non-http(s) URL, approved-immutability as structured no-op |
+| `review_challenge_submission(p_submission_id uuid, p_decision text, p_note text)` | submission id + 'approved'/'rejected' | jsonb `{status, changed:boolean, points_awarded?:int}` | EXECUTE → authenticated; internally asserts `has_role('core_team')`; hard-codes source_type + reviewer=`auth.uid()` | non-pending → structured `{status:<current>, changed:false}`; insufficient role → exception (permission message); single transaction covers stamp + ledger + board increment (advisory-locked) |
+| `set_challenge_winner(p_challenge_id uuid, p_winner_id uuid)` | challenge + winner | jsonb `{winner_id, changed:boolean}` | EXECUTE → authenticated; asserts `has_role('core_team')`; asserts winner owns an APPROVED submission on that challenge | unchanged winner → `{changed:false}`; unknown/unapproved winner → exception |
+| `recompute_leaderboard_category()` | — (parameterless; operates on 'contributors'/'all_time' only) | jsonb `{rebuilt_rows:int}` | succeeds when `auth.uid() IS NULL` (SQL editor/owner) or `has_role('super_admin')` | rejects all other categories/timespans by design (F11) |
+| `get_approved_submission_counts()` | — | SET OF `(challenge_id uuid, approved_count bigint)` | EXECUTE → public (incl. anon) | returns zero rows when table empty; no PII exposure |
+| `submitChallengeEntry` server action (`lib/actions/challenges.ts`) | challengeId, submissionUrl | passes through to `submit_challenge_entry`; maps exceptions to error strings, no-op result to friendly "already approved" | login redirect when signed out; keeps session-derived guarantee | preserves existing error-string API for the card UI |
+| `reviewSubmission` server action (new, `lib/actions/challenges.ts`) | submissionId, decision, note | maps RPC result/error | auth boundary lives in the RPC | `useTransition` double-click guard retained |
+| `getLeaderboard(p_category)` query (`lib/supabase/queries.ts`) | category key | top 50 joined `profiles(username, full_name, avatar_url, role)` + viewer `{rank,total}` via session cookie client | public read; viewer block only when signed in | error propagated → inline retry UI |
+| `lib/types/database.ts` additions | — | literal unions: `SubmissionStatus`, `PointSource`, `LeaderboardCategory`; interfaces: submission rows, ledger rows, board rows, all RPC result shapes | — | compiled contracts required by strict repo (F17); no `unknown` casts in new code |
 
 ## Operational rules
-- Auditability: `point_awards` (who, why, when, how much) + `reviewed_by/reviewed_at/review_note` fully reconstruct any score.
-- Recovery: any suspected drift is repaired by `recompute_leaderboard_category`, never by hand-editing scores.
-- Observability: server actions log structured `[actionName]` console errors (house style); Vercel logs remain the surface.
-- Service expectations: leaderboard/challenges pages read on request (no ISR change this slice; `/events` ISR pattern untouched).
-- Test hygiene: verification uses throwaway accounts/rows; every inserted test row is deleted or clearly marked `TEST:` in title/username per authorized-pentest convention.
+- Auditability: `point_awards` (who/why/when/how much) + review stamps reconstruct any score; reviewer identity is forged-proof (derived in Postgres).
+- Recovery: drift repair exclusively via `recompute_leaderboard_category()`; hand-editing scores prohibited.
+- Concurrency: every derived-row writer takes the same `pg_advisory_xact_lock(hashtext(category||':all_time'))`; recompute-safe.
+- Observability: structured `[actionName]` console logs per house style; Vercel logs remain the surface.
+- Service expectations: fetch-on-load reads; no ISR changes this slice.
+- Test hygiene: verification uses throwaway accounts/rows; every inserted test row deleted or clearly marked `TEST:` per authorized-pentest convention.
