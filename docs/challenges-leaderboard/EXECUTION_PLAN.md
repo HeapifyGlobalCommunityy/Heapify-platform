@@ -7,12 +7,13 @@ Canonical artifacts: REQUIREMENTS.md · SYSTEM_CONTRACTS.md · SOLUTION_CONSTRAI
 1. **CL-P0 — Canonical docs committed ✅**
    - Depends on: interrogation rounds settled; Terra independent review reconciled (18/18 findings accepted, incorporated).
    - Verify: docs reviewed by `gpt-5.6-terra` (xhigh) against schema/code ground truth; verdicts + remediation recorded.
-   - Done when: doc tree merged to `develop`.
+   - Done when: docs authored, twice-reviewed (Terra + second independent senior review, all corrections applied), and available on disk for md's read-through. Merging deliberately deferred — md reviews before anything goes upstream.
 
 2. **CL-P1 — Migration pack `012_challenges_rls.sql`, `013_points_ledger.sql`**
    - Depends on: CL-P0.
    - Produce:
      - Preflight: detect + dedupe duplicate `(challenge_id, user_id)` submission rows (keep latest) BEFORE unique index creation (F9).
+     - Recreate `has_role()` with the hardened `search_path` so every definer caller shares one hardening invariant (2nd-review defect 2).
      - FK fixes: `challenges.winner_id`, new `reviewed_by`/`awarded_by` → `ON DELETE SET NULL`; `point_awards.user_id` → CASCADE (F8).
      - Column pack + UNIQUE `(challenge_id, user_id)` on `challenge_submissions`; UNIQUE `(user_id, category, period)` on `leaderboard_entries`.
      - RLS enablement + scoped SELECT policies; blanket `REVOKE` of all DML on all four tables from `anon`/`authenticated`/`service_role`.
@@ -36,7 +37,7 @@ Canonical artifacts: REQUIREMENTS.md · SYSTEM_CONTRACTS.md · SOLUTION_CONSTRAI
 
 5. **CL-P4 — Admin queue + award wiring (integration checkpoint)**
    - Depends on: CL-P1, CL-P2, CL-P3 (consumes their surfaces — explicit dependency chain, F18).
-   - Produce: `/admin` pending list + approve/reject(+note)/winner controls; thin `reviewSubmission` server action wrapping the review RPC; noopener enforcement; dashboard widget launch if CL-P5 landed (else its own PR).
+   - Produce: `getPendingChallengeSubmissions()` queries.ts helper (RLS-scoped) + `/admin` pending list + approve/reject(+note)/winner controls; thin `reviewSubmission` server action wrapping the review RPC; noopener enforcement; dashboard widget launch if CL-P5 landed (else its own PR).
    - Verify (live E2E, throwaway pair): member submits → admin approves → member sees approved + points on `/leaderboard` within one reload; reject → note shown → resubmit restores pending; winner-set honors approved-submission precondition; member-role approval refused in UI AND via direct action call; double-review no-op path verified.
    - Done when: money-path demonstrated on deployed preview URL with evidence in STATUS.md; PR merged to `develop`.
 

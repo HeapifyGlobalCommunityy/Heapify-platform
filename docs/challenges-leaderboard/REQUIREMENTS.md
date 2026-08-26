@@ -10,7 +10,7 @@ Project slice of the Heapify Global Community Platform (`~/Projects/Heapify-plat
 
 ## Scope
 - In scope:
-  - DB migration pack: RLS + privilege revocation on `challenges`, `challenge_submissions`, `point_awards`, `leaderboard_entries`; review lifecycle; `point_awards` ledger; security-definer RPCs owning ALL state-changing writes (submission/resubmission, review+award, winner, recompute); FK deletion-behavior fixes; public approved-counts aggregate function; TypeScript type unions in `lib/types/database.ts`.
+  - DB migration pack: RLS + privilege revocation on `challenges`, `challenge_submissions`, `point_awards`, `leaderboard_entries`; review lifecycle; `point_awards` ledger; security-definer RPCs owning ALL state-changing writes (submission/resubmission, review+award, winner, recompute); FK deletion-behavior fixes; public approved-counts aggregate function; TypeScript type unions in `lib/types/database.ts` (authored in CL-P1 alongside the migrations).
   - `/leaderboard` rebuilt as a server component on real data (category tabs, all-time period).
   - Submission UX on `/challenges` (status badges, resubmit, approved-count per card).
   - Admin approval queue calling the review RPC.

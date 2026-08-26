@@ -13,7 +13,9 @@ Architecture principle (per CL-P0 review): every state-changing write is owned b
 
 ## Interfaces
 
-All functions: `SECURITY DEFINER`, `LANGUAGE plpgsql`, `set search_path = pg_catalog, public, pg_temp` (temp searched last, explicitly listed), default PUBLIC `EXECUTE` revoked, `GRANT EXECUTE` to exactly the intended role(s), all application objects schema-qualified (review F7).
+All functions: `SECURITY DEFINER`, `LANGUAGE plpgsql`, `set search_path = pg_catalog, public, pg_temp` (temp searched last, explicitly listed), default PUBLIC `EXECUTE` revoked, `GRANT EXECUTE` to exactly the intended role(s), all application objects schema-qualified (review F7). The shared `has_role()` helper is recreated onto this same hardened path in migration `012` so every definer caller shares one invariant.
+
+Naming pairs: SQL functions take snake_case (`review_challenge_submission`); their TypeScript wrappers and query helpers take camelCase (`reviewSubmission`, `getPendingChallengeSubmissions`) and map 1:1. Table columns stay snake_case everywhere.
 
 | Boundary | Request/input | Response/output | Auth/permission | Failure behavior |
 | --- | --- | --- | --- | --- |
@@ -25,6 +27,8 @@ All functions: `SECURITY DEFINER`, `LANGUAGE plpgsql`, `set search_path = pg_cat
 | `submitChallengeEntry` server action (`lib/actions/challenges.ts`) | challengeId, submissionUrl | passes through to `submit_challenge_entry`; maps exceptions to error strings, no-op result to friendly "already approved" | login redirect when signed out; keeps session-derived guarantee | preserves existing error-string API for the card UI |
 | `reviewSubmission` server action (new, `lib/actions/challenges.ts`) | submissionId, decision, note | maps RPC result/error | auth boundary lives in the RPC | `useTransition` double-click guard retained |
 | `getLeaderboard(p_category)` query (`lib/supabase/queries.ts`) | category key | top 50 joined `profiles(username, full_name, avatar_url, role)` + viewer `{rank,total}` via session cookie client | public read; viewer block only when signed in | error propagated → inline retry UI |
+| `getMySubmissionsWithStatus(userId)` query (`lib/supabase/queries.ts`, CL-P3) | userId | caller's own submission rows + status + review_note + per-challenge approved counts | own-row visibility via RLS | empty array when none |
+| `getPendingChallengeSubmissions()` query (`lib/supabase/queries.ts`, CL-P4) | — | pending submissions joined challenge title + username for the `/admin` queue | reviewer-wide visibility via RLS alone — no extra privilege surface | empty array when queue is clear |
 | `lib/types/database.ts` additions | — | literal unions: `SubmissionStatus`, `PointSource`, `LeaderboardCategory`; interfaces: submission rows, ledger rows, board rows, all RPC result shapes | — | compiled contracts required by strict repo (F17); no `unknown` casts in new code |
 
 ## Operational rules

@@ -13,6 +13,7 @@ Last updated: 2026-08-26 (CL-P0 complete; holding for md go-ahead on CL-P1)
   - Definer hardening: `search_path = pg_catalog, public, pg_temp`, default-PUBLIC execute revoked, schema qualification.
   - Pre-existing duplicate-row preflight before unique indexes; FK delete-behavior fixes (SET NULL/CASCADE).
   - `/leaderboard` becomes server component; no fake profile links; dashboard swaps dead `contribution_score` display for ledger total; R10/P6 gating wording corrected (leaderboard has no nav entry today).
+- **Second independent review** (delegated senior reviewer with full repo inspection): verdict ACCEPTABLE-WITH-CORRECTIONS; 6 findings (2 medium, 4 low). All 6 applied directly to the docs: CL-P0 done-criterion rewritten to on-disk reality, `has_role()` hardened-path recreation added to CL-P1, TS-types scope qualifier, SQL↔TS naming-pair note, `getPendingChallengeSubmissions()` interface added, dead-`contribution_score` column cleanup ticketed below.
 
 ## In progress
 - None. **Holding per md instruction: stop after docs, inform before implementation.**
@@ -30,6 +31,7 @@ Last updated: 2026-08-26 (CL-P0 complete; holding for md go-ahead on CL-P1)
 ## Blockers and known issues
 - Awaiting md's go/no-go for CL-P1.
 - Known issue (deferred): `/profile` still displays legacy `profiles.contribution_score` until a later cleanup slice.
+- Eventual removal of the dead `contribution_score` column itself ticketed as post-slice cleanup (second review, defect 6).
 - Pre-existing TODO (out of scope): decorative Turnstile fix on login/signup (TODO.md).
 - Pre-existing security gap being closed BY this project: `challenges`/`challenge_submissions` currently have no RLS in production.
 
