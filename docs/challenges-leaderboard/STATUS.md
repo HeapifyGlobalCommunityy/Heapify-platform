@@ -14,14 +14,16 @@ Last updated: 2026-08-26 (CL-P0 complete; holding for md go-ahead on CL-P1)
   - Pre-existing duplicate-row preflight before unique indexes; FK delete-behavior fixes (SET NULL/CASCADE).
   - `/leaderboard` becomes server component; no fake profile links; dashboard swaps dead `contribution_score` display for ledger total; R10/P6 gating wording corrected (leaderboard has no nav entry today).
 - **Second independent review** (delegated senior reviewer with full repo inspection): verdict ACCEPTABLE-WITH-CORRECTIONS; 6 findings (2 medium, 4 low). All 6 applied directly to the docs: CL-P0 done-criterion rewritten to on-disk reality, `has_role()` hardened-path recreation added to CL-P1, TS-types scope qualifier, SQL↔TS naming-pair note, `getPendingChallengeSubmissions()` interface added, dead-`contribution_score` column cleanup ticketed below.
+- **Artifact-coverage correction** (2026-08-26, found by md auditing the doc tree against the workflow skill's nine artifact types): five-doc set silently omitted four artifacts; the gap was never recorded as an open decision. Remedy applied: `PROJECT_INSTRUCTIONS.md` (session routing) and `FLOW.md` (five actor flows with stop/decision/handoff points) added; `EXPERIENCE_GUIDELINES` excluded by recorded decision (see Decisions); `LESSONS_FILE` intentionally absent until a failure pattern repeats.
 
 ## In progress
-- None. **Holding per md instruction: stop after docs, inform before implementation.**
+- None. Holding for Stavan's security review + md's go/no-go on CL-P1.
 
 ## Next
 - Await md go-ahead → CL-P1 migration pack.
 
 ## Decisions and changes
+- `EXPERIENCE_GUIDELINES_DOC` excluded from this slice (recorded 2026-08-26, decision by md): UI quality rules live inside R6/R7 acceptance criteria for now. Reversal is cheap — write the file if UI scope grows beyond the current patterns.
 - Scoring model: global points (category `contributors`) via approval-gated ledger; per-challenge ranking deferred. Source: md, round 2.
 - Reviewers = core_team/super_admin (D3 confirmed).
 - Point constants: base 100 / winner bonus 250 (D1 confirmed).
