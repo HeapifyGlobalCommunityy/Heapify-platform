@@ -103,7 +103,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
     <motion.article
       whileHover={{ y: -7 }}
       transition={{ duration: 0.25 }}
-      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1"
     >
       {/* Radial hover glow — identical to EventCard */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

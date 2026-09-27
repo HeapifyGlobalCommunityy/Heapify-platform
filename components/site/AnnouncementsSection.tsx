@@ -18,20 +18,18 @@ function timeAgo(dateStr: string): string {
 export default async function AnnouncementsSection() {
   const { data: announcements, error } = await getPublicAnnouncements(6);
 
-  // Query error — show a non-alarming fallback (don't crash the page)
   if (error) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-2xl border border-border/60 bg-card p-8 text-center text-sm text-muted-foreground shadow-warm">
         Announcements are temporarily unavailable.
       </div>
     );
   }
 
-  // Intentional empty state — logged-out visitors still see a proper message
   if (!announcements || announcements.length === 0) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-12 text-center space-y-2">
-        <p className="text-white font-display text-lg font-semibold">Nothing to announce yet.</p>
+      <div className="rounded-2xl border border-border/60 bg-card p-12 text-center space-y-2 shadow-warm">
+        <p className="font-display text-lg font-600 text-foreground">Nothing to announce yet.</p>
         <p className="text-sm text-muted-foreground">
           Stay tuned — we&apos;ll share community updates here.
         </p>
@@ -44,13 +42,13 @@ export default async function AnnouncementsSection() {
       {announcements.map((a: { id: string; title: string; body: string | null; created_at: string }) => (
         <article
           key={a.id}
-          className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl flex flex-col gap-3"
+          className="rounded-2xl border border-border/70 bg-card p-6 flex flex-col gap-3 shadow-warm hover:border-primary/30 hover:shadow-warm-lg transition-all duration-300"
         >
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display text-lg font-semibold tracking-tight leading-snug">
+            <h3 className="font-display text-lg font-600 tracking-tight leading-snug text-foreground">
               {a.title}
             </h3>
-            <span className="shrink-0 text-[11px] font-mono text-muted-foreground mt-0.5">
+            <span className="shrink-0 eyebrow text-muted-foreground mt-1">
               {timeAgo(a.created_at)}
             </span>
           </div>
