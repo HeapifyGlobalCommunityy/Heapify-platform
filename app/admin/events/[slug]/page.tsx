@@ -85,14 +85,14 @@ export default async function AdminEventDetailPage({ params }: PageProps) {
           />
           <Link
             href={`/admin/events/${event.slug}/edit`}
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-foreground/20 px-3 text-xs font-medium transition-colors hover:border-primary/50 hover:text-primary"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium transition-colors hover:border-primary/50 hover:text-primary"
           >
             <Pencil className="h-3.5 w-3.5" /> Edit
           </Link>
           <Link
             href={`/events/${event.slug}`}
             target="_blank"
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-foreground/20 px-3 text-xs font-medium transition-colors hover:border-primary/50 hover:text-primary"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-xs font-medium transition-colors hover:border-primary/50 hover:text-primary"
           >
             <ExternalLink className="h-3.5 w-3.5" /> Public view
           </Link>
@@ -101,7 +101,7 @@ export default async function AdminEventDetailPage({ params }: PageProps) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl lg:col-span-2">
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm lg:col-span-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className={cn("rounded-full border px-3 py-1 text-xs font-medium capitalize", statusStyles[event.status])}>
               {event.status}
@@ -111,7 +111,7 @@ export default async function AdminEventDetailPage({ params }: PageProps) {
             </span>
             <span className="text-xs text-muted-foreground">· {event.chapter?.name ?? "Global"}</span>
           </div>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground">
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             {event.description || "No description provided."}
           </p>
           <div className="mt-4 flex flex-wrap gap-6 text-sm">
@@ -135,9 +135,9 @@ export default async function AdminEventDetailPage({ params }: PageProps) {
           {metrics.map(({ label, value }) => (
             <div
               key={label}
-              className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-4 backdrop-blur-xl"
+              className="rounded-xl border border-border bg-card p-4 shadow-sm"
             >
-              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
               <p className="mt-2 font-display text-xl font-semibold text-foreground">{value}</p>
             </div>
           ))}

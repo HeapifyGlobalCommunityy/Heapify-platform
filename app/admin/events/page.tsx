@@ -43,18 +43,18 @@ export default async function AdminEventsPage() {
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
+          <div key={label} className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
               <Icon className="h-4 w-4 text-primary" />
             </div>
-            <p className="mt-3 font-display text-3xl font-semibold">{value.toLocaleString()}</p>
+            <p className="mt-3 font-display text-3xl font-semibold text-foreground">{value.toLocaleString()}</p>
           </div>
         ))}
       </div>
 
       {events.length === 0 ? (
-        <div className="rounded-2xl border border-glass-border bg-glass-bg p-10 text-center text-sm text-muted-foreground">
+        <div className="rounded-xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
           No events have been created yet.
         </div>
       ) : (

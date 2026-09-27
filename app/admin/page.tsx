@@ -55,28 +55,28 @@ export default async function AdminPage() {
         className="pt-36"
       >
         <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Total Events</span>
               <Calendar className="h-4 w-4 text-primary" />
             </div>
-            <p className="mt-3 font-display text-3xl font-bold">{events.length}</p>
+            <p className="mt-3 font-display text-3xl font-bold text-foreground">{events.length}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Active Events</span>
               <ShieldCheck className="h-4 w-4 text-primary" />
             </div>
             <p className="mt-3 font-display text-3xl font-bold text-primary">{activeEventsCount}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Submissions Inbox</span>
               <Inbox className="h-4 w-4 text-primary" />
             </div>
-            <p className="mt-3 font-display text-3xl font-bold">{submissions.length}</p>
+            <p className="mt-3 font-display text-3xl font-bold text-foreground">{submissions.length}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Access Level</span>
               <ShieldCheck className="h-4 w-4 text-primary" />
@@ -94,7 +94,7 @@ export default async function AdminPage() {
                 title={control.title}
                 description={control.description}
               >
-                <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-4">
+                <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
                   {control.icon}
                   <span className="text-xs font-medium text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                     Manage <ArrowRight className="h-3 w-3" />
@@ -117,4 +117,3 @@ export default async function AdminPage() {
     </>
   );
 }
-

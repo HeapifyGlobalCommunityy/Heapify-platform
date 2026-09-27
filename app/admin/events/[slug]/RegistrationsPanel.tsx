@@ -48,8 +48,8 @@ export function RegistrationsPanel({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 rounded-2xl border border-glass-border bg-glass-bg p-4 backdrop-blur-xl md:flex-row md:items-center">
-        <label className="flex flex-1 items-center gap-2 rounded-xl border border-border bg-background/50 px-3 text-sm">
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-sm md:flex-row md:items-center">
+        <label className="flex flex-1 items-center gap-2 rounded-lg border border-input bg-card px-3 text-sm">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             value={query}
@@ -61,7 +61,7 @@ export function RegistrationsPanel({
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value as FilterStatus)}
-          className="h-10 rounded-xl border border-border bg-background/50 px-3 text-sm outline-none"
+          className="h-10 rounded-lg border border-input bg-card px-3 text-sm outline-none text-foreground"
         >
           {statuses.map((option) => (
             <option key={option} value={option}>
@@ -74,9 +74,9 @@ export function RegistrationsPanel({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-[1.5rem] border border-glass-border bg-glass-bg backdrop-blur-xl">
+      <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
         <table className="w-full min-w-[820px] text-left text-sm">
-          <thead className="border-b border-border text-xs uppercase tracking-[0.16em] text-muted-foreground">
+          <thead className="border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-5 py-4">Attendee</th>
               <th className="px-5 py-4">Contact</th>
