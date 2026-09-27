@@ -21,7 +21,7 @@ export default async function AnnouncementsSection() {
   // Query error — show a non-alarming fallback (don't crash the page)
   if (error) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
         Announcements are temporarily unavailable.
       </div>
     );
@@ -30,8 +30,8 @@ export default async function AnnouncementsSection() {
   // Intentional empty state — logged-out visitors still see a proper message
   if (!announcements || announcements.length === 0) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-12 text-center space-y-2">
-        <p className="text-white font-display text-lg font-semibold">Nothing to announce yet.</p>
+      <div className="rounded-xl border border-border bg-card p-10 text-center space-y-2">
+        <p className="font-display text-base font-semibold text-foreground">Nothing to announce yet.</p>
         <p className="text-sm text-muted-foreground">
           Stay tuned — we&apos;ll share community updates here.
         </p>
@@ -44,7 +44,7 @@ export default async function AnnouncementsSection() {
       {announcements.map((a: { id: string; title: string; body: string | null; created_at: string }) => (
         <article
           key={a.id}
-          className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl flex flex-col gap-3"
+          className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3 hover:border-primary/30 transition-colors duration-200"
         >
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-display text-lg font-semibold tracking-tight leading-snug">

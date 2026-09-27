@@ -86,13 +86,11 @@ export function CollaborationsField() {
         className="flex max-w-md flex-col justify-center space-y-6"
       >
         <div className="space-y-4">
-          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary/80">
+          <div className="text-xs font-medium uppercase tracking-widest text-primary/80">
             Global Ecosystem
           </div>
-          <h2 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-[3.4rem] md:leading-[1.08]">
-            Partners who
-            <br />
-            <span className="text-primary">power progress.</span>
+          <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+            Partners who power progress.
           </h2>
         </div>
 
@@ -111,28 +109,8 @@ export function CollaborationsField() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-[2rem] border border-border/20 bg-muted/30 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8 dark:bg-muted/10"
+        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-2xl border border-border bg-muted/30 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8 dark:bg-muted/10"
       >
-        <style>{`
-          .marquee-container {
-            --gap-offset: 8px; /* half of gap-4 (16px) */
-          }
-          @media (min-width: 640px) {
-            .marquee-container {
-              --gap-offset: 12px; /* half of gap-6 (24px) */
-            }
-          }
-          @keyframes scroll-up {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(calc(-50% - var(--gap-offset))); }
-          }
-          @keyframes scroll-down {
-            0% { transform: translateY(calc(-50% - var(--gap-offset))); }
-            100% { transform: translateY(0); }
-          }
-          .animate-scroll-up { animation: scroll-up 55s linear infinite; }
-          .animate-scroll-down { animation: scroll-down 55s linear infinite; }
-        `}</style>
 
         {/* Gradient Masks */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-24 bg-gradient-to-b from-background to-transparent sm:h-32" />
