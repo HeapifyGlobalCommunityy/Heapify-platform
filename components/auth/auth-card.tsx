@@ -32,7 +32,7 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
       >
         {/* Logo and title */}
         <div className="flex flex-col items-center space-y-4 text-center mb-8">
-          <HeapifyLogo className="h-12 w-12 shadow-[0_8px_30px_rgb(255,122,0,0.3)]" />
+          <HeapifyLogo className="h-12 w-12" />
           <div className="space-y-1">
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
               {isLogin ? "Welcome back" : "Create account"}
@@ -46,7 +46,7 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
         </div>
 
         {/* Auth form card with premium glassmorphism */}
-        <div className="rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.06),rgba(255,255,255,0.02),rgba(10,10,10,0.7))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.35)] backdrop-blur-2xl">
+        <div className="rounded-xl border border-border bg-card p-7 shadow-sm">
           <div className="grid gap-5">
             <GoogleSignInButton
               mode={mode}
@@ -67,7 +67,7 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
                 <span className="w-full border-t border-glass-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-glass-bg px-3 py-1 rounded-full border border-glass-border/30 text-[10px] tracking-wider text-muted-foreground backdrop-blur-sm">
+                <span className="bg-background px-3 text-xs text-muted-foreground">
                   Or continue with email
                 </span>
               </div>

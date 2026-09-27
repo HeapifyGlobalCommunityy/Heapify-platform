@@ -43,7 +43,7 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
 
         return (
           <div key={q.id}>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">
               {q.label}
               {q.required && <span className="text-primary ml-1">*</span>}
             </label>
@@ -51,15 +51,15 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             {qType === "short_text" && (
               <div
                 className={[
-                  "rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
-                  error ? "border-red-500/50" : "border-zinc-800 focus-within:border-primary/60",
+                  "rounded-lg border bg-card px-3.5 py-2.5",
+                  error ? "border-destructive" : "border-border focus-within:border-primary",
                 ].join(" ")}
               >
                 <input
                   type="text"
                   value={singleVal}
                   onChange={(e) => onChange(q.id, e.target.value)}
-                  className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none"
+                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 />
               </div>
             )}
@@ -67,15 +67,15 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             {qType === "long_text" && (
               <div
                 className={[
-                  "rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
-                  error ? "border-red-500/50" : "border-zinc-800 focus-within:border-primary/60",
+                  "rounded-lg border bg-card px-3.5 py-2.5",
+                  error ? "border-destructive" : "border-border focus-within:border-primary",
                 ].join(" ")}
               >
                 <textarea
                   value={singleVal}
                   onChange={(e) => onChange(q.id, e.target.value)}
                   rows={3}
-                  className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none resize-none"
+                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none resize-none"
                 />
               </div>
             )}
@@ -83,8 +83,8 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             {qType === "number" && (
               <div
                 className={[
-                  "rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
-                  error ? "border-red-500/50" : "border-zinc-800 focus-within:border-primary/60",
+                  "rounded-lg border bg-card px-3.5 py-2.5",
+                  error ? "border-destructive" : "border-border focus-within:border-primary",
                 ].join(" ")}
               >
                 <input
@@ -92,7 +92,7 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
                   step="any"
                   value={singleVal}
                   onChange={(e) => onChange(q.id, e.target.value)}
-                  className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none"
+                  className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
                 />
               </div>
             )}
@@ -100,19 +100,19 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             {qType === "single_choice" && (
               <div className="space-y-2">
                 {(!q.options || q.options.length === 0) ? (
-                  <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/40 p-4 text-center">
-                    <p className="text-xs text-zinc-500">This question has no options configured.</p>
+                  <div className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-center">
+                    <p className="text-xs text-muted-foreground">This question has no options configured.</p>
                   </div>
                 ) : (
                   q.options.map((opt) => (
                     <label
                       key={opt}
                       className={[
-                        "flex items-center gap-3 rounded-xl border px-3.5 py-2.5 cursor-pointer transition-colors",
+                        "flex items-center gap-3 rounded-lg border px-3.5 py-2.5 cursor-pointer transition-colors",
                         singleVal === opt
-                          ? "border-primary/50 bg-primary/10"
-                          : "border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60",
-                        error && singleVal !== opt && "border-red-500/50"
+                          ? "border-primary bg-primary/5 font-medium"
+                          : "border-border bg-card hover:bg-muted/50",
+                        error && singleVal !== opt && "border-destructive"
                       ].join(" ")}
                     >
                       <input
@@ -126,9 +126,9 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
                       {singleVal === opt ? (
                         <CircleDot className="h-4 w-4 text-primary shrink-0" />
                       ) : (
-                        <Circle className="h-4 w-4 text-zinc-600 shrink-0" />
+                        <Circle className="h-4 w-4 text-muted-foreground shrink-0" />
                       )}
-                      <span className="text-sm text-white">{opt}</span>
+                      <span className="text-sm text-foreground">{opt}</span>
                     </label>
                   ))
                 )}
@@ -138,8 +138,8 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             {qType === "multiple_choice" && (
               <div className="space-y-2">
                 {(!q.options || q.options.length === 0) ? (
-                  <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/40 p-4 text-center">
-                    <p className="text-xs text-zinc-500">This question has no options configured.</p>
+                  <div className="rounded-lg border border-dashed border-border bg-muted/40 p-4 text-center">
+                    <p className="text-xs text-muted-foreground">This question has no options configured.</p>
                   </div>
                 ) : (
                   q.options.map((opt) => {
@@ -148,11 +148,11 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
                       <label
                         key={opt}
                         className={[
-                          "flex items-center gap-3 rounded-xl border px-3.5 py-2.5 cursor-pointer transition-colors",
+                          "flex items-center gap-3 rounded-lg border px-3.5 py-2.5 cursor-pointer transition-colors",
                           isChecked
-                            ? "border-primary/50 bg-primary/10"
-                            : "border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60",
-                          error && !isChecked && multiVal.length === 0 && "border-red-500/50"
+                            ? "border-primary bg-primary/5 font-medium"
+                            : "border-border bg-card hover:bg-muted/50",
+                          error && !isChecked && multiVal.length === 0 && "border-destructive"
                         ].join(" ")}
                       >
                         <input
@@ -164,9 +164,9 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
                         {isChecked ? (
                           <CheckSquare className="h-4 w-4 text-primary shrink-0" />
                         ) : (
-                          <Square className="h-4 w-4 text-zinc-600 shrink-0" />
+                          <Square className="h-4 w-4 text-muted-foreground shrink-0" />
                         )}
-                        <span className="text-sm text-white">{opt}</span>
+                        <span className="text-sm text-foreground">{opt}</span>
                       </label>
                     );
                   })
@@ -175,7 +175,7 @@ export default function CustomQuestionsSection({ questions, answers, errors, onC
             )}
 
             {error && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 {error}
               </p>

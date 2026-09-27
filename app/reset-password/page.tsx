@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { HeapifyLogo } from "@/components/layout/logo";
-import { AnimatedNetworkBackground } from "@/components/site/background";
 import { motion } from "framer-motion";
 
 export default function ResetPasswordPage() {
@@ -64,18 +63,16 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="relative flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden px-6 py-24 bg-background">
-      <AnimatedNetworkBackground />
-
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="relative z-10 w-full max-w-[400px]"
       >
         <div className="flex flex-col items-center space-y-4 text-center mb-8">
-          <HeapifyLogo className="h-12 w-12 shadow-[0_8px_30px_rgb(255,122,0,0.3)]" />
+          <HeapifyLogo className="h-12 w-12" />
           <div className="space-y-1">
-            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
+            <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
               Reset Password
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -84,15 +81,15 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.06),rgba(255,255,255,0.02),rgba(10,10,10,0.7))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.35)] backdrop-blur-2xl">
+        <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
           {success ? (
-            <div className="rounded-md bg-green-500/15 p-3 text-sm text-green-500 text-center">
+            <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3 text-sm text-emerald-600 dark:text-emerald-400 text-center">
               Password updated successfully! Redirecting to dashboard...
             </div>
           ) : (
             <form onSubmit={handleResetPassword} className="grid gap-4">
               {error && (
-                <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+                <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
                   {error}
                 </div>
               )}

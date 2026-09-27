@@ -40,7 +40,7 @@ export default function TeamSection({
   return (
     <div className="space-y-4">
       {teamConfig.allowSolo && (
-        <div className="flex gap-2 p-1 rounded-xl bg-zinc-950/60 border border-zinc-800">
+        <div className="flex gap-2 p-1 rounded-lg bg-muted border border-border">
           <ModeButton
             active={mode === "solo"}
             icon={<User className="h-3.5 w-3.5" />}
@@ -59,13 +59,13 @@ export default function TeamSection({
       {isTeamMode && (
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-foreground mb-1.5">
               Team name
             </label>
             <div
               className={[
-                "rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
-                errors.teamName ? "border-red-500/50" : "border-zinc-800 focus-within:border-primary/60",
+                "rounded-lg border bg-card px-3.5 py-2.5",
+                errors.teamName ? "border-destructive" : "border-border focus-within:border-primary",
               ].join(" ")}
             >
               <input
@@ -73,18 +73,18 @@ export default function TeamSection({
                 value={teamName}
                 placeholder="Team Axiom"
                 onChange={(e) => onTeamNameChange(e.target.value)}
-                className="w-full bg-transparent text-sm text-white placeholder:text-zinc-600 outline-none"
+                className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
               />
             </div>
             {errors.teamName && (
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                 {errors.teamName}
               </p>
             )}
           </div>
 
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             {teamConfig.minSize}–{teamConfig.maxSize} members total, including you.
           </p>
 
@@ -95,7 +95,7 @@ export default function TeamSection({
                 return (
                   <div
                     key={tm.id}
-                    className="flex gap-2 items-start rounded-xl border border-zinc-800 bg-zinc-950/40 p-3"
+                    className="flex gap-2 items-start rounded-lg border border-border bg-muted/30 p-3"
                   >
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
@@ -105,13 +105,13 @@ export default function TeamSection({
                           placeholder={`Teammate ${i + 1} name`}
                           onChange={(e) => onTeammateChange(tm.id, "name", e.target.value)}
                           className={[
-                            "w-full rounded-lg border bg-zinc-950/60 px-3 py-2 text-sm text-white",
-                            "placeholder:text-zinc-600 outline-none transition-colors",
-                            tmError?.name ? "border-red-500/50" : "border-zinc-800 focus:border-primary/60",
+                            "w-full rounded-md border bg-card px-3 py-2 text-sm text-foreground",
+                            "placeholder:text-muted-foreground outline-none transition-colors",
+                            tmError?.name ? "border-destructive" : "border-border focus:border-primary",
                           ].join(" ")}
                         />
                         {tmError?.name && (
-                          <p className="mt-1 text-[11px] text-red-400">{tmError.name}</p>
+                          <p className="mt-1 text-[11px] text-destructive">{tmError.name}</p>
                         )}
                       </div>
                       <div>
@@ -121,13 +121,13 @@ export default function TeamSection({
                           placeholder="Email"
                           onChange={(e) => onTeammateChange(tm.id, "email", e.target.value)}
                           className={[
-                            "w-full rounded-lg border bg-zinc-950/60 px-3 py-2 text-sm text-white",
-                            "placeholder:text-zinc-600 outline-none transition-colors",
-                            tmError?.email ? "border-red-500/50" : "border-zinc-800 focus:border-primary/60",
+                            "w-full rounded-md border bg-card px-3 py-2 text-sm text-foreground",
+                            "placeholder:text-muted-foreground outline-none transition-colors",
+                            tmError?.email ? "border-destructive" : "border-border focus:border-primary",
                           ].join(" ")}
                         />
                         {tmError?.email && (
-                          <p className="mt-1 text-[11px] text-red-400">{tmError.email}</p>
+                          <p className="mt-1 text-[11px] text-destructive">{tmError.email}</p>
                         )}
                       </div>
                     </div>
@@ -135,7 +135,7 @@ export default function TeamSection({
                       type="button"
                       onClick={() => onRemoveTeammate(tm.id)}
                       aria-label="Remove teammate"
-                      className="mt-1.5 shrink-0 h-6 w-6 flex items-center justify-center rounded-full text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
+                      className="mt-1.5 shrink-0 h-6 w-6 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -168,14 +168,14 @@ function ModeButton({
   icon: ReactNode;
   label: string;
   onClick: () => void;
-}) {
+  }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        "flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-colors",
-        active ? "bg-primary text-white" : "text-zinc-400 hover:text-zinc-200",
+        "flex-1 flex items-center justify-center gap-2 rounded-md py-1.5 text-sm font-medium transition-colors",
+        active ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
       ].join(" ")}
     >
       {icon}

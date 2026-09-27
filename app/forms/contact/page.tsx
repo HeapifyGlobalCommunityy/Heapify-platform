@@ -85,14 +85,14 @@ export default function Page() {
         description="Have a question, suggestion, partnership inquiry, or need assistance? Send us a message and our team will get back to you as soon as possible."
         className="pt-36"
       >
-        <div className="rounded-[1.75rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+        <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="grid gap-6">
             {status && (
               <div
                 className={
                   status.ok
-                    ? "rounded-md bg-green-500/10 p-3 text-sm text-green-600"
-                    : "rounded-md bg-red-500/10 p-3 text-sm text-red-600"
+                    ? "rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-600 dark:text-emerald-400"
+                    : "rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-600 dark:text-red-400"
                 }
               >
                 {status.message}
@@ -152,7 +152,7 @@ export default function Page() {
                 onChange={handleChange}
                 placeholder="Write your message..."
                 required
-                className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="flex min-h-[120px] w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
 

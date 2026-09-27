@@ -93,12 +93,12 @@ export default function DynamicForm({ formType, config }: Props) {
   // ── Success confirmation ──────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="rounded-[1.75rem] border border-primary/30 bg-primary/5 p-10 text-center space-y-4 animate-fade-in">
+      <div className="rounded-2xl border border-primary/30 bg-primary/5 p-10 text-center space-y-4">
         <CheckCircle className="mx-auto h-10 w-10 text-primary" />
-        <h2 className="font-display text-2xl font-semibold tracking-tight">
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
           Submission Received
         </h2>
-        <p className="text-sm text-muted-foreground leading-7 max-w-md mx-auto">
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
           Your <span className="text-foreground font-medium capitalize">{formType.replace(/_/g, " ")}</span> submission
           is currently pending review. We will reach out to you shortly — keep
           an eye on your inbox.
@@ -109,10 +109,10 @@ export default function DynamicForm({ formType, config }: Props) {
 
   // ── Form ──────────────────────────────────────────────────────────────────
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-7">
+    <form onSubmit={handleSubmit} noValidate className="space-y-6">
       {/* Global error banner */}
       {globalError && (
-        <div className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
           <span>{globalError}</span>
         </div>
@@ -121,9 +121,9 @@ export default function DynamicForm({ formType, config }: Props) {
       {config.fields.map((field) => {
         const error = fieldErrors[field.name];
         const baseInputClass = cn(
-          "w-full rounded-xl border bg-glass-bg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors backdrop-blur-sm",
-          "focus:ring-2 focus:ring-primary/40",
-          error ? "border-red-500/60" : "border-glass-border focus:border-primary/60"
+          "w-full rounded-lg border bg-card px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors",
+          "focus:ring-1 focus:ring-primary focus:border-primary",
+          error ? "border-destructive/60" : "border-border"
         );
 
         return (
@@ -203,8 +203,8 @@ export default function DynamicForm({ formType, config }: Props) {
             {field.type === "multi_select" && (
               <div
                 className={cn(
-                  "rounded-xl border p-4 space-y-2",
-                  error ? "border-red-500/60" : "border-glass-border"
+                  "rounded-lg border p-4 space-y-2",
+                  error ? "border-destructive/60" : "border-border"
                 )}
               >
                 <p className="text-xs text-muted-foreground mb-3">
@@ -216,14 +216,14 @@ export default function DynamicForm({ formType, config }: Props) {
                   return (
                     <label
                       key={val}
-                      className="flex items-center gap-3 cursor-pointer group"
+                      className="flex items-center gap-3 cursor-pointer group py-1"
                     >
                       <div
                         className={cn(
-                          "h-4 w-4 shrink-0 rounded border transition-colors",
+                          "h-4 w-4 shrink-0 rounded border flex items-center justify-center transition-colors",
                           checked
-                            ? "bg-primary border-primary"
-                            : "bg-transparent border-glass-border group-hover:border-primary/50"
+                            ? "bg-primary border-primary text-white"
+                            : "bg-transparent border-border group-hover:border-primary/50"
                         )}
                       >
                         <input
@@ -234,7 +234,7 @@ export default function DynamicForm({ formType, config }: Props) {
                         />
                         {checked && (
                           <svg
-                            className="h-full w-full text-black"
+                            className="h-3 w-3 text-white"
                             viewBox="0 0 16 16"
                             fill="currentColor"
                           >
@@ -242,7 +242,7 @@ export default function DynamicForm({ formType, config }: Props) {
                           </svg>
                         )}
                       </div>
-                      <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
+                      <span className="text-sm text-foreground/90 group-hover:text-foreground transition-colors">
                         {optionLabel(opt)}
                       </span>
                     </label>
@@ -253,7 +253,7 @@ export default function DynamicForm({ formType, config }: Props) {
 
             {/* Inline field error */}
             {error && (
-              <p className="text-xs text-red-400 flex items-center gap-1">
+              <p className="text-xs text-destructive flex items-center gap-1">
                 <AlertCircle className="h-3 w-3 shrink-0" />
                 {error}
               </p>

@@ -8,13 +8,6 @@ import SubmitButton, { SubmitState } from "./SubmitButton";
 import ConfirmationView from "./ConfirmationView";
 import { registerForEvent } from "@/lib/actions/events";
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Redesigned for visual hierarchy and polish — same exact field names, state
-// shape, and validation logic as before, so nothing about the data contract
-// changes. Only the presentation layer (spacing, grouping, typography,
-// section framing) is new.
-// ═══════════════════════════════════════════════════════════════════════════
-
 interface TeamConfig {
   minSize: number;
   maxSize: number;
@@ -160,7 +153,6 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
   function handleSubmit() {
     if (!validate()) return;
-    // Double-submit guard: block if already in flight
     if (submitState === "loading" || isPending) return;
 
     setSubmitState("loading");
@@ -203,28 +195,19 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
     );
   }
 
-  // Total section count drives both the numbering and the little progress
-  // dots at the top — gives the form a sense of "here's how much is left",
-  // which is a small but real hook to keep people moving through it.
   const sectionCount = 2 + (showTeamSection ? 1 : 0) + (event.customQuestions.length > 0 ? 1 : 0);
 
   return (
     <div className="w-full max-w-2xl mx-auto px-6 lg:px-10 pt-24 lg:pt-28 pb-16">
-
       {/* ── Header ── */}
       <div className="space-y-3">
-        {/* Progress dots — proportional fill based on how many sections the
-            user has interacted with (name + email filled = section 1 done) */}
         <div className="flex items-center gap-1.5">
           {Array.from({ length: sectionCount }).map((_, i) => {
-            // Section 1 is "done" once both name and email are non-empty.
-            // Sections 2+ use a simple index-based approximation since we
-            // don’t track per-section submission state.
             const isDone = i === 0
               ? (values.fullName.trim().length > 0 && values.email.trim().length > 0)
               : false;
             return (
-              <div key={i} className="h-1 flex-1 rounded-full bg-primary/20 overflow-hidden">
+              <div key={i} className="h-1 flex-1 rounded-full bg-muted overflow-hidden">
                 <div
                   className={[
                     "h-full rounded-full transition-all duration-500 ease-out",
@@ -236,16 +219,16 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
           })}
         </div>
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-white">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
             Register for {event.title}
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             You&apos;re almost in — this takes about a minute.
           </p>
         </div>
       </div>
 
-      {/* ── Sections, each in its own card for clear visual grouping ── */}
+      {/* ── Sections ── */}
       <div className="mt-8 space-y-5">
         <FormSection index={1} title="Personal information">
           <PersonalInfoSection
@@ -292,8 +275,6 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   );
 }
 
-// ─── Section card wrapper — gives every section a consistent frame ─────────
-
 function FormSection({
   index, title, children,
 }: {
@@ -302,12 +283,12 @@ function FormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-5 lg:p-6">
+    <section className="rounded-xl border border-border bg-card p-5 lg:p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-5">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary text-xs font-mono font-semibold">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-mono font-semibold">
           {index}
         </span>
-        <h2 className="text-sm font-semibold text-white tracking-wide uppercase">
+        <h2 className="text-xs font-semibold text-foreground tracking-wider uppercase">
           {title}
         </h2>
       </div>

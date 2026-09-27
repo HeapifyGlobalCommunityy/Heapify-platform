@@ -45,9 +45,9 @@ export default function PersonalInfoSection({ values, errors, onChange }: Props)
       />
 
       {errors.socialLinks && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/8 px-3 py-2">
-          <AlertCircle className="h-3.5 w-3.5 text-red-400 shrink-0" />
-          <p className="text-xs text-red-400">{errors.socialLinks}</p>
+        <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2">
+          <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0" />
+          <p className="text-xs text-destructive">{errors.socialLinks}</p>
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
@@ -85,29 +85,29 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-zinc-400 mb-1.5">
+      <label className="block text-sm font-medium text-foreground mb-1.5">
         {label}
       </label>
       <div
         className={[
-          "flex items-center gap-2.5 rounded-xl border bg-zinc-950/60 px-3.5 py-2.5",
+          "flex items-center gap-2.5 rounded-lg border bg-card px-3.5 py-2.5",
           "transition-colors duration-150",
           error
-            ? "border-red-500/50 focus-within:border-red-500"
-            : "border-zinc-800 focus-within:border-primary/60",
+            ? "border-destructive focus-within:border-destructive"
+            : "border-border focus-within:border-primary",
         ].join(" ")}
       >
-        <span className="text-zinc-600 shrink-0">{icon}</span>
+        <span className="text-muted-foreground shrink-0">{icon}</span>
         <input
           type={type}
           value={value}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-transparent text-base text-white placeholder:text-zinc-600 outline-none"
+          className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
         />
       </div>
       {error && (
-        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-red-400">
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           {error}
         </p>
