@@ -1,11 +1,5 @@
 "use client";
 
-// components/profile/EventHistoryClient.tsx
-// Client component for paginated Event History inside the profile page.
-// Uses the server action pattern: "Load more" fetches the next page via
-// a server action so pagination never exposes user_id on the client.
-// Starts with page 0 data passed from the server component as props.
-
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { CalendarDays, ArrowRight, Loader2 } from "lucide-react";
@@ -14,9 +8,9 @@ import { Button } from "@/components/ui/button";
 // Status pill colours
 const statusColour: Record<string, string> = {
   upcoming: "border-primary/30 bg-primary/10 text-primary",
-  ongoing: "border-amber-500/30 bg-amber-500/10 text-amber-500",
-  completed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-  cancelled: "border-red-500/30 bg-red-500/10 text-red-500",
+  ongoing: "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  completed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  cancelled: "border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400",
 };
 
 export interface EventHistoryRow {
@@ -40,7 +34,6 @@ interface Props {
   userId: string;
 }
 
-// Server action import — pagination fetch
 import { loadMoreEventHistory } from "@/lib/actions/profile";
 
 export default function EventHistoryClient({ initialRows, hasMoreInitially, userId }: Props) {
@@ -61,10 +54,10 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
 
   if (rows.length === 0) {
     return (
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-10 text-center space-y-3">
-        <p className="font-display text-lg font-semibold text-white">No events in your history.</p>
+      <div className="rounded-xl border border-border bg-card p-10 text-center space-y-3">
+        <p className="font-display text-lg font-semibold text-foreground">No events in your history.</p>
         <p className="text-sm text-muted-foreground">Events you register for will appear here.</p>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild>
           <Link href="/events">
             Explore Events <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -94,14 +87,14 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
         return (
           <div
             key={row.id}
-            className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/30 px-5 py-4"
+            className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-5 py-4 shadow-sm"
           >
             <div className="flex-1 min-w-0">
-              <div className="text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
                 {ev.category}
               </div>
-              <div className="mt-1 font-semibold text-sm text-white truncate">{ev.title}</div>
-              <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
+              <div className="mt-1 font-semibold text-sm text-foreground truncate">{ev.title}</div>
+              <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                 <CalendarDays className="h-3 w-3" />
                 {new Date(ev.start_at).toLocaleDateString("en-US", {
                   month: "short", day: "numeric", year: "numeric",
@@ -130,7 +123,7 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
 
       {hasMore && (
         <Button
-          variant="ghost"
+          variant="outline"
           className="w-full"
           onClick={loadMore}
           disabled={isPending}

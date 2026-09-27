@@ -36,23 +36,22 @@ export function LeaderboardBreakdown({ entries }: LeaderboardBreakdownProps) {
     };
   });
 
-  // Calculate sum of scores for this period to represent progress percentages
   const periodTotal = categoryScores.reduce((sum, item) => sum + item.score, 0);
 
   return (
-    <div className="mt-6 rounded-2xl border border-glass-border bg-glass-bg/30 p-5 text-left">
-      <div className="flex items-center justify-between gap-4 mb-4">
+    <div className="mt-6 rounded-xl border border-border bg-card p-4 text-left w-full sm:w-64 shadow-sm">
+      <div className="flex items-center justify-between gap-4 mb-3">
         <h4 className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
           Score Breakdown
         </h4>
         {/* Toggle tabs */}
-        <div className="flex rounded-lg border border-glass-border p-0.5 bg-glass-bg/50">
+        <div className="flex rounded-md border border-border p-0.5 bg-muted">
           <button
             onClick={() => setPeriod("all_time")}
             className={cn(
-              "rounded-md px-2 py-1 text-[10px] font-semibold transition-all",
+              "rounded px-2 py-0.5 text-[10px] font-semibold transition-all",
               period === "all_time"
-                ? "bg-primary text-white shadow-sm"
+                ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -61,9 +60,9 @@ export function LeaderboardBreakdown({ entries }: LeaderboardBreakdownProps) {
           <button
             onClick={() => setPeriod("monthly")}
             className={cn(
-              "rounded-md px-2 py-1 text-[10px] font-semibold transition-all",
+              "rounded px-2 py-0.5 text-[10px] font-semibold transition-all",
               period === "monthly"
-                ? "bg-primary text-white shadow-sm"
+                ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -72,18 +71,18 @@ export function LeaderboardBreakdown({ entries }: LeaderboardBreakdownProps) {
         </div>
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-3">
         {categoryScores.map((cat) => {
           const percentage = periodTotal > 0 ? (cat.score / periodTotal) * 100 : 0;
           return (
-            <div key={cat.id} className="space-y-1.5">
+            <div key={cat.id} className="space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground font-medium">{cat.label}</span>
+                <span className="text-muted-foreground">{cat.label}</span>
                 <span className="font-semibold text-foreground font-mono">{cat.score} pts</span>
               </div>
-              <div className="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+              <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-500"
+                  className="h-full rounded-full bg-primary transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>

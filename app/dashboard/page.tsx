@@ -7,13 +7,11 @@ import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
 import {
   Calendar,
-  User as UserIcon,
   Trophy,
   Award,
   ArrowRight,
   ShieldCheck,
   Building2,
-  ExternalLink,
   Github,
   Linkedin,
   Twitter,
@@ -84,23 +82,23 @@ export default async function DashboardPage() {
     <div className="pt-36 pb-20 space-y-12">
       {/* User Header / Hero */}
       <section className="px-6">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02),rgba(10,10,10,0.8))] p-8 md:p-10 backdrop-blur-2xl">
+        <div className="mx-auto max-w-6xl rounded-2xl border border-border bg-card p-8 md:p-10 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               {profile?.avatar_url ? (
                 <SafeImage
                   src={profile.avatar_url}
                   alt={displayName}
-                  className="h-20 w-20 rounded-2xl object-cover border border-glass-border shadow-[0_0_30px_rgba(255,122,0,0.2)]"
+                  className="h-20 w-20 rounded-xl object-cover border border-border"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-glass-border bg-primary/10 text-primary font-display font-bold text-2xl shadow-[0_0_30px_rgba(255,122,0,0.2)]">
+                <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary font-display font-bold text-2xl">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-bg px-3 py-0.5 text-xs text-primary font-mono uppercase tracking-wider">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-0.5 text-xs text-primary font-mono uppercase tracking-wider">
                     <Sparkles className="h-3 w-3" /> {userRole.replace("_", " ")}
                   </span>
                   {profile?.chapter && (
@@ -118,20 +116,20 @@ export default async function DashboardPage() {
 
             <div className="flex flex-wrap gap-3">
               {isAdmin && (
-                <Button asChild variant="primary">
+                <Button asChild>
                   <Link href="/admin">
                     <ShieldCheck className="mr-2 h-4 w-4" /> Admin Portal
                   </Link>
                 </Button>
               )}
               {isChapterLead && (
-                <Button asChild variant="ghost">
+                <Button asChild variant="outline">
                   <Link href="/chapter">
                     <Building2 className="mr-2 h-4 w-4" /> Chapter Portal
                   </Link>
                 </Button>
               )}
-              <Button asChild variant="ghost">
+              <Button asChild variant="outline">
                 <Link href="/profile/edit">
                   <Settings className="mr-2 h-4 w-4" /> Edit Profile
                 </Link>
@@ -141,7 +139,7 @@ export default async function DashboardPage() {
 
           {/* Social Links Bar if configured */}
           {(profile?.github_url || profile?.linkedin_url || profile?.twitter_url || profile?.website_url) && (
-            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-glass-border pt-6 text-xs text-muted-foreground">
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border pt-6 text-xs text-muted-foreground">
               <span className="font-mono uppercase tracking-wider text-[10px]">Connected Accounts:</span>
               {profile.github_url && (
                 <a
@@ -194,7 +192,7 @@ export default async function DashboardPage() {
           {metrics.map((metric, index) => (
             <BentoCard key={metric.label} index={index} eyebrow={metric.label}>
               <div className="flex items-center justify-between">
-                <div className="font-display text-4xl font-semibold tracking-tight">
+                <div className="font-display text-4xl font-semibold tracking-tight text-foreground">
                   {metric.value}
                 </div>
                 {metric.icon}
@@ -220,7 +218,7 @@ export default async function DashboardPage() {
               return (
                 <div
                   key={reg.id}
-                  className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl space-y-4 hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]"
+                  className="rounded-xl border border-border bg-card p-6 space-y-4 hover:border-primary/30 transition-all duration-200 shadow-sm"
                 >
                   <div className="flex justify-between items-center text-xs font-mono">
                     <span className="text-primary uppercase tracking-wider">{ev.category}</span>
@@ -236,7 +234,7 @@ export default async function DashboardPage() {
                       Start Date: {new Date(ev.start_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
                   </div>
-                  <Button variant="ghost" asChild className="w-full justify-between mt-2 border border-glass-border">
+                  <Button variant="ghost" asChild className="w-full justify-between mt-2 border border-border">
                     <Link href={`/events/${ev.slug}`}>
                       View Details <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -246,13 +244,13 @@ export default async function DashboardPage() {
             })}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-4 mt-6">
+          <div className="rounded-xl border border-border bg-card p-10 text-center space-y-4 mt-6">
             <Calendar className="mx-auto h-10 w-10 text-muted-foreground" />
             <p className="font-display text-lg font-semibold text-foreground">No registered events yet</p>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               Browse upcoming community events, workshops, and hackathons to join the schedule.
             </p>
-            <Button asChild variant="primary">
+            <Button asChild>
               <Link href="/events">Browse Events</Link>
             </Button>
           </div>
@@ -273,7 +271,7 @@ export default async function DashboardPage() {
               return (
                 <div
                   key={b.id || idx}
-                  className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl flex items-start gap-4"
+                  className="rounded-xl border border-border bg-card p-5 flex items-start gap-4 shadow-sm"
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary font-bold">
                     <Award className="h-6 w-6" />
@@ -290,7 +288,7 @@ export default async function DashboardPage() {
             })}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-8 text-center space-y-3 mt-6">
+          <div className="rounded-xl border border-border bg-card p-8 text-center space-y-3 mt-6">
             <Award className="mx-auto h-8 w-8 text-muted-foreground" />
             <p className="font-display text-base font-semibold text-foreground">No badges earned yet</p>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto">
@@ -302,4 +300,3 @@ export default async function DashboardPage() {
     </div>
   );
 }
-
