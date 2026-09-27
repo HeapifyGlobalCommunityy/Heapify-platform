@@ -357,7 +357,7 @@ export function CreateEventForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 rounded-[2rem] border border-glass-border bg-glass-bg p-8 backdrop-blur-xl">
+    <form onSubmit={handleSubmit} className="space-y-8 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
       {error && (
         <div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
@@ -374,7 +374,7 @@ export function CreateEventForm({
 
       {/* Basic Details Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Basic Details
         </h3>
         
@@ -501,7 +501,7 @@ export function CreateEventForm({
 
       {/* Date & Location Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2 flex items-center gap-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           Date & Location
         </h3>
@@ -532,7 +532,7 @@ export function CreateEventForm({
           </div>
         </div>
 
-        <div className="space-y-3 rounded-xl border border-glass-border bg-glass-bg/30 p-4">
+        <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-sm font-semibold">Virtual Event?</Label>
@@ -584,12 +584,12 @@ export function CreateEventForm({
 
       {/* Rules & Team Requirements Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2 flex items-center gap-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2 flex items-center gap-2">
           <Users className="h-5 w-5 text-primary" />
           Event Type & Team Rules
         </h3>
 
-        <div className="flex items-center justify-between rounded-xl border border-glass-border bg-glass-bg/30 p-4">
+        <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 p-4">
           <div className="space-y-0.5">
             <Label className="text-sm font-semibold">Mark as Hackathon?</Label>
             <p className="text-[10px] text-muted-foreground">Will this follow typical hackathon timelines and rules?</p>
@@ -604,7 +604,7 @@ export function CreateEventForm({
           />
         </div>
 
-        <div className="space-y-3 rounded-xl border border-glass-border bg-glass-bg/30 p-4">
+        <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-sm font-semibold">Team Required?</Label>
@@ -621,7 +621,7 @@ export function CreateEventForm({
           </div>
 
           {teamRequired && (
-            <div className="space-y-4 pt-3 border-t border-glass-border">
+            <div className="space-y-4 pt-3 border-t border-border">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="minTeamSize">Min Team Size <span className="text-primary">*</span></Label>
@@ -650,7 +650,7 @@ export function CreateEventForm({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg border border-glass-border bg-glass-bg/10 p-3 mt-2">
+              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/20 p-3 mt-2">
                 <div className="space-y-0.5">
                   <Label className="text-xs font-semibold">Allow Solo Registrations?</Label>
                   <p className="text-[9px] text-muted-foreground">Can individuals register solo without joining a team?</p>
@@ -671,13 +671,13 @@ export function CreateEventForm({
 
       {/* Agenda Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Agenda (Optional)
         </h3>
         
         <div className="space-y-3">
           {agenda.map((item) => (
-            <div key={item.id} className="flex flex-col sm:flex-row gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+            <div key={item.id} className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-muted/20 p-4">
               <div className="w-full sm:w-[120px]">
                 <Input 
                   placeholder="e.g. 10:00 AM"
@@ -722,13 +722,13 @@ export function CreateEventForm({
 
       {/* Speakers Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Speakers (Optional)
         </h3>
         
         <div className="space-y-3">
           {speakers.map((speaker) => (
-            <div key={speaker.id} className="flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+            <div key={speaker.id} className="flex flex-col gap-3 rounded-xl border border-border bg-muted/20 p-4">
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Input 
@@ -781,7 +781,7 @@ export function CreateEventForm({
 
       {/* Custom Questions Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2 flex items-center gap-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2 flex items-center gap-2">
           Custom Registration Questions
         </h3>
         
@@ -791,7 +791,7 @@ export function CreateEventForm({
 
         <div className="space-y-3">
           {customQuestions.map((q, idx) => (
-            <div key={q.id} className="flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+            <div key={q.id} className="flex flex-col gap-3 rounded-xl border border-border bg-muted/20 p-4">
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <span className="text-xs font-mono text-muted-foreground shrink-0 self-center">
                   #{idx + 1}
@@ -898,7 +898,7 @@ export function CreateEventForm({
             size="sm"
             onClick={addQuestion}
             disabled={isLoading}
-            className="w-full border border-dashed border-glass-border text-xs rounded-xl h-10 hover:bg-glass-bg"
+            className="w-full border border-dashed border-border text-xs rounded-xl h-10 hover:bg-muted"
           >
             <Plus className="h-4 w-4 mr-1.5 text-primary" />
             Add Custom Question
@@ -907,7 +907,7 @@ export function CreateEventForm({
       </div>
 
       {/* Form Submission */}
-      <div className="pt-4 border-t border-glass-border flex justify-end gap-3">
+      <div className="pt-4 border-t border-border flex justify-end gap-3">
         <Button 
           type="button" 
           variant="ghost"

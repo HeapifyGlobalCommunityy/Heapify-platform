@@ -1,18 +1,10 @@
 // app/challenges/page.tsx
-// Public challenges page — server component.
-// Fetches active + past challenges from Supabase with full error handling.
-// Auth session checked server-side so ChallengeCard knows whether to show
-// the submission form or a "sign in" CTA — no client-side auth check.
-
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveChallenges, getPastChallenges } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import ChallengeCard, { type ChallengeData } from "@/components/challenges/ChallengeCard";
 
-// PostgREST always returns joined rows as an array, even for many-to-one FKs.
-// This mapper normalises winner from { ... }[] → { ... } | null so the data
-// matches ChallengeData exactly. No runtime behaviour change.
 function normaliseChallenge(row: {
   id: string;
   title: string;
@@ -41,13 +33,13 @@ function ChallengeSkeleton() {
       {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-[1.75rem] border border-glass-border bg-glass-bg p-6 space-y-4 animate-pulse"
+          className="rounded-xl border border-border bg-card p-6 space-y-4 animate-pulse"
           style={{ animationDelay: `${i * 80}ms` }}
         >
           <div className="flex justify-between items-start">
             <div className="space-y-2">
               <div className="h-3 w-28 rounded bg-muted/60" />
-              <div className="h-7 w-48 rounded-lg bg-muted/60" />
+              <div className="h-7 w-48 rounded-md bg-muted/60" />
             </div>
             <div className="h-6 w-14 rounded-full bg-muted/50" />
           </div>
@@ -57,7 +49,7 @@ function ChallengeSkeleton() {
             <div className="h-3.5 w-3/5 rounded bg-muted/30" />
           </div>
           <div className="flex gap-2 pt-2">
-            <div className="h-8 w-40 rounded-xl bg-muted/40" />
+            <div className="h-8 w-40 rounded-lg bg-muted/40" />
           </div>
         </div>
       ))}
@@ -72,7 +64,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 
   if (error) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
         Couldn&apos;t load active challenges. Please refresh.
       </div>
     );
@@ -80,7 +72,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 
   if (!data || data.length === 0) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-12 text-center space-y-2">
+      <div className="rounded-xl border border-border bg-card p-12 text-center space-y-2">
         <p className="font-display text-lg font-semibold text-foreground">No active challenges right now.</p>
         <p className="text-sm text-muted-foreground">
           New challenges drop monthly — check back soon or follow us on socials.
@@ -107,11 +99,11 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 async function PastChallenges() {
   const { data, error } = await getPastChallenges(10);
 
-  if (error) return null; // past challenges failing is non-critical — silent skip
+  if (error) return null;
 
   if (!data || data.length === 0) {
     return (
-      <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-10 text-center space-y-2">
+      <div className="rounded-xl border border-border bg-card p-10 text-center space-y-2">
         <p className="font-display text-lg font-semibold text-foreground">No past challenges yet.</p>
         <p className="text-sm text-muted-foreground">Be the first to participate when we launch.</p>
       </div>
@@ -124,7 +116,7 @@ async function PastChallenges() {
         <ChallengeCard
           key={challenge.id}
           challenge={challenge}
-          isAuthenticated={false} // past challenges never show submission form
+          isAuthenticated={false}
         />
       ))}
     </div>
@@ -134,9 +126,6 @@ async function PastChallenges() {
 // ─── Page ─────────────────────────────────────────────────────────────────
 
 export default async function ChallengesPage() {
-  // Auth check — server-side, session from cookie. We pass the boolean down
-  // to ChallengeCard so it can render the correct CTA without a client fetch.
-  // We do NOT redirect here — challenges are fully public; auth only gates submit.
   const supabase = await createClient();
   let isAuthenticated = false;
 

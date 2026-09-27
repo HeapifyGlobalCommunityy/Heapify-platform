@@ -25,25 +25,25 @@ export function ChapterMembershipRequests({
   }
 
   return (
-    <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+    <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Membership</p>
-          <h3 className="mt-1 font-display text-xl font-semibold tracking-tight">Join Requests</h3>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Membership</p>
+          <h3 className="mt-1 font-display text-xl font-semibold tracking-tight text-foreground">Join Requests</h3>
         </div>
-        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary">
+        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary font-medium">
           {requests.length} pending
         </span>
       </div>
 
       {requests.length === 0 ? (
-        <p className="rounded-xl border border-glass-border bg-glass-bg/40 p-5 text-sm text-muted-foreground">
+        <p className="rounded-lg border border-border bg-muted/30 p-5 text-sm text-muted-foreground">
           No pending membership requests.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {requests.map((request) => (
-            <div key={request.id} className="rounded-xl border border-glass-border bg-glass-bg/40 p-4">
+            <div key={request.id} className="rounded-lg border border-border bg-muted/30 p-4">
               <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                 <div>
                   <h4 className="font-semibold text-sm text-foreground">

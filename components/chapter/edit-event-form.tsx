@@ -227,7 +227,7 @@ export function EditEventForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 rounded-[2rem] border border-glass-border bg-glass-bg p-8 backdrop-blur-xl">
+    <form onSubmit={handleSubmit} className="space-y-8 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
       {error && (
         <div className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
@@ -244,7 +244,7 @@ export function EditEventForm({
 
       {/* Basic Details Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Basic Details
         </h3>
         
@@ -336,7 +336,7 @@ export function EditEventForm({
 
       {/* Date & Location Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2 flex items-center gap-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           Date & Location
         </h3>
@@ -366,7 +366,7 @@ export function EditEventForm({
           </div>
         </div>
 
-        <div className="space-y-3 rounded-xl border border-glass-border bg-glass-bg/30 p-4">
+        <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-sm font-semibold">Virtual Event?</Label>
@@ -418,13 +418,13 @@ export function EditEventForm({
 
       {/* Agenda Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Agenda (Optional)
         </h3>
         
         <div className="space-y-3">
           {agenda.map((item) => (
-            <div key={item.id} className="flex flex-col sm:flex-row gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+            <div key={item.id} className="flex flex-col sm:flex-row gap-3 rounded-xl border border-border bg-muted/20 p-4">
               <div className="w-full sm:w-[120px]">
                 <Input 
                   placeholder="e.g. 10:00 AM"
@@ -469,13 +469,13 @@ export function EditEventForm({
 
       {/* Speakers Section */}
       <div className="space-y-4">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-glass-border pb-2">
+        <h3 className="font-display text-lg font-semibold tracking-tight text-foreground border-b border-border pb-2">
           Speakers (Optional)
         </h3>
         
         <div className="space-y-3">
           {speakers.map((speaker) => (
-            <div key={speaker.id} className="flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-bg/20 p-4">
+            <div key={speaker.id} className="flex flex-col gap-3 rounded-xl border border-border bg-muted/20 p-4">
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Input 
@@ -526,7 +526,7 @@ export function EditEventForm({
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 border-t border-glass-border pt-6">
+      <div className="flex justify-end gap-3 border-t border-border pt-6">
         <Button 
           type="button" 
           variant="ghost" 
