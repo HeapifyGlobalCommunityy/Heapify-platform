@@ -66,16 +66,7 @@ export function Footer() {
   }));
 
   return (
-    <footer className="relative mt-24 border-t border-border/60 bg-background">
-      {/* Soft top glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-24 h-24 bg-gradient-to-b from-primary/[0.03] to-transparent"
-      />
+    <footer className="relative mt-24 border-t border-border bg-background">
 
       <div className="mx-auto max-w-6xl px-6 pt-16 pb-10">
         {/* Top section: Brand + Links */}
@@ -117,9 +108,9 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.label}
-                    className="group flex h-9 w-9 items-center justify-center rounded-lg border border-border/70 bg-muted/20 text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_12px_-3px] hover:shadow-primary/30"
+                    className="group flex h-8 w-8 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors duration-200 hover:border-primary/40 hover:bg-primary/8 hover:text-primary"
                   >
-                    <Icon className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110" />
+                    <Icon className="h-3.5 w-3.5" />
                   </a>
                 );
               })}

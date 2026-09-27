@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Sparkles, Github, Linkedin } from "lucide-react";
+import { ArrowRight, CalendarDays, ExternalLink, Filter, MapPin, Search, Github, Linkedin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Dropdown from "@/components/ui/dropdown";
@@ -13,19 +13,21 @@ import { cn } from "@/lib/utils";
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 import { HeapifyLogo } from "@/components/layout/logo";
 
+// ─── Section Wrapper ─────────────────────────────────────────────────────────
+
 export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title?: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("px-4 py-12 sm:px-6 md:py-20", className)}>
+    <section className={cn("px-4 py-14 sm:px-6 md:py-24", className)}>
       <div className="mx-auto w-full max-w-6xl">
         {(eyebrow || title || description || action) && (
-          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.5 }} className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-3xl space-y-2.5 sm:space-y-3">
-              {eyebrow ? <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</div> : null}
-              {title ? <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl">{title}</h2> : null}
-              {description ? <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p> : null}
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.45 }} className="mb-10 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl space-y-2">
+              {eyebrow ? <div className="text-xs font-medium uppercase tracking-widest text-primary/80">{eyebrow}</div> : null}
+              {title ? <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">{title}</h2> : null}
+              {description ? <p className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p> : null}
             </div>
             {action ? (
-              <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto">
+              <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto shrink-0">
                 <Link href={action.href}>{action.label}</Link>
               </Button>
             ) : null}
@@ -37,17 +39,17 @@ export function SectionWrapper({ eyebrow, title, description, action, children, 
   );
 }
 
+// ─── CTA ─────────────────────────────────────────────────────────────────────
+
 export function CTAComponent({ title, description, actions }: { title: string; description: string; actions: Action[] }) {
   return (
-    <motion.section initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.55 }} className="px-4 py-6 sm:px-6">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-6 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.06)] dark:shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] sm:p-8 md:p-12">
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
-            <span className="truncate">premium community infrastructure</span>
-          </div>
-          <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-5xl">{title}</h3>
-          <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
+    <motion.section initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.5 }} className="px-4 py-6 sm:px-6">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-10 md:p-14">
+        {/* Subtle top accent line */}
+        <div aria-hidden className="mb-8 h-px w-12 bg-primary/60" />
+        <div className="max-w-2xl space-y-4">
+          <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">{title}</h3>
+          <p className="text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
             {actions.map((action) => (
               <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild className="w-full sm:w-auto">
@@ -64,6 +66,8 @@ export function CTAComponent({ title, description, actions }: { title: string; d
   );
 }
 
+// ─── Stats ────────────────────────────────────────────────────────────────────
+
 import { useInView } from "framer-motion";
 
 function AnimatedValue({ value }: { value: number }) {
@@ -73,20 +77,16 @@ function AnimatedValue({ value }: { value: number }) {
 
   useEffect(() => {
     if (!isInView) return;
-
-    const duration = 2200;
+    const duration = 2000;
     const startedAt = performance.now();
     let raf = 0;
-
     const tick = (time: number) => {
       const elapsed = time - startedAt;
       const progress = Math.min(1, elapsed / duration);
-      // Smooth cubic ease-out curve
       const easeOut = 1 - Math.pow(1 - progress, 3);
       setCurrent(Math.round(value * easeOut));
       if (progress < 1) raf = requestAnimationFrame(tick);
     };
-
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [isInView, value]);
@@ -96,35 +96,30 @@ function AnimatedValue({ value }: { value: number }) {
 
 export function StatsComponent({ stats }: { stats: Array<{ label: string; value: number; detail: string }> }) {
   const gridCols =
-    stats.length === 1
-      ? "max-w-md mx-auto grid-cols-1"
-      : stats.length === 2
-        ? "max-w-2xl mx-auto sm:grid-cols-2"
-        : stats.length === 3
-          ? "sm:grid-cols-3"
-          : "sm:grid-cols-2 lg:grid-cols-4";
+    stats.length === 1 ? "max-w-md mx-auto grid-cols-1"
+    : stats.length === 2 ? "max-w-2xl mx-auto sm:grid-cols-2"
+    : stats.length === 3 ? "sm:grid-cols-3"
+    : "sm:grid-cols-2 lg:grid-cols-4";
 
   return (
-    <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
+    <div className={`grid gap-4 ${gridCols}`}>
       {stats.map((stat, index) => (
         <motion.div
           key={stat.label}
-          initial={{ opacity: 0, y: 18 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.45, delay: index * 0.05 }}
-          whileHover={{ y: -4 }}
-          className="group relative overflow-hidden rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_40px_-20px_rgba(255,122,0,0.2)] flex flex-col justify-between"
+          transition={{ duration: 0.4, delay: index * 0.06 }}
+          className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-colors duration-200 hover:border-primary/30"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_50%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative z-10">
-            <div className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            <div className="font-display text-4xl font-bold tracking-tight text-foreground">
               <AnimatedValue value={stat.value} />
             </div>
-            <div className="mt-2 text-[11px] font-mono uppercase tracking-[0.24em] text-primary/90 font-medium">
+            <div className="mt-2 text-xs font-medium uppercase tracking-widest text-primary">
               {stat.label}
             </div>
-            <p className="mt-2.5 text-xs leading-5 text-muted-foreground line-clamp-2">
+            <p className="mt-2 text-xs leading-5 text-muted-foreground line-clamp-2">
               {stat.detail}
             </p>
           </div>
@@ -134,35 +129,45 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
   );
 }
 
+// ─── Feature Card ─────────────────────────────────────────────────────────────
+
 export function FeatureCard({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
   return (
-    <motion.div whileHover={{ y: -6, scale: 1.01 }} transition={{ duration: 0.25 }} className="group rounded-[1.5rem] border border-border/60 bg-zinc-200/70 p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_20px_60px_-40px_rgba(255,122,0,0.5)] dark:bg-muted/40 backdrop-blur-xl dark:hover:bg-muted/60 hover:border-primary/30 transition-colors">
-      <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-primary/75">{eyebrow}</div>
-      <h3 className="mt-4 font-display text-xl font-semibold tracking-tight">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
+    <motion.div
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.2 }}
+      className="group rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200"
+    >
+      <div className="h-5 w-5 rounded-md border border-primary/20 bg-primary/8 flex items-center justify-center mb-4">
+        <div className="h-2 w-2 rounded-full bg-primary" />
+      </div>
+      <div className="text-[10px] font-medium uppercase tracking-widest text-primary/70 mb-3">{eyebrow}</div>
+      <h3 className="font-display text-lg font-semibold tracking-tight text-foreground">{title}</h3>
+      <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
     </motion.div>
   );
 }
 
+// ─── Event Card ───────────────────────────────────────────────────────────────
+
 export function EventCard({ event, compact = false }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; summary?: string; spotlight?: string; format?: string; description?: string }; compact?: boolean }) {
   return (
-    <motion.article whileHover={{ y: -7 }} transition={{ duration: 0.25 }} className={cn("group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", compact && "p-5")}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+    <motion.article whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className={cn("group relative flex flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200", compact && "p-5")}>
       <div className="relative flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground">{event.category}</div>
-          <h3 className={cn("mt-3 font-display font-semibold tracking-tight", compact ? "text-lg" : "text-2xl")}>{event.title}</h3>
+          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{event.category}</div>
+          <h3 className={cn("mt-2 font-display font-semibold tracking-tight", compact ? "text-lg" : "text-xl")}>{event.title}</h3>
         </div>
-        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary">{event.status}</span>
+        <StatusBadge status={event.status} className="shrink-0" />
       </div>
-      <p className={cn("relative mt-4 line-clamp-3 text-sm leading-7 text-muted-foreground", compact && "text-[13px]")}>{event.summary ?? event.description}</p>
-      <div className="relative mt-5 grid grid-cols-2 gap-3 text-sm text-foreground/90">
+      <p className={cn("relative mt-4 line-clamp-3 text-sm leading-relaxed text-muted-foreground", compact && "text-[13px]")}>{event.summary ?? event.description}</p>
+      <div className="relative mt-5 grid grid-cols-2 gap-2 text-sm text-foreground/80">
         <MetaItem icon={CalendarDays} label={event.date} />
         <MetaItem icon={ExternalLink} label={event.time} />
-        <MetaItem icon={Filter} label={event.location} />
-        <MetaItem icon={Sparkles} label={event.spotlight ?? event.format ?? "Live"} />
+        <MetaItem icon={MapPin} label={event.location} />
+        <MetaItem icon={Filter} label={event.spotlight ?? event.format ?? "Live"} />
       </div>
-      <div className="relative mt-auto pt-6">
+      <div className="relative mt-auto pt-5">
         <Button variant="ghost" asChild className="w-full justify-between">
           <Link href={`/events/${event.slug}`}>
             View details
@@ -174,30 +179,31 @@ export function EventCard({ event, compact = false }: { event: { slug: string; t
   );
 }
 
+// ─── Event Card Wide ──────────────────────────────────────────────────────────
+
 export function EventCardWide({ event }: { event: { slug: string; title: string; category: string; status: string; date: string; time: string; location: string; format?: string; description?: string; summary?: string; spotlight?: string } }) {
   return (
     <motion.article
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.25 }}
-      className="group relative overflow-hidden rounded-[1.75rem] border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_12px_40px_-16px_rgba(255,122,0,0.18)] dark:border-glass-border dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] dark:hover:shadow-[0_12px_40px_-16px_rgba(255,122,0,0.28)]"
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.2 }}
+      className="group relative overflow-hidden rounded-xl border border-border bg-card p-7 transition-colors duration-200 hover:border-primary/30"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(255,122,0,0.08),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex-1 space-y-4 min-w-0">
+      <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex-1 space-y-3 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">{event.category}</span>
-            <span className="rounded-full border border-border bg-muted/60 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.status}</span>
-            {event.format && <span className="rounded-full border border-border bg-muted/60 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">{event.format}</span>}
+            <span className="inline-flex items-center rounded-md border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-primary">{event.category}</span>
+            <span className="inline-flex items-center rounded-md border border-border bg-muted/50 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{event.status}</span>
+            {event.format && <span className="inline-flex items-center rounded-md border border-border bg-muted/50 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{event.format}</span>}
           </div>
-          <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground md:text-3xl">{event.title}</h3>
+          <h3 className="font-display text-xl font-semibold tracking-tight text-foreground md:text-2xl">{event.title}</h3>
           {(event.summary || event.description) && (
-            <p className="text-sm leading-7 text-muted-foreground max-w-2xl line-clamp-2">{event.summary ?? event.description}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground max-w-xl line-clamp-2">{event.summary ?? event.description}</p>
           )}
-          <div className="flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2 text-xs text-foreground/70">
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs text-foreground/70">
               <CalendarDays className="h-3.5 w-3.5 text-primary" />{event.date}
             </div>
-            <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2 text-xs text-foreground/70">
+            <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-1.5 text-xs text-foreground/70">
               <MapPin className="h-3.5 w-3.5 text-primary" />{event.location}
             </div>
           </div>
@@ -212,54 +218,77 @@ export function EventCardWide({ event }: { event: { slug: string; title: string;
   );
 }
 
+// ─── Meta Item ────────────────────────────────────────────────────────────────
+
 function MetaItem({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-3 py-2 text-xs text-muted-foreground">
-      <Icon className="h-3.5 w-3.5 text-primary" />
+    <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-2.5 py-1.5 text-xs text-muted-foreground">
+      <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
       <span className="line-clamp-1">{label}</span>
     </div>
   );
 }
 
+// ─── Project Card ─────────────────────────────────────────────────────────────
+
 export function ProjectCard({ project }: { project: { slug: string; title: string; description: string; stack: string[]; impact: string; members: string } }) {
   return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group rounded-[1.75rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-4">
+    <motion.article whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-muted-foreground">{project.members}</div>
-          <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{project.title}</h3>
+          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{project.members}</div>
+          <h3 className="mt-2 font-display text-xl font-semibold tracking-tight">{project.title}</h3>
         </div>
-        <div className="h-12 w-12 rounded-2xl border border-primary/20 bg-primary/10 shadow-[0_0_30px_rgba(255,122,0,0.15)]" />
+        {/* Clean icon placeholder */}
+        <div className="h-10 w-10 rounded-lg border border-border bg-muted/50 flex items-center justify-center shrink-0">
+          <div className="h-4 w-4 rounded border border-primary/30 bg-primary/10" />
+        </div>
       </div>
-      <p className="mt-4 text-sm leading-7 text-muted-foreground">{project.description}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{project.description}</p>
+      <div className="mt-4 flex flex-wrap gap-1.5">
         {project.stack.map((item) => (
-          <span key={item} className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{item}</span>
+          <span key={item} className="rounded-md border border-border bg-muted/40 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">{item}</span>
         ))}
       </div>
-      <div className="mt-6 flex items-center justify-between text-sm text-muted-foreground">
-        <span>{project.impact}</span>
-        <Link href={`/open-source/${project.slug}`} className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary-hover transition-colors">
+      <div className="mt-5 flex items-center justify-between text-sm text-muted-foreground border-t border-border pt-4">
+        <span className="text-xs">{project.impact}</span>
+        <Link href={`/open-source/${project.slug}`} className="inline-flex items-center gap-1.5 text-primary text-sm font-medium hover:underline transition-all">
           Explore
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
     </motion.article>
   );
 }
 
+// ─── Team Card ────────────────────────────────────────────────────────────────
+// Uses initials-based avatar instead of a vague colored box placeholder
+
 export function TeamCard({ member }: { member: { name: string; role: string; bio: string; links: Array<{ platform: string; url: string }> } }) {
+  const initials = member.name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
-    <motion.article whileHover={{ y: -5 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">{member.role}</div>
-          <h3 className="font-display text-xl font-semibold tracking-tight">{member.name}</h3>
+    <motion.article whileHover={{ y: -3 }} transition={{ duration: 0.2 }} className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200">
+      <div className="flex items-start gap-4">
+        {/* Initials avatar */}
+        <div
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/60 text-sm font-semibold text-foreground select-none"
+          aria-label={`${member.name} avatar`}
+        >
+          {initials}
         </div>
-        <div className="h-12 w-12 rounded-2xl border border-glass-border bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.32),transparent_62%)]" />
+        <div className="min-w-0">
+          <div className="text-[10px] font-medium uppercase tracking-widest text-primary/80">{member.role}</div>
+          <h3 className="mt-0.5 font-display text-lg font-semibold tracking-tight truncate">{member.name}</h3>
+        </div>
       </div>
-      <p className="mt-4 text-sm leading-7 text-muted-foreground">{member.bio}</p>
-      <div className="mt-5 flex items-center gap-3">
+      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
+      <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
         {member.links.map((link) => {
           const Icon = link.platform === "github" ? Github : Linkedin;
           return (
@@ -268,9 +297,10 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:shadow-[0_0_15px_rgba(255,122,0,0.2)] transition-all duration-300 dark:border-glass-border dark:bg-glass-bg"
+              aria-label={`${member.name} on ${link.platform}`}
+              className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-muted/40 text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors duration-200"
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-3.5 w-3.5" />
             </a>
           );
         })}
@@ -279,39 +309,45 @@ export function TeamCard({ member }: { member: { name: string; role: string; bio
   );
 }
 
+// ─── Social Card ──────────────────────────────────────────────────────────────
+
 export function SocialCard({ title, description, href }: { title: string; description: string; href: string }) {
   return (
     <motion.a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.25 }}
-      className="block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl cursor-pointer"
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.2 }}
+      className="block rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200 cursor-pointer"
     >
-      <h3 className="font-display text-2xl font-semibold tracking-tight">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
-      <div className="mt-6 inline-flex items-center gap-2 text-sm text-primary">
+      <h3 className="font-display text-xl font-semibold tracking-tight">{title}</h3>
+      <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
+      <div className="mt-5 inline-flex items-center gap-1.5 text-sm text-primary font-medium">
         Open channel
-        <ExternalLink className="h-4 w-4" />
+        <ExternalLink className="h-3.5 w-3.5" />
       </div>
     </motion.a>
   );
 }
 
+// ─── Form Card ────────────────────────────────────────────────────────────────
+
 export function FormCard({ title, description, type }: { title: string; description: string; type: string }) {
   return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 backdrop-blur-xl">
-      <div className="text-[11px] font-mono uppercase tracking-[0.32em] text-muted-foreground">Form</div>
-      <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
-      <div className="mt-6 flex gap-3">
+    <motion.article whileHover={{ y: -3 }} transition={{ duration: 0.2 }} className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200">
+      <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Form</div>
+      <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{title}</h3>
+      <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
+      <div className="mt-5 flex gap-3">
         <Button asChild><Link href={`/forms/${type}`}>Open form</Link></Button>
         <Button variant="ghost" asChild><Link href="/about">Learn more</Link></Button>
       </div>
     </motion.article>
   );
 }
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 
 export function Hero({ title, tagline, description, actions }: { title: string; tagline: string; description: string; actions: Action[] }) {
   return (
@@ -323,17 +359,21 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
           background: `linear-gradient(180deg, var(--hero-overlay-from), var(--hero-overlay-mid) 65%, var(--hero-overlay-to))`,
         }}
       />
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative mx-auto flex max-w-6xl flex-col items-center text-center">
-        <div className="mb-6 flex max-w-full items-center gap-3 rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-md sm:mb-8 sm:gap-4 sm:px-4 sm:py-2 sm:text-xs">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
-          <span className="truncate">Premium builder community platform</span>
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }} className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
+        {/* Clean status badge — no emoji */}
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/90 px-4 py-1.5 text-xs text-muted-foreground backdrop-blur-sm sm:mb-8">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+          <span>Builder community · Open to all</span>
         </div>
-        <HeapifyLogo className="h-16 w-16 sm:h-20 sm:w-20 shadow-[0_0_60px_rgba(255,122,0,0.22)]" />
-        <div className="mt-6 max-w-5xl space-y-4 sm:mt-8 sm:space-y-6">
-          <h1 className="font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl md:text-7xl">{title}</h1>
-          <p className="mx-auto max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{tagline}</p>
-          <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground sm:leading-7 md:text-base">{description}</p>
+
+        <HeapifyLogo className="h-14 w-14 sm:h-16 sm:w-16" />
+
+        <div className="mt-7 max-w-4xl space-y-4 sm:mt-8">
+          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">{title}</h1>
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">{tagline}</p>
+          <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground/80 md:text-base">{description}</p>
         </div>
+
         <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row">
           {actions.map((action) => (
             <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild size="lg" className="w-full sm:w-auto">
@@ -345,6 +385,8 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
     </section>
   );
 }
+
+// ─── Events Explorer ──────────────────────────────────────────────────────────
 
 export function EventsExplorer({ events, pastEvents = [], categories }: { events: Array<{ slug: string; title: string; category: string; status: string; date: string; time: string; format: string; location: string; description: string }>; pastEvents?: Array<{ slug: string; title: string; category: string; status: string; date: string; time: string; format: string; location: string; description: string }>; categories: string[] }) {
   const [query, setQuery] = useState("");
@@ -360,9 +402,10 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
 
   return (
     <div className="space-y-6">
-      <div className="relative z-10 grid gap-4 rounded-[1.5rem] border border-border bg-card p-4 shadow-sm dark:border-glass-border dark:bg-glass-bg dark:backdrop-blur-xl md:grid-cols-[1.2fr_0.8fr]">
-        <label className="flex items-center gap-3 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-sm text-foreground dark:border-glass-border dark:bg-black/20">
-          <Search className="h-4 w-4 text-primary shrink-0" />
+      {/* Search & Filters */}
+      <div className="relative z-10 grid gap-3 rounded-xl border border-border bg-card p-4 shadow-sm md:grid-cols-[1.2fr_0.8fr]">
+        <label className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-foreground">
+          <Search className="h-4 w-4 text-muted-foreground shrink-0" />
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search events, speakers, or locations" className="w-full bg-transparent outline-none text-foreground placeholder:text-muted-foreground" />
         </label>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -370,26 +413,29 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
             options={categories}
             value={activeCategory}
             onChange={setActiveCategory}
-            icon={<Filter className="h-4 w-4 text-primary" />}
-            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-xs text-foreground hover:border-primary/30 hover:text-primary transition-all duration-150 dark:border-glass-border dark:bg-black/20 dark:text-muted-foreground dark:hover:text-foreground"
+            icon={<Filter className="h-3.5 w-3.5 text-muted-foreground" />}
+            buttonClassName="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-xs text-foreground hover:border-primary/30 transition-colors duration-150"
           />
           <Dropdown
             options={["All", "Upcoming", "Ongoing", "Completed"]}
             value={activeStatus}
             onChange={setActiveStatus}
-            icon={<Sparkles className="h-4 w-4 text-primary" />}
-            buttonClassName="flex w-full items-center justify-between gap-2 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-xs text-foreground hover:border-primary/30 hover:text-primary transition-all duration-150 dark:border-glass-border dark:bg-black/20 dark:text-muted-foreground dark:hover:text-foreground"
+            icon={<Filter className="h-3.5 w-3.5 text-muted-foreground" />}
+            buttonClassName="flex w-full items-center justify-between gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-xs text-foreground hover:border-primary/30 transition-colors duration-150"
           />
         </div>
       </div>
+
+      {/* Category pills */}
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
-          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-4 py-2 text-xs uppercase tracking-[0.24em] transition-colors", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-muted/40 text-muted-foreground hover:border-primary/30 hover:text-foreground dark:border-glass-border dark:bg-glass-bg")}>
+          <button key={category} onClick={() => setActiveCategory(category)} className={cn("rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors duration-150", activeCategory === category ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-muted/30 text-muted-foreground hover:border-primary/30 hover:text-foreground")}>
             {category}
           </button>
         ))}
       </div>
-      {/* ── Active events ── */}
+
+      {/* Active events */}
       <div className="flex flex-col gap-4">
         {filtered.length === 0 ? (
           <EmptyState
@@ -400,23 +446,23 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
           />
         ) : (
           filtered.map((event, index) => (
-            <motion.div key={event.slug} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.45, delay: index * 0.04 }}>
+            <motion.div key={event.slug} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.4, delay: index * 0.04 }}>
               <EventCardWide event={event} />
             </motion.div>
           ))
         )}
       </div>
 
-      {/* ── Past events archive — always below, always full width ── */}
+      {/* Past events archive */}
       {pastEvents.length > 0 && (
         <div className="mt-16 space-y-6">
           <div className="flex items-center gap-4">
-            <div className="h-px flex-1 bg-glass-border" />
-            <div className="flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-4 py-1.5 text-[11px] font-mono uppercase tracking-[0.28em] text-muted-foreground">
+            <div className="h-px flex-1 bg-border" />
+            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
               <CalendarDays className="h-3 w-3" />
               Past events
             </div>
-            <div className="h-px flex-1 bg-glass-border" />
+            <div className="h-px flex-1 bg-border" />
           </div>
           <p className="text-xs text-muted-foreground/60 text-center">
             Explore past events from our community. You can still access event details, resources, and recordings anytime.
@@ -425,10 +471,10 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
             {pastEvents.map((event, index) => (
               <motion.div
                 key={event.slug}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.4, delay: index * 0.03 }}
+                transition={{ duration: 0.35, delay: index * 0.03 }}
                 className="opacity-60 grayscale hover:opacity-80 hover:grayscale-0 transition-all duration-300 [&_*]:pointer-events-auto"
               >
                 <EventCardWide event={event} />
@@ -441,23 +487,24 @@ export function EventsExplorer({ events, pastEvents = [], categories }: { events
   );
 }
 
+// ─── Resources Explorer ───────────────────────────────────────────────────────
+
 export function ResourcesExplorer({ resources }: { resources: Array<{ title: string; slug: string; description: string; meta: string }> }) {
   const [query, setQuery] = useState("");
-
   const filtered = useMemo(() => resources.filter((item) => [item.title, item.description, item.meta].join(" ").toLowerCase().includes(query.toLowerCase())), [query, resources]);
 
   return (
     <div className="space-y-6">
-      <label className="flex items-center gap-3 rounded-[1.5rem] border border-glass-border bg-glass-bg px-4 py-4 text-sm text-muted-foreground backdrop-blur-xl">
-        <Search className="h-4 w-4 text-primary" />
+      <label className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-sm text-muted-foreground">
+        <Search className="h-4 w-4 shrink-0" />
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search blogs, roadmaps, recordings, and notes" className="w-full bg-transparent outline-none placeholder:text-muted-foreground" />
       </label>
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {filtered.map((resource, index) => (
-          <motion.article key={resource.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.45, delay: index * 0.04 }} whileHover={{ y: -4 }} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl">
-            <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">{resource.meta}</div>
-            <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{resource.title}</h3>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">{resource.description}</p>
+          <motion.article key={resource.title} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.4, delay: index * 0.04 }} whileHover={{ y: -3 }} className="rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-colors duration-200">
+            <div className="text-[10px] font-medium uppercase tracking-widest text-primary/70">{resource.meta}</div>
+            <h3 className="mt-3 font-display text-lg font-semibold tracking-tight">{resource.title}</h3>
+            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
             <Button variant="ghost" asChild className="mt-5 w-full justify-between">
               <Link href={`/resources/${resource.slug}`}>
                 Open resource
@@ -471,21 +518,25 @@ export function ResourcesExplorer({ resources }: { resources: Array<{ title: str
   );
 }
 
+// ─── Page Transition ──────────────────────────────────────────────────────────
+
 export function PageTransition({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.35, ease: "easeOut" }} className="relative">
+    <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative">
       {children}
     </motion.div>
   );
 }
 
+// ─── Scroll Reveal ────────────────────────────────────────────────────────────
+
 export function ScrollReveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.05 }}
-      transition={{ duration: 0.45, delay, ease: "easeOut" }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
       className={className}
     >
       {children}
@@ -493,49 +544,51 @@ export function ScrollReveal({ children, className, delay = 0 }: { children: Rea
   );
 }
 
+// ─── Bento Grid ───────────────────────────────────────────────────────────────
+
 export function BentoGrid({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={cn("grid gap-5", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("grid gap-4", className)}>{children}</div>;
 }
 
 export function BentoCard({ eyebrow, title, description, className, index = 0, children }: { eyebrow?: string; title?: string; description?: string; className?: string; index?: number; children?: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.45, delay: index * 0.05 }}
-      whileHover={{ y: -4, scale: 1.005 }}
-      className={cn("group relative overflow-hidden rounded-[1.5rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl", className)}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      whileHover={{ y: -3 }}
+      className={cn("group relative overflow-hidden rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200", className)}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.12),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative z-10">
-        {eyebrow && <div className="text-[11px] font-mono uppercase tracking-[0.3em] text-primary/80">{eyebrow}</div>}
-        {title && <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{title}</h3>}
-        {description && <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>}
-        {children && <div className="mt-5">{children}</div>}
+        {eyebrow && <div className="text-[10px] font-medium uppercase tracking-widest text-primary/70">{eyebrow}</div>}
+        {title && <h3 className="mt-3 font-display text-xl font-semibold tracking-tight">{title}</h3>}
+        {description && <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{description}</p>}
+        {children && <div className="mt-4">{children}</div>}
       </div>
     </motion.div>
   );
 }
 
+// ─── Status Badge ─────────────────────────────────────────────────────────────
+
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
-  let colors = "border-glass-border bg-glass-bg text-muted-foreground";
-  if (status.toLowerCase() === "active" || status.toLowerCase() === "open") {
-    colors = "border-primary/30 bg-primary/10 text-primary";
-  } else if (status.toLowerCase() === "upcoming" || status.toLowerCase() === "soon") {
-    colors = "border-blue-500/30 bg-blue-500/10 text-blue-400";
+  const s = status.toLowerCase();
+  let colors = "border-border bg-muted/40 text-muted-foreground";
+  if (s === "active" || s === "open" || s === "ongoing") {
+    colors = "border-primary/30 bg-primary/8 text-primary";
+  } else if (s === "upcoming" || s === "soon") {
+    colors = "border-blue-500/25 bg-blue-500/8 text-blue-500 dark:text-blue-400";
   }
 
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em]", colors, className)}>
+    <span className={cn("inline-flex items-center rounded-md border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-widest", colors, className)}>
       {status}
     </span>
   );
 }
+
+// ─── Category Resources Client ────────────────────────────────────────────────
 
 export function CategoryResourcesClient({
   resources,
@@ -564,26 +617,24 @@ export function CategoryResourcesClient({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-2">
         <Link
           href="/resources"
-          className="text-xs uppercase tracking-[0.24em] text-primary hover:text-primary-hover transition-colors inline-flex items-center gap-1"
+          className="text-xs font-medium uppercase tracking-widest text-primary hover:underline inline-flex items-center gap-1 transition-all"
         >
           ← Back to resources
         </Link>
-        <span className="text-xs font-mono text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           Showing Page {page}
         </span>
       </div>
 
       {allTags.length > 0 && (
-        <div className="py-3 border-y border-glass-border">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2">Filter this page&apos;s results</div>
+        <div className="py-3 border-y border-border">
+          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-2">Filter by tag</div>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveTag(null)}
               className={cn(
-                "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
-                !activeTag
-                  ? "border-primary/40 bg-primary/10 text-primary"
-                  : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
+                "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
+                !activeTag ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"
               )}
             >
               All
@@ -593,10 +644,8 @@ export function CategoryResourcesClient({
                 key={tag}
                 onClick={() => setActiveTag(tag === activeTag ? null : tag)}
                 className={cn(
-                  "rounded-full border px-4 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors",
-                  tag === activeTag
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-glass-border bg-glass-bg text-muted-foreground hover:text-foreground"
+                  "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
+                  tag === activeTag ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-muted/30 text-muted-foreground hover:text-foreground"
                 )}
               >
                 {tag}
@@ -619,35 +668,33 @@ export function CategoryResourcesClient({
           onAction={() => setActiveTag(null)}
         />
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredResources.map((resource, index) => (
             <a
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
               key={resource.url + index}
-              className="group block rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 relative overflow-hidden"
+              className="group block rounded-xl border border-border bg-card p-5 hover:border-primary/30 transition-colors duration-200 relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_36%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-              <div className="relative z-10 flex flex-col h-full justify-between gap-6">
+              <div className="relative z-10 flex flex-col h-full justify-between gap-5">
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-muted-foreground">
+                    <span className="text-[10px] font-medium text-muted-foreground">
                       {new Date(resource.created_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </span>
-                    <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                   </div>
 
-                  <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                  <h3 className="mt-3 font-display text-base font-semibold tracking-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                     {resource.title}
                   </h3>
 
-                  <p className="mt-2 text-xs text-primary/80 truncate font-mono">
+                  <p className="mt-1.5 text-[11px] text-muted-foreground/60 truncate font-mono">
                     {resource.url}
                   </p>
                 </div>
@@ -657,7 +704,7 @@ export function CategoryResourcesClient({
                     {resource.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-glass-border bg-glass-bg/50 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-muted-foreground"
+                        className="rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[9px] font-medium uppercase tracking-widest text-muted-foreground"
                       >
                         {tag}
                       </span>
@@ -671,22 +718,17 @@ export function CategoryResourcesClient({
       )}
 
       {(page > 1 || hasNextPage) && (
-        <div className="flex items-center justify-between pt-8 border-t border-glass-border mt-12">
+        <div className="flex items-center justify-between pt-8 border-t border-border mt-12">
           {page > 1 ? (
             <Button variant="ghost" asChild>
-              <Link href={`?page=${page - 1}`}>
-                ← Previous Page
-              </Link>
+              <Link href={`?page=${page - 1}`}>← Previous Page</Link>
             </Button>
           ) : (
             <div />
           )}
-
           {hasNextPage ? (
             <Button variant="ghost" asChild>
-              <Link href={`?page=${page + 1}`}>
-                Next Page →
-              </Link>
+              <Link href={`?page=${page + 1}`}>Next Page →</Link>
             </Button>
           ) : (
             <div />

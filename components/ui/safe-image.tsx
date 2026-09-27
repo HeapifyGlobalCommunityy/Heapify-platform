@@ -14,9 +14,9 @@ export function SafeImage({ src, alt, className, fallback, ...props }: SafeImage
 
   if (error || !src) {
     if (fallback) return <>{fallback}</>;
-    // Default fallback placeholder matching the premium glassmorphism theme
+    // Default fallback placeholder matching the clean theme
     return (
-      <div className={cn("flex items-center justify-center bg-zinc-900/50 border border-zinc-800/50 text-zinc-500", className)}>
+      <div className={cn("flex items-center justify-center bg-muted border border-border text-muted-foreground", className)}>
         <ImageIcon className="h-1/3 w-1/3 opacity-50" />
       </div>
     );

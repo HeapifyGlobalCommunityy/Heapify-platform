@@ -20,11 +20,11 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "col-span-full flex min-h-[320px] flex-col items-center justify-center gap-5 rounded-[1.75rem] border border-glass-border bg-glass-bg/60 p-8 text-center backdrop-blur-xl",
+        "col-span-full flex min-h-[320px] flex-col items-center justify-center gap-5 rounded-xl border border-border bg-card/60 p-8 text-center backdrop-blur-sm",
         className
       )}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
         <Ghost className="h-6 w-6 text-primary" />
       </div>
       <div className="space-y-2">
@@ -32,7 +32,7 @@ export function EmptyState({
         <p className="max-w-xs text-sm leading-6 text-muted-foreground">{description}</p>
       </div>
       {actionLabel && onAction && (
-        <Button variant="ghost" onClick={onAction} className="border border-glass-border">
+        <Button variant="ghost" onClick={onAction} className="border border-border">
           {actionLabel}
         </Button>
       )}

@@ -94,7 +94,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
         opacity: visible ? 1 : 0,
       }}
     >
-      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-glass-border bg-glass-bg dark:bg-black/50 px-5 py-3 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] dark:shadow-[0_24px_80px_-40px_rgba(255,122,0,0.45)] backdrop-blur-2xl">
+      <div className="flex items-center justify-between gap-4 xl:gap-6 rounded-full border border-border bg-background/90 px-5 py-3 shadow-sm backdrop-blur-xl dark:bg-card/90 dark:border-border">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <HeapifyLogo className="h-5 w-5" />
           <span className="font-display font-semibold text-sm tracking-tight whitespace-nowrap">
@@ -186,7 +186,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
       )}
 
       {open && (
-        <div className="mt-2 flex max-h-[75vh] flex-col gap-3 overflow-y-auto rounded-2xl border border-glass-border bg-glass-bg dark:bg-black/90 p-4 backdrop-blur-xl lg:hidden">
+        <div className="mt-2 flex max-h-[75vh] flex-col gap-3 overflow-y-auto rounded-2xl border border-border bg-background/95 p-4 backdrop-blur-xl dark:bg-card/95 lg:hidden">
           <Link
             href="/"
             onClick={() => setOpen(false)}

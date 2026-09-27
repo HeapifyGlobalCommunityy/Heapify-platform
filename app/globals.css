@@ -5,46 +5,45 @@
 @layer base {
   :root {
     --background: 0 0% 98%;
-    /* Neutral off-white, no sand tone */
-    --foreground: 240 10% 10%;
+    --foreground: 220 15% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
-    --muted: 0 0% 93%;
-    --muted-foreground: 240 5% 36%;
-    --border: 0 0% 86%;
-    --radius: 0.75rem;
-    --glass-border: rgba(0, 0, 0, 0.09);
-    --glass-bg: rgba(255, 255, 255, 0.85);
+    --card-foreground: 220 15% 10%;
+    --muted: 220 10% 94%;
+    --muted-foreground: 220 8% 44%;
+    --border: 220 10% 88%;
+    --radius: 0.625rem;
+    --glass-border: rgba(0, 0, 0, 0.07);
+    --glass-bg: rgba(255, 255, 255, 0.92);
     --hero-overlay-from: transparent;
     --hero-overlay-mid: transparent;
     --hero-overlay-to: transparent;
-    --canvas-fill: rgba(0, 0, 0, 0.006);
-    --node-primary: rgba(249, 115, 22, 0.45);
-    --node-accent: rgba(59, 130, 246, 0.35);
-    --line-color: rgba(249, 115, 22, 0.08);
-    /* Subtle sunrise — just a whisper of orange at the very top, fading fast */
-    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.09) 0%, rgba(255, 150, 40, 0.04) 18%, transparent 40%);
-    --bg-glow-white: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 65%);
+    --canvas-fill: rgba(0, 0, 0, 0.004);
+    --node-primary: rgba(249, 115, 22, 0.3);
+    --node-accent: rgba(59, 130, 246, 0.2);
+    --line-color: rgba(249, 115, 22, 0.06);
+    /* Very subtle warm tint at top only */
+    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.04) 0%, transparent 30%);
+    --bg-glow-white: none;
     --bg-warmth: none;
   }
 
   .dark {
-    --background: 240 6% 4%;
-    --foreground: 0 0% 96%;
-    --card: 240 6% 6%;
-    --card-foreground: 0 0% 96%;
-    --muted: 240 5% 12%;
-    --muted-foreground: 240 5% 65%;
-    --border: 240 6% 16%;
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --background: 222 15% 6%;
+    --foreground: 210 12% 94%;
+    --card: 222 14% 9%;
+    --card-foreground: 210 12% 94%;
+    --muted: 222 12% 14%;
+    --muted-foreground: 216 8% 60%;
+    --border: 222 12% 18%;
+    --glass-border: rgba(255, 255, 255, 0.08);
     --glass-bg: rgba(255, 255, 255, 0.03);
-    --hero-overlay-from: rgba(10, 10, 10, 0.2);
-    --hero-overlay-mid: rgba(10, 10, 10, 0.4);
+    --hero-overlay-from: rgba(8, 8, 12, 0.15);
+    --hero-overlay-mid: rgba(8, 8, 12, 0.3);
     --hero-overlay-to: transparent;
-    --canvas-fill: rgba(255, 255, 255, 0.02);
-    --node-primary: rgba(255, 122, 0, 0.68);
-    --node-accent: rgba(59, 130, 246, 0.5);
-    --line-color: rgba(255, 122, 0, 0.12);
+    --canvas-fill: rgba(255, 255, 255, 0.015);
+    --node-primary: rgba(255, 122, 0, 0.45);
+    --node-accent: rgba(59, 130, 246, 0.3);
+    --line-color: rgba(255, 122, 0, 0.08);
     --bg-sunrise: none;
     --bg-glow-white: none;
     --bg-warmth: none;
@@ -57,51 +56,65 @@
   body {
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
-    background-image:
-      var(--bg-sunrise),
-      var(--bg-glow-white),
-      var(--bg-warmth);
+    background-image: var(--bg-sunrise), var(--bg-warmth);
     background-repeat: no-repeat;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   ::selection {
-    background: rgba(249, 115, 22, 0.2);
-    color: #fff;
+    background: rgba(249, 115, 22, 0.15);
+    color: inherit;
   }
 }
 
 @layer utilities {
-  .text-glow {
-    background: linear-gradient(120deg, #f97316, #fb923c);
+  /* Subtle text gradient only for special highlight spans */
+  .text-gradient {
+    background: linear-gradient(135deg, #f97316, #fb923c);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
+  /* Clean card surface — no excessive glow */
+  .card-surface {
+    @apply border border-border bg-card rounded-xl;
+  }
+
+  /* Subtle glass surface — used sparingly */
   .glass-panel {
     @apply border border-glass-border bg-glass-bg backdrop-blur-xl;
+  }
+
+  /* Consistent section divider */
+  .section-divider {
+    @apply h-px bg-border;
   }
 }
 
 /* ── Partner logo scroll ticker ── */
-@keyframes scroll-up {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-33.333%);
+.marquee-container {
+  --gap-offset: 8px;
+}
+
+@media (min-width: 640px) {
+  .marquee-container {
+    --gap-offset: 12px;
   }
 }
 
-@keyframes scroll-down {
-  0% {
-    transform: translateY(-33.333%);
-  }
-  100% {
-    transform: translateY(0);
-  }
+@keyframes scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(-50% - var(--gap-offset))); }
 }
+
+@keyframes scroll-down {
+  0% { transform: translateY(calc(-50% - var(--gap-offset))); }
+  100% { transform: translateY(0); }
+}
+
+
+
 
 .animate-scroll-up {
   animation: scroll-up linear infinite;
