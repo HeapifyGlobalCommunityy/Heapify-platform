@@ -111,7 +111,7 @@ export function CollaborationsField() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-3xl border border-border/40 bg-parchment-100/60 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8"
+        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-3xl border border-border/60 bg-card/60 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8"
       >
         <style>{`
           .marquee-container {

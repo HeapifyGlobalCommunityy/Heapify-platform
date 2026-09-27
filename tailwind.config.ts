@@ -12,7 +12,6 @@ function addVariablesForColors({ addBase, theme }: any) {
 }
 
 const config: Config = {
-  // No dark mode
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -39,30 +38,43 @@ const config: Config = {
           DEFAULT:    "#FF7A00",
           glow:       "#FFA64D",
           foreground: "#FFFFFF",
-          hover:      "#EA580C",
+          hover:      "#EA6700",
         },
         accent: {
-          blue: "#3B82F6",
-          warm: "#D97706",
-          sage: "#65A30D",
+          blue:  "#3B82F6",
+          amber: "#F59E0B",
+          slate: "#64748B",
         },
-        // Warm neutral palette
+        // Refined Light Slate-Gray scale for architectural accents & pills
+        steel: {
+          50:  "#F8FAFC",
+          100: "#F1F5F9",
+          200: "#E2E8F0",
+          300: "#CBD5E1",
+          400: "#94A3B8",
+          500: "#64748B",
+          600: "#475569",
+          700: "#334155",
+          800: "#1E293B",
+          900: "#0F172A",
+        },
+        // Backward-compatible aliases mapped to cool slate neutrals
         parchment: {
-          50:  "#FDFBF6",
-          100: "#FAF7F0",
-          200: "#F2EBD8",
-          300: "#E8DCC5",
-          400: "#D8C8A8",
-          500: "#C4AC82",
-          600: "#A88B5C",
-          700: "#8A6D3D",
-          800: "#6B5028",
-          900: "#4A3418",
+          50:  "#F8FAFC",
+          100: "#F1F5F9",
+          200: "#E2E8F0",
+          300: "#CBD5E1",
+          400: "#94A3B8",
+          500: "#64748B",
+          600: "#475569",
+          700: "#334155",
+          800: "#1E293B",
+          900: "#0F172A",
         },
         espresso: {
-          50:  "#F7F0E8",
-          100: "#EBD9C0",
-          900: "#251E17",
+          50:  "#F8FAFC",
+          100: "#F1F5F9",
+          900: "#0F172A",
         },
       },
       fontFamily: {
@@ -88,11 +100,13 @@ const config: Config = {
         "4xl":"calc(var(--radius) + 22px)",
       },
       boxShadow: {
-        warm:    "0 4px 24px -8px rgba(150, 110, 60, 0.12), 0 1px 4px -2px rgba(150, 110, 60, 0.06)",
-        "warm-lg": "0 16px 56px -16px rgba(150, 110, 60, 0.18), 0 4px 16px -6px rgba(150, 110, 60, 0.10)",
-        "orange": "0 8px 32px -8px rgba(255, 122, 0, 0.30)",
-        "orange-lg": "0 20px 60px -16px rgba(255, 122, 0, 0.40)",
-        "inset-warm": "inset 0 1px 0 rgba(255, 255, 255, 0.60)",
+        subtle:     "0 2px 10px -2px rgba(15, 23, 42, 0.06)",
+        card:       "0 4px 20px -4px rgba(15, 23, 42, 0.08), 0 1px 3px -1px rgba(15, 23, 42, 0.04)",
+        "card-lg":  "0 16px 48px -12px rgba(15, 23, 42, 0.12), 0 4px 16px -6px rgba(15, 23, 42, 0.06)",
+        warm:       "0 4px 20px -4px rgba(15, 23, 42, 0.08), 0 1px 3px -1px rgba(15, 23, 42, 0.04)",
+        "warm-lg":  "0 16px 48px -12px rgba(15, 23, 42, 0.12), 0 4px 16px -6px rgba(15, 23, 42, 0.06)",
+        orange:     "0 8px 30px -6px rgba(255, 122, 0, 0.38)",
+        "orange-lg":"0 20px 60px -12px rgba(255, 122, 0, 0.45)",
       },
       keyframes: {
         float: {

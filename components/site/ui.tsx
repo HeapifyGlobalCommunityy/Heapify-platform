@@ -90,14 +90,14 @@ export function Hero({
       {/* Animated particle background */}
       <AnimatedNetworkBackground />
 
-      {/* Warm parchment gradient overlays */}
+      {/* Light slate ambient gradient overlays */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,248,235,0.97), transparent 70%),
-            radial-gradient(ellipse 40% 50% at 90% 50%, rgba(255,200,140,0.07), transparent 55%),
-            radial-gradient(ellipse 40% 40% at 10% 80%, rgba(200,160,90,0.05), transparent 50%)
+            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,122,0,0.08), transparent 70%),
+            radial-gradient(ellipse 40% 50% at 90% 50%, rgba(148,163,184,0.12), transparent 55%),
+            radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,122,0,0.04), transparent 50%)
           `,
         }}
       />
@@ -115,7 +115,7 @@ export function Hero({
         {/* Fade image into background */}
         <div className="absolute inset-0"
           style={{
-            background: `linear-gradient(to right, hsl(38 38% 94%) 0%, rgba(242,237,227,0.70) 30%, transparent 65%)`
+            background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.75) 30%, transparent 65%)`
           }}
         />
       </div>
@@ -314,10 +314,10 @@ export function CTAComponent({
             className="absolute inset-0"
             style={{
               background: `linear-gradient(135deg,
-                rgba(242,237,227,0.97) 0%,
-                rgba(242,237,227,0.90) 35%,
-                rgba(242,237,227,0.72) 65%,
-                rgba(255,122,0,0.18) 100%)`,
+                rgba(232,236,242,0.97) 0%,
+                rgba(232,236,242,0.88) 35%,
+                rgba(232,236,242,0.70) 65%,
+                rgba(255,122,0,0.15) 100%)`,
             }}
           />
         </div>
@@ -648,7 +648,7 @@ export function TeamCard({
           <div className="eyebrow text-primary/85 mb-2">{member.role}</div>
           <h3 className="font-display text-lg font-600 tracking-tight">{member.name}</h3>
         </div>
-        <div className="h-11 w-11 rounded-2xl border border-border/60 bg-gradient-to-br from-parchment-200 to-parchment-300 shrink-0" />
+        <div className="h-11 w-11 rounded-2xl border border-border/60 bg-gradient-to-br from-steel-200 to-steel-300 shrink-0" />
       </div>
       <p className="text-sm text-muted-foreground leading-6">{member.bio}</p>
       <div className="mt-4 flex items-center gap-2">

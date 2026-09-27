@@ -94,7 +94,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
         className={[
           "transition-all duration-500",
           scrolled
-            ? "border-b border-border/60 bg-[rgba(242,237,227,0.96)] backdrop-blur-xl shadow-[0_2px_24px_-8px_rgba(150,110,60,0.12)]"
+            ? "border-b border-border/80 bg-background/90 backdrop-blur-xl shadow-[0_4px_20px_-6px_rgba(15,23,42,0.08)]"
             : "bg-transparent border-b border-transparent",
         ].join(" ")}
       >
@@ -214,7 +214,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="border-b border-border/60 bg-[rgba(242,237,227,0.98)] backdrop-blur-xl px-5 py-5 space-y-1 lg:hidden"
+            className="border-b border-border/80 bg-background/98 backdrop-blur-xl px-5 py-5 space-y-1 lg:hidden"
           >
             {[{ href: "/", label: "Home" }, ...(isChapterLead ? [{ href: "/chapter", label: "Chapter" }] : []), ...filteredLinks].map((link) => (
               <Link

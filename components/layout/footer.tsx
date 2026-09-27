@@ -71,7 +71,7 @@ export function Footer() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, hsl(38 38% 94%) 0%, rgba(242,237,227,0.3) 40%, rgba(242,237,227,0.5) 70%, hsl(38 38% 94%) 100%)",
+              "linear-gradient(to bottom, hsl(var(--background)) 0%, rgba(232,236,242,0.3) 40%, rgba(232,236,242,0.6) 70%, hsl(var(--background)) 100%)",
           }}
         />
         {/* Centered quote overlay */}
