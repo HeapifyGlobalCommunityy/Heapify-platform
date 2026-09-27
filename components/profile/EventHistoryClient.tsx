@@ -57,7 +57,7 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
       <div className="rounded-xl border border-border bg-card p-10 text-center space-y-3">
         <p className="font-display text-lg font-semibold text-foreground">No events in your history.</p>
         <p className="text-sm text-muted-foreground">Events you register for will appear here.</p>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild>
           <Link href="/events">
             Explore Events <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -123,7 +123,7 @@ export default function EventHistoryClient({ initialRows, hasMoreInitially, user
 
       {hasMore && (
         <Button
-          variant="outline"
+          variant="ghost"
           className="w-full"
           onClick={loadMore}
           disabled={isPending}

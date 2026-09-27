@@ -146,7 +146,7 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
     eventsRes,
     membersRes,
     leaderboardRes,
-    membershipRequestsRes,
+    membershipRequests,
   ] = await Promise.all([
     supabase
       .from("announcements")
@@ -178,14 +178,13 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
       .eq("period", selectedPeriod)
       .order("score", { ascending: false })
       .limit(5),
-    getChapterMembershipRequests(chapter.id),
+    getChapterMembershipRequests(),
   ]);
 
   const announcements: Announcement[] = announcementsRes.data || [];
   const events: ChapterEvent[] = eventsRes.data || [];
   const members: MemberProfile[] = membersRes.data || [];
   const leaderboardEntries: LeaderboardEntry[] = (leaderboardRes.data as unknown as LeaderboardEntry[]) || [];
-  const membershipRequests = membershipRequestsRes.success ? membershipRequestsRes.data : [];
 
   return (
     <div className="min-h-screen">
@@ -285,7 +284,7 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
                   <Calendar className="h-5 w-5 text-primary" />
                   <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">Recent Events</h3>
                 </div>
-                <Button variant="outline" size="sm" asChild className="text-xs">
+                <Button variant="ghost" size="sm" asChild className="text-xs">
                   <Link href="/chapter/events/new">
                     + Create Event
                   </Link>

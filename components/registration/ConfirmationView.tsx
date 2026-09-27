@@ -54,7 +54,7 @@ export default function ConfirmationView({ event, isTeamEvent, teamName, totalMe
           )}
         </div>
 
-        <Button asChild variant="outline" className="mt-8">
+        <Button asChild variant="ghost" className="mt-8">
           <Link href={`/events/${event.slug}`}>
             Back to event details
           </Link>

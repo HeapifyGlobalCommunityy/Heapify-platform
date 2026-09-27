@@ -138,7 +138,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
       {/* Expand toggle + submission form */}
       <div className="relative mt-auto pt-5">
         <Button
-          variant="outline"
+          variant="ghost"
           className="w-full justify-between"
           onClick={() => setOpen((o) => !o)}
         >

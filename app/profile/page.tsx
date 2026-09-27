@@ -99,13 +99,18 @@ export default async function ProfilePage() {
     );
   }
 
+  interface ProjectRef { id: string; name: string; slug: string }
+  interface MaintainerItem { project: ProjectRef }
+  interface ContributorItem { project: ProjectRef }
+  interface WonChallengeItem { id: string; title: string; end_at: string | null }
+
   type ProfileData = typeof profile & {
     chapter?: { name: string; city?: string; country?: string } | null;
     led_chapters?: Array<{ id: string; name: string }>;
     team_members?: Array<{ id: string; title: string }>;
-    project_maintainers?: Array<{ project: { id: string; name: string; slug: string } }>;
-    project_contributors?: Array<{ project: { id: string; name: string; slug: string } }>;
-    won_challenges?: Array<{ id: string; title: string; end_at: string | null }>;
+    project_maintainers?: MaintainerItem[];
+    project_contributors?: ContributorItem[];
+    won_challenges?: WonChallengeItem[];
     leaderboard_entries?: Array<{ category: string; score: number; period: string }>;
   };
 
@@ -125,10 +130,10 @@ export default async function ProfilePage() {
 
   const chapter = typedProfile.chapter;
   const maintainedProjectIds = new Set(
-    typedProfile.project_maintainers?.map((pm) => pm.project?.id).filter(Boolean) ?? []
+    typedProfile.project_maintainers?.map((pm: MaintainerItem) => pm.project?.id).filter(Boolean) ?? []
   );
   const filteredContributors = (typedProfile.project_contributors ?? []).filter(
-    (c) => c.project?.id && !maintainedProjectIds.has(c.project.id)
+    (c: ContributorItem) => c.project?.id && !maintainedProjectIds.has(c.project.id)
   );
 
   return (
@@ -275,7 +280,7 @@ export default async function ProfilePage() {
         ) : (
           <div className="flex flex-wrap gap-3">
             {/* Challenge Winners */}
-            {typedProfile.won_challenges?.map((challenge) => (
+            {typedProfile.won_challenges?.map((challenge: WonChallengeItem) => (
               <div
                 key={challenge.id}
                 title={`Won Monthly Challenge: ${challenge.title}`}
@@ -353,7 +358,7 @@ export default async function ProfilePage() {
                   <Award className="h-4 w-4" /> Maintains
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {typedProfile.project_maintainers.map(({ project }) => (
+                  {typedProfile.project_maintainers.map(({ project }: MaintainerItem) => (
                     <Link
                       key={project.id}
                       href={`/projects/${project.slug}`}
@@ -373,7 +378,7 @@ export default async function ProfilePage() {
                   <Globe className="h-4 w-4" /> Contributes to
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {filteredContributors.map(({ project }) => (
+                  {filteredContributors.map(({ project }: ContributorItem) => (
                     <Link
                       key={project.id}
                       href={`/projects/${project.slug}`}

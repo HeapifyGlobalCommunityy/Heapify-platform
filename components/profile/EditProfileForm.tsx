@@ -96,7 +96,7 @@ export default function EditProfileForm({ initialProfile }: Props) {
           <p className="text-xs font-mono uppercase tracking-wider text-primary">Settings</p>
           <h1 className="mt-1 font-display text-2xl font-semibold tracking-tight text-foreground">Edit Profile Info</h1>
         </div>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild>
           <Link href="/profile" className="inline-flex items-center gap-1.5">
             <ArrowLeft className="h-3.5 w-3.5" />
             <span>Back</span>
@@ -291,7 +291,7 @@ export default function EditProfileForm({ initialProfile }: Props) {
           </Button>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             asChild
             disabled={isPending}
             className="w-28"

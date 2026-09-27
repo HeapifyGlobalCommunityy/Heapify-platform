@@ -123,13 +123,13 @@ export default async function DashboardPage() {
                 </Button>
               )}
               {isChapterLead && (
-                <Button asChild variant="outline">
+                <Button asChild variant="ghost">
                   <Link href="/chapter">
                     <Building2 className="mr-2 h-4 w-4" /> Chapter Portal
                   </Link>
                 </Button>
               )}
-              <Button asChild variant="outline">
+              <Button asChild variant="ghost">
                 <Link href="/profile/edit">
                   <Settings className="mr-2 h-4 w-4" /> Edit Profile
                 </Link>
