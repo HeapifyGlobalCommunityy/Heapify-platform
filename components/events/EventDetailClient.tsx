@@ -294,7 +294,7 @@ function EventDetailFull({
         </Link>
 
         {bannerUrl && (
-          <div className="mt-8 relative w-full h-[240px] md:h-[360px] rounded-[2rem] overflow-hidden border border-glass-border">
+          <div className="mt-8 relative w-full h-[240px] md:h-[360px] rounded-2xl overflow-hidden border border-border">
             <SafeImage 
               src={bannerUrl} 
               alt={event.title} 
@@ -307,33 +307,29 @@ function EventDetailFull({
         )}
 
         <div className={cn(
-          "rounded-[2rem] border border-glass-border relative overflow-hidden bg-[linear-gradient(135deg,rgba(255,122,0,0.12),rgba(10,10,10,0.8))] p-10 backdrop-blur-xl",
+          "rounded-2xl border border-border relative overflow-hidden bg-card p-8 md:p-10 shadow-sm",
           bannerUrl ? "mt-6" : "mt-8"
         )}>
-          <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
-            <div className="w-64 h-64 bg-primary/30 rounded-full blur-[100px]" />
-          </div>
-
           <div className="relative">
-            <div className="text-xs font-mono uppercase tracking-[0.28em] text-primary">
+            <div className="text-xs font-mono uppercase tracking-[0.2em] text-primary">
               {event.category} • {event.status}
             </div>
-            <h1 className="mt-4 font-display text-4xl md:text-6xl font-semibold tracking-tight text-white">
+            <h1 className="mt-4 font-display text-3xl md:text-5xl font-semibold tracking-tight text-foreground">
               {event.title}
             </h1>
             {event.chapterName && (
-               <p className="mt-2 text-xs font-mono text-zinc-400 uppercase tracking-widest">
+               <p className="mt-2 text-xs font-mono text-muted-foreground uppercase tracking-widest">
                  Organized by {event.chapterName}
                </p>
              )}
-            <div className="mt-10 flex flex-wrap gap-6">
+            <div className="mt-8 flex flex-wrap gap-6">
               {[
                 { icon: <Calendar className="h-4 w-4 text-primary" />, label: "Date", value: event.date },
                 { icon: <Clock className="h-4 w-4 text-primary" />, label: "Time", value: event.time },
                 { icon: <MapPin className="h-4 w-4 text-primary" />, label: "Location", value: event.location },
               ].map(({ icon, label, value }) => (
                 <div key={label} className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-glass-border bg-glass-bg shrink-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-muted shrink-0">
                     {icon}
                   </div>
                   <div>
@@ -356,10 +352,9 @@ function EventDetailFull({
                 {event.agenda.map((item, i) => (
                   <div
                     key={i}
-                    className="flex gap-6 rounded-2xl border border-glass-border bg-glass-bg p-5 cursor-default
-                      transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
+                    className="flex gap-6 rounded-xl border border-border bg-card p-5"
                   >
-                    <div className="font-mono text-sm text-primary/80 shrink-0">{item.time}</div>
+                    <div className="font-mono text-sm text-primary shrink-0">{item.time}</div>
                     <div className="text-sm text-foreground/90">{item.item || item.title}</div>
                   </div>
                 ))}
@@ -374,14 +369,13 @@ function EventDetailFull({
                 {event.speakers.map((speaker, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-4 rounded-2xl border border-glass-border bg-glass-bg p-5 cursor-default
-                      transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
+                    className="flex items-center gap-4 rounded-xl border border-border bg-card p-5"
                   >
                     {speaker.photo_url ? (
                       <SafeImage 
                         src={speaker.photo_url} 
                         alt={speaker.name} 
-                        className="h-12 w-12 rounded-full shrink-0 object-cover"
+                        className="h-12 w-12 rounded-full shrink-0 object-cover border border-border"
                       />
                     ) : (
                       <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/10 shrink-0" />
@@ -398,10 +392,7 @@ function EventDetailFull({
         </div>
 
         <div>
-          <div
-            className="rounded-3xl border border-glass-border bg-glass-bg p-6 backdrop-blur-xl cursor-default
-              transition-transform duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.008]"
-          >
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h3 className="font-display font-semibold text-xl">Registration</h3>
             <p className="mt-3 text-sm text-muted-foreground">
               Secure your spot for this experience. Approval required.
@@ -428,7 +419,7 @@ function EventDetailFull({
       </div>
 
       {related.length > 0 && (
-        <SectionWrapper title="Related Events" className="border-t border-glass-border">
+        <SectionWrapper title="Related Events" className="border-t border-border">
           <div className="grid gap-5 lg:grid-cols-2">
             {related.map((e) => (
               <EventCard key={e.slug} event={e} />
@@ -499,23 +490,23 @@ function CompactSummary({
         <span className="inline-flex border border-primary/40 text-primary text-[10px] font-mono uppercase tracking-[0.28em] px-2.5 py-1 rounded-md">
           {event.category}
         </span>
-        <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-white leading-tight">
+        <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground leading-tight">
           {event.title}
         </h2>
         {event.chapterName && (
-          <p className="mt-1.5 text-xs font-mono text-zinc-400 uppercase tracking-widest">
+          <p className="mt-1.5 text-xs font-mono text-muted-foreground uppercase tracking-widest">
             Organized by {event.chapterName}
           </p>
         )}
       </div>
 
       <div className={`space-y-2 ${itemClasses(260).className}`} style={itemClasses(260).style}>
-        <div className="flex items-center gap-2 text-sm text-zinc-400">
-          <CalendarDays className="h-4 w-4 text-zinc-600 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <CalendarDays className="h-4 w-4 text-primary shrink-0" />
           <span>{event.date} · {event.time}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-zinc-400">
-          <MapPin className="h-4 w-4 text-zinc-600 shrink-0" />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <MapPin className="h-4 w-4 text-primary shrink-0" />
           <span>{event.location}</span>
         </div>
       </div>
@@ -523,71 +514,69 @@ function CompactSummary({
       <div className={`w-full space-y-2 ${itemClasses(330).className}`} style={itemClasses(330).style}>
         {isUnlimited ? (
           <div className="flex items-baseline justify-between">
-            <span className="text-sm text-zinc-400">Capacity</span>
+            <span className="text-sm text-muted-foreground">Capacity</span>
             <span className="text-primary font-bold">Unlimited</span>
           </div>
         ) : (
           <>
             <div className="flex items-baseline justify-between">
-              <span className="text-sm text-zinc-400">Spots available</span>
-              <span className="font-mono text-sm text-white">
+              <span className="text-sm text-muted-foreground">Spots available</span>
+              <span className="font-mono text-sm text-foreground">
                 <span className={spotsLeft <= 10 ? "text-primary font-bold" : ""}>{spotsLeft}</span>
-                <span className="text-zinc-600">&nbsp;/&nbsp;{safeEvent.capacity}</span>
+                <span className="text-muted-foreground">&nbsp;/&nbsp;{safeEvent.capacity}</span>
               </span>
             </div>
-            <div className="h-1.5 w-full rounded-full bg-zinc-800 overflow-hidden">
+            <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
               <div
                 className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
                 style={{ width: `${barWidth}%` }}
               />
             </div>
-            <p className="text-xs text-zinc-600 font-mono">{fillPercent}% filled</p>
+            <p className="text-xs text-muted-foreground font-mono">{fillPercent}% filled</p>
           </>
         )}
       </div>
 
       {safeEvent.teamConfig && (
-        <div className={`rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-xs text-zinc-500 font-mono ${itemClasses(380).className}`} style={itemClasses(380).style}>
+        <div className={`rounded-lg border border-border bg-muted/50 px-4 py-3 text-xs text-muted-foreground font-mono ${itemClasses(380).className}`} style={itemClasses(380).style}>
           Team event · {safeEvent.teamConfig.minSize}–{safeEvent.teamConfig.maxSize} members
           {safeEvent.teamConfig.allowSolo && " · Solo allowed"}
         </div>
       )}
 
-      {/* Condensed agenda — fills the space with genuinely useful content
-          instead of leaving it empty, capped to the first 4 items so it
-          doesn't overwhelm the panel. */}
+      {/* Condensed agenda */}
       {event.agenda && event.agenda.length > 0 && (
-        <div className={`space-y-2.5 pt-2 border-t border-zinc-800 ${itemClasses(430).className}`} style={itemClasses(430).style}>
-          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-600">Agenda</p>
+        <div className={`space-y-2.5 pt-2 border-t border-border ${itemClasses(430).className}`} style={itemClasses(430).style}>
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Agenda</p>
           {event.agenda.slice(0, 4).map((item, i) => (
             <div key={i} className="flex gap-3 text-xs">
-              <span className="font-mono text-primary/70 shrink-0">{item.time}</span>
-              <span className="text-zinc-400">{item.item}</span>
+              <span className="font-mono text-primary/80 shrink-0">{item.time}</span>
+              <span className="text-muted-foreground">{item.item}</span>
             </div>
           ))}
         </div>
       )}
 
       {event.speakers && event.speakers.length > 0 && (
-        <div className={`space-y-2.5 pt-2 border-t border-zinc-800 ${itemClasses(480).className}`} style={itemClasses(480).style}>
-          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-600">Speakers</p>
+        <div className={`space-y-2.5 pt-2 border-t border-border ${itemClasses(480).className}`} style={itemClasses(480).style}>
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Speakers</p>
           {event.speakers.map((s, i) => (
             <div key={i} className="flex items-center gap-2.5">
               <div className="h-7 w-7 rounded-full border border-primary/20 bg-primary/10 shrink-0" />
               <div>
-                <div className="text-xs font-medium text-white">{s.name}</div>
-                <div className="text-[10px] text-zinc-500">{s.role}</div>
+                <div className="text-xs font-medium text-foreground">{s.name}</div>
+                <div className="text-[10px] text-muted-foreground">{s.role}</div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      <div className={`flex items-center gap-3 pt-2 border-t border-zinc-800 ${itemClasses(520).className}`} style={itemClasses(520).style}>
+      <div className={`flex items-center gap-3 pt-2 border-t border-border ${itemClasses(520).className}`} style={itemClasses(520).style}>
         <div className="w-7 h-7 rounded-full border border-primary/30 bg-primary/10 flex items-center justify-center shrink-0">
           <span className="text-[10px] font-display font-semibold text-primary">H</span>
         </div>
-        <span className="text-xs text-zinc-500">Heapify Global Community</span>
+        <span className="text-xs text-muted-foreground">Heapify Global Community</span>
       </div>
     </div>
   );

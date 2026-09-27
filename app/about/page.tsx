@@ -57,7 +57,7 @@ function TimelineItem({ item, index }: { item: { year: string; title: string; de
           y: cardY,
           x: cardX,
         }}
-        className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-[1.5rem] border border-glass-border bg-glass-bg backdrop-blur-xl hover:-translate-y-1.5 hover:border-primary/40 transition-all duration-300 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]"
+        className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-xl border border-border bg-card hover:border-primary/30 transition-colors duration-200 shadow-sm"
       >
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary/80">
           {item.year}
@@ -91,14 +91,16 @@ export default function AboutPage() {
         description="A look into the community's core purpose, values, and the journey that brought us here."
         className="pt-40"
       >
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
-            <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-primary">Mission</h3>
-            <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.mission}</p>
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="rounded-xl border border-border bg-card p-8 transition-colors duration-200 hover:border-primary/30">
+            <div className="mb-1 h-px w-8 bg-primary" />
+            <h3 className="mt-4 text-xs font-medium uppercase tracking-widest text-primary">Mission</h3>
+            <p className="mt-4 font-display text-xl font-medium leading-relaxed text-foreground/90">{brand.mission}</p>
           </div>
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_12px_40px_rgba(59,130,246,0.12)]">
-            <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-blue-400">Vision</h3>
-            <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.vision}</p>
+          <div className="rounded-xl border border-border bg-card p-8 transition-colors duration-200 hover:border-border">
+            <div className="mb-1 h-px w-8 bg-muted-foreground/50" />
+            <h3 className="mt-4 text-xs font-medium uppercase tracking-widest text-muted-foreground">Vision</h3>
+            <p className="mt-4 font-display text-xl font-medium leading-relaxed text-foreground/90">{brand.vision}</p>
           </div>
         </div>
       </SectionWrapper>

@@ -6,11 +6,9 @@ import {
   CheckCircle2,
   Trophy,
   Users,
-  Sparkles,
   ArrowLeft,
   Laptop,
 } from "lucide-react";
-
 
 export default async function BuildWithGemmaPage() {
   const agendaItems = [
@@ -26,9 +24,6 @@ export default async function BuildWithGemmaPage() {
     "AI Mobile Coders",
     "RedBull",
     "Google Gemma",
-    "NSoC",
-    "AI Mobile Coders",
-    "RedBull",
     "Google for Developers",
     "Kaggle",
     "Devfolio",
@@ -48,19 +43,19 @@ export default async function BuildWithGemmaPage() {
 
   return (
     <div className="min-h-screen pt-24 pb-20">
-      {/* Top Back Navigation Bar */}
+      {/* Back Navigation */}
       <div className="mx-auto max-w-6xl px-6 pt-4 pb-2">
         <Link
           href="/events"
-          className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to All Events
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to All Events
         </Link>
       </div>
 
       {/* 1. Hero Banner */}
       <div className="relative mx-auto max-w-6xl px-6 mt-4">
-        <div className="relative w-full h-[50vh] md:h-[65vh] rounded-[2.5rem] overflow-hidden border border-glass-border shadow-[0_20px_80px_rgba(255,122,0,0.15)]">
+        <div className="relative w-full h-[50vh] md:h-[65vh] rounded-2xl overflow-hidden border border-border">
           <Image
             src="/images/eventtitlecard.jpg"
             alt="Build with Gemma Sprint Flagship Banner"
@@ -68,106 +63,102 @@ export default async function BuildWithGemmaPage() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-          
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/20 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary backdrop-blur-md">
-                <Trophy className="h-3.5 w-3.5" /> Flagship Event Success Story · Concluded
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm">
+                <Trophy className="h-3.5 w-3.5" /> Flagship Event · Concluded
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-black/60 px-3.5 py-1.5 text-xs font-mono text-zinc-300 backdrop-blur-md">
+              <span className="inline-flex items-center rounded-md border border-white/10 bg-black/40 px-3 py-1 text-xs text-white/80 backdrop-blur-sm">
                 {gemmaSprintDate} · MSRIT, Bengaluru
               </span>
             </div>
 
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.1]">
+            <h1 className="font-display text-3xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl leading-tight">
               Build with Gemma: Bengaluru AI Sprint
             </h1>
-            
-            <p className="max-w-3xl text-base md:text-lg text-muted-foreground font-normal leading-relaxed">
-              Official Hackathon Briefing Session & Sprint — bringing together developers, student builders, volunteers, and mentors at Ramaiah Institute of Technology to build groundbreaking AI applications using Google&apos;s Gemma ecosystem.
+
+            <p className="max-w-3xl text-sm md:text-base text-white/70 leading-relaxed">
+              Official Hackathon Briefing Session &amp; Sprint — bringing together developers, student builders, volunteers, and mentors at Ramaiah Institute of Technology to build AI applications using Google&apos;s Gemma ecosystem.
             </p>
           </div>
         </div>
       </div>
 
-      {/* 2. Key Metrics & Impact Ribbon */}
+      {/* 2. Key Metrics */}
       <SectionWrapper eyebrow="Impact & Reach" title="Event Accomplishments" className="py-12">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {highlights.map((item, idx) => (
             <div
               key={idx}
-              className="rounded-[1.75rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.1)]"
+              className="rounded-xl border border-border bg-card p-6 hover:border-primary/30 transition-colors duration-200"
             >
-              <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-primary/80">
+              <span className="text-[10px] font-medium uppercase tracking-widest text-primary/80">
                 {item.label}
               </span>
-              <p className="mt-3 font-display text-xl font-bold text-white">{item.value}</p>
+              <p className="mt-3 font-display text-lg font-semibold text-foreground">{item.value}</p>
               <p className="mt-1 text-xs text-muted-foreground">{item.detail}</p>
             </div>
           ))}
         </div>
       </SectionWrapper>
 
-      {/* 3. Detailed Event Summary & Success Story */}
+      {/* 3. Event Story */}
       <SectionWrapper eyebrow="Event Story" title="Official Briefing & Sprint Summary" className="py-10">
-        <div className="space-y-6 max-w-5xl">
-          <div className="rounded-[2rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-8 md:p-10 space-y-6 transition-all duration-300 hover:border-primary/30">
-            <h3 className="font-display text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-primary shrink-0" />
-              Celebrating Heapify&apos;s Flagship AI Activation
-            </h3>
-            
-            <div className="space-y-4 text-base leading-relaxed text-zinc-300">
-              <p>
-                The <strong className="text-white font-semibold">Build with Gemma: Bengaluru AI Sprint</strong> was conducted as an official hackathon briefing and building sprint at <strong className="text-white">Ramaiah Institute of Technology (MSRIT)</strong> in Bengaluru.
-              </p>
-              <p>
-                The session prepared registered participants and builders for competition — walking through official hackathon guidelines, key features of Google Gemma 4 models, practical strategies for building effective AI solutions, and a live Q&A session.
-              </p>
-              <p>
-                Guided by 17× hackathon winner <strong className="text-white">Atharva Patwardhan</strong> and ecosystem mentors, teams tackled hands-on prototyping and explored real-world GenAI integration workflows.
-              </p>
-            </div>
+        <div className="max-w-5xl rounded-xl border border-border bg-card p-8 md:p-10 space-y-6">
+          <div className="h-px w-10 bg-primary" />
+          <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
+            Celebrating Heapify&apos;s Flagship AI Activation
+          </h3>
 
-            <div className="grid gap-4 sm:grid-cols-3 pt-4 border-t border-glass-border">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-sm font-medium text-zinc-200">100% Free & Open Access</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-sm font-medium text-zinc-200">Google Gemma Model Integration</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-sm font-medium text-zinc-200">IEEE RITB & Partner Collaboration</span>
-              </div>
-            </div>
+          <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              The <strong className="text-foreground font-medium">Build with Gemma: Bengaluru AI Sprint</strong> was conducted as an official hackathon briefing and building sprint at <strong className="text-foreground font-medium">Ramaiah Institute of Technology (MSRIT)</strong> in Bengaluru.
+            </p>
+            <p>
+              The session prepared registered participants and builders for competition — walking through official hackathon guidelines, key features of Google Gemma 4 models, practical strategies for building effective AI solutions, and a live Q&amp;A session.
+            </p>
+            <p>
+              Guided by 17× hackathon winner <strong className="text-foreground font-medium">Atharva Patwardhan</strong> and ecosystem mentors, teams tackled hands-on prototyping and explored real-world GenAI integration workflows.
+            </p>
           </div>
-        </div>
-      </SectionWrapper>
 
-      {/* 4. Agenda */}
-      <SectionWrapper eyebrow="Briefing Agenda" title="Session Overview & Guidelines" className="py-12">
-        <div className="max-w-4xl rounded-[2rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-8 md:p-10 space-y-4 transition-all duration-300 hover:border-primary/30">
-          <div className="font-mono text-xs text-primary uppercase tracking-widest mb-4">Official Briefing Timeline</div>
-          <div className="space-y-3">
-            {agendaItems.map((item, index) => (
-              <div key={index} className="flex items-start gap-3.5">
-                <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                <p className="text-base font-medium text-zinc-200">{item}</p>
+          <div className="grid gap-4 sm:grid-cols-3 pt-5 border-t border-border">
+            {[
+              "100% Free & Open Access",
+              "Google Gemma Model Integration",
+              "IEEE RITB & Partner Collaboration",
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-2.5">
+                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm text-foreground">{item}</span>
               </div>
             ))}
           </div>
         </div>
       </SectionWrapper>
 
-      {/* 5. Keynote Speaker Spotlight */}
+      {/* 4. Agenda */}
+      <SectionWrapper eyebrow="Briefing Agenda" title="Session Overview & Guidelines" className="py-12">
+        <div className="max-w-4xl rounded-xl border border-border bg-card p-8 md:p-10">
+          <div className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-5">Official Briefing Timeline</div>
+          <div className="space-y-3">
+            {agendaItems.map((item, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <p className="text-sm text-foreground">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* 5. Keynote Speaker */}
       <SectionWrapper title="Keynote Speaker" eyebrow="Mentorship" className="py-10">
-        <div className="max-w-4xl rounded-[2.5rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-8 md:p-10 transition-all duration-300 hover:border-primary/40 shadow-[0_12px_40px_rgba(255,122,0,0.1)]">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center">
-            <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-[1.75rem] overflow-hidden shrink-0 border border-glass-border shadow-lg">
+        <div className="max-w-4xl rounded-xl border border-border bg-card p-8 md:p-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start">
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shrink-0 border border-border">
               <Image
                 src="/images/guygivingspeech.jpg"
                 alt="Atharva Patwardhan"
@@ -176,23 +167,23 @@ export default async function BuildWithGemmaPage() {
               />
             </div>
             <div className="space-y-4">
-              <div className="space-y-1">
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary/90 font-semibold">
+              <div>
+                <div className="text-[10px] font-medium uppercase tracking-widest text-primary/80">
                   Official Briefing Speaker
-                </span>
-                <h3 className="font-display text-3xl font-bold tracking-tight text-white">Atharva Patwardhan</h3>
+                </div>
+                <h3 className="mt-1 font-display text-2xl font-semibold tracking-tight text-foreground">Atharva Patwardhan</h3>
               </div>
-              
+
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1 text-xs font-medium text-primary">
-                  🏆 17× Hackathon Winner
+                <span className="rounded-md border border-primary/20 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
+                  17× Hackathon Winner
                 </span>
-                <span className="rounded-full border border-glass-border bg-glass-bg px-3.5 py-1 text-xs font-medium text-zinc-300">
-                  🚀 SIH 2025 Grand Finalist
+                <span className="rounded-md border border-border bg-muted/40 px-3 py-1 text-xs font-medium text-muted-foreground">
+                  SIH 2025 Grand Finalist
                 </span>
               </div>
-              
-              <p className="text-sm leading-relaxed text-zinc-300 max-w-xl">
+
+              <p className="text-sm leading-relaxed text-muted-foreground max-w-xl">
                 Atharva delivered an inspiring keynote and briefing session — breaking down technical frameworks for leveraging Google Gemma 4, sharing winning hackathon strategies, and answering participant questions live.
               </p>
             </div>
@@ -200,172 +191,104 @@ export default async function BuildWithGemmaPage() {
         </div>
       </SectionWrapper>
 
-      {/* 6. Special Community Highlights & Placeholders */}
+      {/* 6. Community Highlights */}
       <SectionWrapper
         eyebrow="Special Activations"
         title="Community Meets & Workshops"
         description="Highlights from sessions conducted alongside the Gemma Sprint series."
         className="py-12"
       >
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {/* Card 1: AI Mobile Coders Workshop */}
-          <div className="rounded-[2rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-8 space-y-6 transition-all duration-300 hover:border-primary/40">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono text-primary">
-                <Laptop className="h-3.5 w-3.5" /> Special Workshop
+          <div className="rounded-xl border border-border bg-card p-6 space-y-5 hover:border-primary/30 transition-colors duration-200">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-primary">
+                <Laptop className="h-3 w-3" /> Special Workshop
               </span>
-              <span className="text-xs font-mono text-zinc-400">Collaboration</span>
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-display text-2xl font-bold text-white">AI Mobile Coders Workshop</h3>
+              <h3 className="font-display text-xl font-semibold text-foreground">AI Mobile Coders Workshop</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Specialized hands-on sessions focusing on mobile AI integrations, lightweight model deployments, and optimizing on-device inference using Gemma and Flutter/Android toolchains.
               </p>
             </div>
 
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
-            <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
+            <div className="relative w-full h-44 overflow-hidden rounded-lg border border-border">
               <Image
                 src="/images/guygivingspeech.jpg"
                 alt="AI Mobile Coders Workshop Session"
                 fill
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-                <span className="text-xs font-mono font-medium text-white">AI Mobile Coders Workshop Session</span>
-              </div>
             </div>
           </div>
 
-          {/* Card 2: Founder Meet & Leadership Networking */}
-          <div className="rounded-[2rem] border border-glass-border bg-glass-bg backdrop-blur-xl p-8 space-y-6 transition-all duration-300 hover:border-primary/40">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono text-primary">
-                <Users className="h-3.5 w-3.5" /> Founder Meet
+          {/* Card 2: Founder Meet */}
+          <div className="rounded-xl border border-border bg-card p-6 space-y-5 hover:border-primary/30 transition-colors duration-200">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-primary/20 bg-primary/8 px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-primary">
+                <Users className="h-3 w-3" /> Founder Meet
               </span>
-              <span className="text-xs font-mono text-zinc-400">Leadership</span>
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-display text-2xl font-bold text-white">Founder & Mentor Meet</h3>
+              <h3 className="font-display text-xl font-semibold text-foreground">Founder & Mentor Meet</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 An exclusive networking meet bringing together ecosystem founders, student leaders, volunteers, and IEEE RITB representatives to build long-term tech initiatives.
               </p>
             </div>
 
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
-            <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
+            <div className="relative w-full h-44 overflow-hidden rounded-lg border border-border">
               <Image
                 src="/images/picofallparticipants.jpg"
                 alt="Founder Meet and Community Networking"
                 fill
                 className="object-cover transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-                <span className="text-xs font-mono font-medium text-white">Founder Meet & Community Networking</span>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* 7. Photo Gallery */}
+      <SectionWrapper title="Sprint Photo Gallery" eyebrow="Moments" className="py-12">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { src: "/images/eventtitlecard.jpg", alt: "Build with Gemma Official Banner", caption: "Official Event Title Card" },
+            { src: "/images/picofallparticipants.jpg", alt: "Group photo of participants", caption: "Participants, Volunteers & IEEE RITB" },
+            { src: "/images/guygivingspeech.jpg", alt: "Keynote presentation", caption: "Keynote Briefing by Atharva Patwardhan" },
+            { src: "/images/studsexplainingproj1.jpg", alt: "Students presenting AI project", caption: "Team Presentation & Project Pitching" },
+            { src: "/images/explainingproj2.jpg", alt: "Live project demonstration", caption: "Live Prototype Demo & Jury Review" },
+            { src: "/images/placeholder-hackathon-floor.jpg", alt: "Hackathon floor", caption: "Hackathon Floor & Mentorship" },
+          ].map((photo) => (
+            <div key={photo.src} className="rounded-xl overflow-hidden aspect-video relative group border border-border hover:border-primary/30 transition-colors duration-200">
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
+                <span className="text-xs font-medium text-white">{photo.caption}</span>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </SectionWrapper>
 
-      {/* 7. Event Gallery */}
-      <SectionWrapper title="Sprint Photo Gallery" eyebrow="Moments" className="py-12">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Photo 1: Title Card */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/eventtitlecard.jpg"
-              alt="Build with Gemma Official Banner"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Official Event Title Card</span>
-            </div>
-          </div>
-
-          {/* Photo 2: Group Photo */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/picofallparticipants.jpg"
-              alt="Group photo of participants and volunteers"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Participants, Volunteers & IEEE RITB Team</span>
-            </div>
-          </div>
-
-          {/* Photo 3: Keynote Speech */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/guygivingspeech.jpg"
-              alt="Keynote presentation by Atharva Patwardhan"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Keynote Briefing by Atharva Patwardhan</span>
-            </div>
-          </div>
-
-          {/* Photo 4: Students Explaining Project 1 */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/studsexplainingproj1.jpg"
-              alt="Students presenting AI project"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Team Presentation & Project Pitching</span>
-            </div>
-          </div>
-
-          {/* Photo 5: Project Demo 2 */}
-          <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/explainingproj2.jpg"
-              alt="Live project demonstration"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Live Prototype Demo & Jury Review</span>
-            </div>
-          </div>
-
-          {/* Photo 6: General Community Placeholder */}
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
-            <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
-            <Image
-              src="/images/placeholder-hackathon-floor.jpg"
-              alt="Hackathon floor and mentorship sessions"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex items-end">
-              <span className="text-xs font-mono font-medium text-white">Hackathon Floor & Mentorship</span>
-            </div>
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* 8. Ecosystem Collaborators & Partners */}
+      {/* 8. Collaborators */}
       <SectionWrapper
         title="Ecosystem Collaborators"
         eyebrow="Partners & Supporters"
-        description="Graciously supported by world-class communities, ecosystem platforms, and developer networks."
+        description="Supported by world-class communities, ecosystem platforms, and developer networks."
         className="py-12"
       >
-        <div className="flex flex-wrap gap-3 max-w-5xl">
+        <div className="flex flex-wrap gap-2 max-w-5xl">
           {uniqueCollaborators.map((partner) => (
             <span
               key={partner}
-              className="rounded-full border border-glass-border bg-glass-bg px-5 py-2.5 text-xs font-mono font-semibold uppercase tracking-[0.2em] text-zinc-300 transition-all duration-300 hover:border-primary/50 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_20px_rgba(255,122,0,0.2)]"
+              className="rounded-full border border-border bg-muted/30 px-4 py-1.5 text-xs font-medium text-muted-foreground hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-colors duration-200"
             >
               {partner}
             </span>
