@@ -105,15 +105,32 @@ export default async function ChapterLeadDashboard({ searchParams }: PageProps) 
     redirect("/login");
   }
 
-  // 2. Fetch chapter led by this user
-  const { data: chapter } = await supabase
+  // 2. Fetch chapter led by this user or fallback to first chapter for global admins
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const isGlobalAdmin = profile && ["core_team", "super_admin"].includes(profile.role);
+
+  let { data: chapter } = await supabase
     .from("chapters")
     .select("id, name, city, country, member_count")
     .eq("lead_id", user.id)
     .maybeSingle();
 
+  if (!chapter && isGlobalAdmin) {
+    const { data: fallbackChapter } = await supabase
+      .from("chapters")
+      .select("id, name, city, country, member_count")
+      .limit(1)
+      .maybeSingle();
+    chapter = fallbackChapter;
+  }
+
   if (!chapter) {
-    redirect("/");
+    redirect("/dashboard");
   }
 
   const chapterId = chapter.id;

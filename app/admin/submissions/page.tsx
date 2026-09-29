@@ -2,9 +2,12 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SectionWrapper } from "@/components/site/ui";
 import { getAdminSubmissions } from "@/lib/actions/admin-applications";
+import { requireRole } from "@/lib/auth/authorization";
 import { SubmissionFilters } from "./SubmissionFilters";
 
 export default async function AdminSubmissionsPage() {
+  await requireRole(["core_team", "super_admin"]);
+
   const submissions = await getAdminSubmissions();
 
   return (

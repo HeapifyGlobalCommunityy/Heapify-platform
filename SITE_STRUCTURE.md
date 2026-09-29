@@ -53,18 +53,20 @@ heapify/
 │   ├── reset-password/               # Password Recovery page (/reset-password)
 │   │   └── page.tsx
 │   ├── dashboard/                    # Member Personal Workspace (/dashboard)
-│   │   └── page.tsx                  # Auth-protected session, stats, registered events
+│   │   └── page.tsx                  # Auth-protected session, stats, registered events, badges, role shortcuts
 │   ├── profile/                      # User Profile Subsystem
 │   │   ├── page.tsx                  # Public / Personal Profile view
 │   │   └── edit/                     # Profile Editor (/profile/edit)
 │   │       └── page.tsx
-│   ├── chapter/                      # Chapter Lead Management Portal (/chapter)
-│   │   ├── page.tsx
+│   ├── chapter/                      # Chapter Lead Portal (/chapter)
+│   │   ├── page.tsx                  # Role-protected lead portal (roster, events, stats, membership requests)
 │   │   └── events/
 │   │       ├── new/page.tsx          # Chapter Event Creation Form
 │   │       └── [slug]/edit/page.tsx  # Chapter Event Editor
-│   ├── admin/                        # Global Platform Admin Panel (/admin)
-│   │   └── page.tsx
+│   ├── admin/                        # Global Platform Command Center (/admin)
+│   │   ├── page.tsx                  # Role-protected command center (core_team, super_admin)
+│   │   ├── events/page.tsx           # Admin events management & CSV export
+│   │   └── submissions/page.tsx      # Admin form submissions inbox
 │   ├── auth/callback/                # Supabase Auth Code Exchange Callback API
 │   │   └── route.ts
 │   └── api/                          # Server API Endpoints
