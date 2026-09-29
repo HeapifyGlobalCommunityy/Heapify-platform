@@ -133,8 +133,8 @@ export function AnimatedNetworkBackground() {
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Ambient glow — theme-aware via Tailwind dark: prefix */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.06),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.04),transparent_28%)] dark:bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.18),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.14),transparent_28%)]" />
+      {/* Ambient warm glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.06),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(255,180,90,0.04),transparent_28%)]" />
       {/* Canvas network */}
       <div className="absolute inset-0 opacity-55 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]">
         <canvas ref={canvasRef} className="h-full w-full" aria-hidden="true" />

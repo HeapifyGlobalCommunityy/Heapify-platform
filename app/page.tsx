@@ -1,15 +1,16 @@
 import { Suspense } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { brand, communityJourney, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
 import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
 import { getEvents, getSiteStats } from "@/lib/supabase/queries";
-import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollaborationsField } from "@/components/site/collaborations-field";
 
-// ─── Helpers (mirrored from events/page.tsx) ─────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatCategory(cat: string): string {
   const map: Record<string, string> = {
     web3: "Web3", blockchain: "Blockchain", hackathon: "Hackathon",
@@ -52,39 +53,25 @@ export default async function HomePage() {
   if (isSupabaseConfigured) {
     try {
       const { data: dbStats, error: statsError } = await getSiteStats();
-      if (statsError) {
-        if (
-          statsError.message.includes("Supabase is not configured") ||
-          statsError.message.includes("placeholder")
-        ) {
-          console.warn("[HomePage] site stats are disabled because Supabase is not configured or is using placeholder env values.");
-        } else {
-          console.error("[HomePage] failed loading site stats:", statsError.message);
-        }
-      } else if (dbStats && dbStats.length > 0) {
+      if (!statsError && dbStats && dbStats.length > 0) {
         const statsDetailMap: Record<string, string> = {
           "Community Members": "Students, developers, and builders in the network",
           Events: "Hackathons, workshops, technical sessions, and builder initiatives",
         };
-
         statsData = dbStats.map((row) => ({
           label: row.label,
           value: row.value ?? 0,
           detail: statsDetailMap[row.label] ?? "",
         }));
       }
-    } catch (error) {
-      console.error("[HomePage] unexpected error loading site stats:", error);
-    }
+    } catch { /* fallback to default */ }
   }
 
   let latestEvent = null;
   if (isSupabaseConfigured) {
     try {
       const { data: dbEvents, error: eventsError } = await getEvents(0, 5);
-      if (eventsError) {
-        console.warn("[HomePage] failed loading latest event:", eventsError.message);
-      } else if (dbEvents && dbEvents.length > 0) {
+      if (!eventsError && dbEvents && dbEvents.length > 0) {
         const ev = dbEvents[0];
         latestEvent = {
           slug: ev.slug,
@@ -97,13 +84,12 @@ export default async function HomePage() {
           description: ev.description || "",
         };
       }
-    } catch (error) {
-      console.error("[HomePage] unexpected error loading latest event:", error);
-    }
+    } catch { /* fallback */ }
   }
 
   return (
     <>
+      {/* ── Hero ── */}
       <Hero
         title={brand.name}
         tagline={brand.tagline}
@@ -114,154 +100,149 @@ export default async function HomePage() {
         ]}
       />
 
-    <SectionWrapper 
-  eyebrow="Community Stats" 
-  title="A Growing Builder Network" 
-  description="Real numbers from a community built around action, not hype."
->
-  <StatsComponent stats={statsData} />
-</SectionWrapper>
+      {/* ── Stats ── */}
+      <SectionWrapper
+        eyebrow="Community Stats"
+        title="A Growing Builder Network"
+        description="Real numbers from a community built around action, not hype."
+      >
+        <StatsComponent stats={statsData} />
+      </SectionWrapper>
 
-<SectionWrapper 
-  eyebrow="What We Do" 
-  title="A Community Built Around Action" 
-  description="Everything Heapify does is about builders — people who learn, ship, and create."
->
-  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    {whatWeDo.map((item) => (
-      <FeatureCard 
-        key={item.title} 
-        eyebrow={item.eyebrow} 
-        title={item.title} 
-        description={item.description} 
-      />
-    ))}
-  </div>
-</SectionWrapper>
-{/* Latest event from DB — full-width spotlight */}
-<SectionWrapper 
-  eyebrow="Events" 
-  title="Where Builders Show Up" 
-  action={{ label: "See all events", href: "/events", variant: "ghost" }}
->
-  {latestEvent ? (
-    <ScrollReveal>
-      <div className="relative overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] p-6 sm:p-8 md:p-12 backdrop-blur-xl">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_70%_50%,rgba(255,122,0,0.08),transparent)]" />
-        <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
-          <div className="max-w-2xl space-y-4 sm:space-y-5">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">
-                {latestEvent.category}
-              </span>
-              <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
-                {latestEvent.status}
-              </span>
-              <span className="rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
-                {latestEvent.format}
-              </span>
-            </div>
-            <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
-              {latestEvent.title}
-            </h3>
-            {latestEvent.description && (
-              <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">
-                {latestEvent.description}
-              </p>
-            )}
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-primary shrink-0" />
-                {latestEvent.date}
-              </span>
-              <span className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary shrink-0" />
-                {latestEvent.location}
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
-            <Button asChild className="w-full sm:w-auto">
-              <Link href={`/events/${latestEvent.slug}`}>
-                View event <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
-              </Link>
-            </Button>
-            <Button variant="ghost" asChild className="w-full sm:w-auto">
-              <Link href="/events">All events</Link>
-            </Button>
-          </div>
+      {/* ── What We Do ── */}
+      <SectionWrapper
+        eyebrow="What We Do"
+        title="A Community Built Around Action"
+        description="Everything Heapify does is about builders — people who learn, ship, and create."
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {whatWeDo.map((item) => (
+            <FeatureCard
+              key={item.title}
+              eyebrow={item.eyebrow}
+              title={item.title}
+              description={item.description}
+            />
+          ))}
         </div>
-      </div>
-    </ScrollReveal>
-  ) : (
-    <div className="rounded-[2rem] border border-glass-border bg-glass-bg p-8 sm:p-12 text-center text-sm text-muted-foreground">
-      No upcoming events right now — check back soon.
-    </div>
-  )}
-</SectionWrapper>
+      </SectionWrapper>
 
-<SectionWrapper
-  eyebrow="Community Announcements"
-  title="What's Happening"
-  description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
->
-  <Suspense
-    fallback={
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 space-y-3 animate-pulse">
-            <div className="h-5 w-3/4 rounded-lg bg-zinc-800/60" />
-            <div className="space-y-2">
-              <div className="h-3.5 w-full rounded bg-zinc-800/40" />
-              <div className="h-3.5 w-5/6 rounded bg-zinc-800/40" />
-              <div className="h-3.5 w-2/3 rounded bg-zinc-800/30" />
+      {/* ── Latest Event Spotlight ── */}
+      <SectionWrapper
+        eyebrow="Events"
+        title="Where Builders Show Up"
+        action={{ label: "See all events", href: "/events", variant: "ghost" }}
+      >
+        {latestEvent ? (
+          <ScrollReveal>
+            <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card p-6 sm:p-8 md:p-12 shadow-warm-lg hover:border-primary/40 hover:shadow-orange transition-all duration-500">
+              {/* Warm orange glow on right */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+              <div className="relative flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
+                <div className="max-w-2xl space-y-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-primary">
+                      {latestEvent.category}
+                    </span>
+                    <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                      {latestEvent.status}
+                    </span>
+                    <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                      {latestEvent.format}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-2xl font-600 tracking-tight sm:text-3xl md:text-4xl">
+                    {latestEvent.title}
+                  </h3>
+                  {latestEvent.description && (
+                    <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">
+                      {latestEvent.description}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-1.5 text-xs">
+                      <CalendarDays className="h-3.5 w-3.5 text-primary shrink-0" />
+                      {latestEvent.date}
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-1.5 text-xs">
+                      <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                      {latestEvent.location}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
+                  <Button asChild size="md">
+                    <Link href={`/events/${latestEvent.slug}`}>
+                      View event <ArrowRight className="ml-1.5 h-4 w-4 shrink-0" />
+                    </Link>
+                  </Button>
+                  <Button variant="warm" size="md" asChild>
+                    <Link href="/events">All events</Link>
+                  </Button>
+                </div>
+              </div>
             </div>
+          </ScrollReveal>
+        ) : (
+          <div className="rounded-2xl border border-border/60 bg-card p-8 sm:p-12 text-center text-sm text-muted-foreground shadow-warm">
+            No upcoming events right now — check back soon.
           </div>
-        ))}
-      </div>
-    }
-  >
-    <AnnouncementsSection />
-  </Suspense>
-</SectionWrapper>
+        )}
+      </SectionWrapper>
 
+      {/* ── Announcements ── */}
+      <SectionWrapper
+        eyebrow="Community Announcements"
+        title="What's Happening"
+        description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
+      >
+        <Suspense
+          fallback={
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-border/60 bg-card p-6 space-y-3 animate-pulse shadow-warm">
+                  <div className="h-4 w-3/4 rounded-lg bg-muted" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-full rounded bg-muted/70" />
+                    <div className="h-3 w-5/6 rounded bg-muted/60" />
+                    <div className="h-3 w-2/3 rounded bg-muted/50" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          }
+        >
+          <AnnouncementsSection />
+        </Suspense>
+      </SectionWrapper>
+
+      {/* ── Community Journey ── */}
       <SectionWrapper>
-        <ScrollReveal className="mb-12 flex max-w-3xl flex-col space-y-5 md:mb-16">
-          <div className="space-y-3">
-            <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary/80">
-              Community Journey
-            </div>
-
-            <h2 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-[3.25rem] md:leading-[1.1]">
-              From discovery to <span className="text-muted-foreground">leadership.</span>
-            </h2>
-          </div>
-
+        <ScrollReveal className="mb-12 flex max-w-3xl flex-col space-y-4 md:mb-16">
+          <div className="eyebrow text-primary/85">Community Journey</div>
+          <h2 className="font-display text-4xl font-600 tracking-tight text-foreground sm:text-5xl md:text-[3.25rem] md:leading-[1.1]">
+            From discovery to{" "}
+            <span className="text-muted-foreground italic font-serif">leadership.</span>
+          </h2>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base md:leading-8">
             The path every Heapify builder takes — from first event to community leader.
           </p>
-
-          <div className="h-px w-16 bg-gradient-to-r from-primary/70 to-transparent" />
+          <div className="h-px w-14 bg-gradient-to-r from-primary/60 to-transparent" />
         </ScrollReveal>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {communityJourney.map((step, index) => (
             <ScrollReveal key={step.step} delay={index * 0.08}>
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-zinc-200/70 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 dark:bg-muted/40 dark:hover:bg-muted/60 hover:shadow-[0_12px_40px_rgba(255,122,0,0.10)]">
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 to-transparent" />
-
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-warm-lg shadow-warm">
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl" />
                 <div className="relative">
-                  <div className="text-[11px] font-mono uppercase tracking-[0.28em] text-primary/80">
-                    {step.step}
-                  </div>
-
-                  <h3 className="mt-4 font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                  <div className="eyebrow text-primary/85 mb-4">{step.step}</div>
+                  <h3 className="font-display text-xl font-600 tracking-tight text-foreground mb-3">
                     {step.title}
                   </h3>
-
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                    {step.description}
-                  </p>
+                  <p className="text-sm leading-7 text-muted-foreground">{step.description}</p>
                 </div>
               </div>
             </ScrollReveal>
@@ -269,77 +250,56 @@ export default async function HomePage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper title="">
+      {/* ── Collaborations ── */}
+      <SectionWrapper>
         <CollaborationsField />
       </SectionWrapper>
 
-      {/* Flagship event — at the bottom, above CTA */}
+      {/* ── Flagship Event Spotlight ── */}
       <SectionWrapper
         eyebrow="Our Flagship Event"
-        title="A glimpse into where we&apos;ve been"
+        title="A glimpse into where we've been"
       >
         <ScrollReveal>
-          <div className="group relative overflow-hidden rounded-[2rem] border border-border/70 bg-card p-6 sm:p-8 md:p-12 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_rgba(255,122,0,0.35)] dark:border-primary/25 dark:bg-[linear-gradient(145deg,rgba(255,122,0,0.12)_0%,rgba(255,122,0,0.04)_45%,transparent_100%)] dark:hover:border-primary/55 dark:hover:shadow-[0_28px_70px_-18px_rgba(255,122,0,0.45)]">
+          <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-warm-lg transition-all duration-500 hover:border-primary/40 hover:shadow-orange">
 
-            {/* ── Ambient glow layers ── */}
-            {/* Large primary orb — top right */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary/25 blur-3xl opacity-40 transition-all duration-700 group-hover:opacity-70 group-hover:scale-110 dark:opacity-70 dark:group-hover:opacity-100"
-            />
-            {/* Secondary orb — bottom left */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -bottom-28 -left-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl opacity-30 transition-all duration-700 group-hover:opacity-60 group-hover:scale-105 dark:opacity-50 dark:group-hover:opacity-80"
-            />
-            {/* Center soft wash */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,122,0,0.12),transparent_65%)] opacity-50 transition-opacity duration-700 group-hover:opacity-80 dark:opacity-70 dark:group-hover:opacity-100"
-            />
-
-            {/* Animated drifting glow (slow float) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 overflow-hidden"
-            >
-              <div className="absolute -left-1/4 top-1/3 h-64 w-64 animate-[float_12s_ease-in-out_infinite] rounded-full bg-primary/20 blur-3xl opacity-40 dark:opacity-60" />
-              <div className="absolute -right-1/4 bottom-1/4 h-56 w-56 animate-[float_16s_ease-in-out_infinite_reverse] rounded-full bg-orange-400/15 blur-3xl opacity-30 dark:opacity-50" />
+            {/* Photo panel on right (desktop) */}
+            <div className="absolute inset-y-0 right-0 w-2/5 hidden md:block overflow-hidden">
+              <Image
+                src="/images/explainingproj2.jpg"
+                alt="Heapify Gemma Sprint — team explaining their project"
+                fill
+                className="object-cover object-center"
+                sizes="40vw"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(to right, hsl(40 35% 97%) 0%, rgba(250,247,242,0.6) 30%, transparent 60%)"
+                }}
+              />
             </div>
 
-            {/* Soft top edge line */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-70 dark:opacity-90"
-            />
-
-            {/* Subtle inner grid texture (optional depth) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
-              style={{
-                backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-                backgroundSize: "24px 24px",
-              }}
-            />
+            {/* Ambient glow */}
+            <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-primary/8 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
             {/* Content */}
-            <div className="relative flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-10">
-              {/* Left */}
-              <div className="max-w-2xl space-y-5">
+            <div className="relative flex flex-col gap-8 p-6 sm:p-10 md:p-14 md:flex-row md:items-start md:justify-between md:gap-10">
+              <div className="max-w-xl space-y-5">
                 <div className="flex flex-wrap gap-2">
-                  <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-primary shadow-[0_0_12px_-2px_rgba(255,122,0,0.35)]">
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
                     Hackathon
                   </span>
-                  <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
                     Past Event
                   </span>
-                  <span className="rounded-full border border-border bg-muted/50 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
                     MSRIT, Bengaluru
                   </span>
                 </div>
 
-                <h3 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                <h3 className="font-display text-2xl font-600 tracking-tight text-foreground sm:text-3xl md:text-4xl">
                   Build with Gemma:
                   <br className="hidden sm:block" /> Bengaluru AI Sprint
                 </h3>
@@ -351,64 +311,44 @@ export default async function HomePage() {
                   just the beginning.
                 </p>
 
-                {/* Stats */}
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <ScrollReveal delay={0.1}>
-                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                        Date
-                      </div>
-                      <div className="mt-1.5 text-sm font-medium text-foreground">
-                        {gemmaSprintDate || "July 18, 2026"}
-                      </div>
-                    </div>
-                  </ScrollReveal>
-                  <ScrollReveal delay={0.2}>
-                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                        Participants
-                      </div>
-                      <div className="mt-1.5 text-sm font-medium text-foreground">
-                        ~250 builders
+                <div className="grid gap-2.5 sm:grid-cols-3">
+                  {[
+                    { label: "Date", value: gemmaSprintDate || "July 18, 2026" },
+                    { label: "Participants", value: "~250 builders" },
+                    { label: "Prize Pool", value: "$1,000", highlight: true },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-border/70 bg-background/60 px-4 py-3.5 hover:border-primary/30 transition-colors duration-200">
+                      <div className="eyebrow text-muted-foreground mb-1.5">{item.label}</div>
+                      <div className={`text-sm font-medium ${item.highlight ? "text-primary font-display" : "text-foreground"}`}>
+                        {item.value}
                       </div>
                     </div>
-                  </ScrollReveal>
-                  <ScrollReveal delay={0.3}>
-                    <div className="rounded-xl border border-border/80 bg-background/80 px-4 py-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:bg-primary/[0.03] dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-primary/40 dark:hover:bg-primary/[0.06]">
-                      <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                        Prize Pool
-                      </div>
-                      <div className="mt-1.5 font-display text-sm font-semibold text-primary">
-                        $1,000
-                      </div>
-                    </div>
-                  </ScrollReveal>
+                  ))}
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col md:items-end">
                 <a
                   href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white shadow-[0_0_20px_-4px_rgba(255,122,0,0.5)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ea6a0e] hover:shadow-[0_0_32px_-4px_rgba(255,122,0,0.7)]"
                 >
-                  Take a glimpse
-                  <ArrowRight className="h-4 w-4 shrink-0" />
+                  <Button size="md">
+                    Take a glimpse <ArrowRight className="ml-1.5 h-4 w-4 shrink-0" />
+                  </Button>
                 </a>
-                <Link
-                  href="/events/build-with-gemma"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/80 px-6 py-3 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:text-foreground dark:bg-white/[0.04] dark:hover:bg-white/[0.07]"
-                >
-                  Event details →
-                </Link>
+                <Button variant="warm" size="md" asChild>
+                  <Link href="/events/build-with-gemma">
+                    Event details →
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
         </ScrollReveal>
       </SectionWrapper>
 
+      {/* ── Final CTA ── */}
       <CTAComponent
         title="Ready to Build Something?"
         description="Join a community built for people who create, collaborate, and ship."
