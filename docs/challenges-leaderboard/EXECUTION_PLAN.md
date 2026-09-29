@@ -9,7 +9,8 @@ Canonical artifacts: REQUIREMENTS.md · SYSTEM_CONTRACTS.md · SOLUTION_CONSTRAI
    - Verify: docs reviewed by `gpt-5.6-terra` (xhigh) against schema/code ground truth; verdicts + remediation recorded.
    - Done when: docs authored, twice-reviewed (Terra + second independent senior review, all corrections applied), and available on disk for md's read-through. Merging deliberately deferred — md reviews before anything goes upstream.
 
-2. **CL-P1 — Migration pack `012_challenges_rls.sql`, `013_points_ledger.sql`**
+2. **CL-P1 — Migration pack `012_challenges_rls.sql`, `013_points_ledger.sql`, `014_rpc_execute_hardening.sql` ✅**
+   - Applied to `hfdymlfmamjyonzasxwvc` and verified live 2026-09-29 (matrix + finding in STATUS.md).
    - Depends on: CL-P0.
    - Produce:
      - Preflight: detect + dedupe duplicate `(challenge_id, user_id)` submission rows (keep latest) BEFORE unique index creation (F9).
