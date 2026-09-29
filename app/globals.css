@@ -19,32 +19,32 @@
     --hero-overlay-mid: transparent;
     --hero-overlay-to: transparent;
     --canvas-fill: rgba(0, 0, 0, 0.006);
-    --node-primary: rgba(249, 115, 22, 0.45);
+    --node-primary: rgba(255, 87, 34, 0.45);
     --node-accent: rgba(59, 130, 246, 0.35);
-    --line-color: rgba(249, 115, 22, 0.08);
+    --line-color: rgba(255, 87, 34, 0.08);
     /* Subtle sunrise — just a whisper of orange at the very top, fading fast */
-    --bg-sunrise: linear-gradient(180deg, rgba(255, 122, 0, 0.09) 0%, rgba(255, 150, 40, 0.04) 18%, transparent 40%);
+    --bg-sunrise: linear-gradient(180deg, rgba(255, 87, 34, 0.09) 0%, rgba(255, 122, 69, 0.04) 18%, transparent 40%);
     --bg-glow-white: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 65%);
     --bg-warmth: none;
   }
 
   .dark {
-    --background: 240 6% 4%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 96%;
-    --card: 240 6% 6%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 96%;
-    --muted: 240 5% 12%;
-    --muted-foreground: 240 5% 65%;
-    --border: 240 6% 16%;
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+    --border: 0 0% 16%;
+    --glass-border: rgba(255, 255, 255, 0.08);
     --glass-bg: rgba(255, 255, 255, 0.03);
     --hero-overlay-from: rgba(10, 10, 10, 0.2);
     --hero-overlay-mid: rgba(10, 10, 10, 0.4);
     --hero-overlay-to: transparent;
     --canvas-fill: rgba(255, 255, 255, 0.02);
-    --node-primary: rgba(255, 122, 0, 0.68);
-    --node-accent: rgba(59, 130, 246, 0.5);
-    --line-color: rgba(255, 122, 0, 0.12);
+    --node-primary: rgba(255, 87, 34, 0.68);
+    --node-accent: rgba(255, 122, 0, 0.35);
+    --line-color: rgba(255, 87, 34, 0.12);
     --bg-sunrise: none;
     --bg-glow-white: none;
     --bg-warmth: none;
@@ -66,14 +66,14 @@
   }
 
   ::selection {
-    background: rgba(249, 115, 22, 0.2);
+    background: rgba(255, 87, 34, 0.2);
     color: #fff;
   }
 }
 
 @layer utilities {
   .text-glow {
-    background: linear-gradient(120deg, #f97316, #fb923c);
+    background: linear-gradient(120deg, #FF5722, #FF8A50);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

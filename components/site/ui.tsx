@@ -14,16 +14,74 @@ import { cn } from "@/lib/utils";
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 import { HeapifyLogo } from "@/components/layout/logo";
 
-export function SectionWrapper({ eyebrow, title, description, action, children, className }: { eyebrow?: string; title?: string; description?: string; action?: Action; children?: React.ReactNode; className?: string }) {
+export function SectionWrapper({
+  eyebrow,
+  title,
+  description,
+  action,
+  children,
+  className,
+  titleClassName,
+  eyebrowClassName,
+}: {
+  eyebrow?: React.ReactNode;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  action?: Action;
+  children?: React.ReactNode;
+  className?: string;
+  titleClassName?: string;
+  eyebrowClassName?: string;
+}) {
   return (
     <section className={cn("px-4 py-12 sm:px-6 md:py-20", className)}>
       <div className="mx-auto w-full max-w-6xl">
         {(eyebrow || title || description || action) && (
-          <motion.div initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.5 }} className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 flex flex-col gap-4 sm:mb-10 md:flex-row md:items-end md:justify-between"
+          >
             <div className="max-w-3xl space-y-2.5 sm:space-y-3">
-              {eyebrow ? <div className="font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</div> : null}
-              {title ? <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl">{title}</h2> : null}
-              {description ? <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p> : null}
+              {eyebrow ? (
+                typeof eyebrow === "string" ? (
+                  <div
+                    className={cn(
+                      "font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground",
+                      eyebrowClassName
+                    )}
+                  >
+                    {eyebrow}
+                  </div>
+                ) : (
+                  eyebrow
+                )
+              ) : null}
+              {title ? (
+                typeof title === "string" ? (
+                  <h2
+                    className={cn(
+                      "font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl md:text-5xl",
+                      titleClassName
+                    )}
+                  >
+                    {title}
+                  </h2>
+                ) : (
+                  title
+                )
+              ) : null}
+              {description ? (
+                typeof description === "string" ? (
+                  <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+                    {description}
+                  </p>
+                ) : (
+                  description
+                )
+              ) : null}
             </div>
             {action ? (
               <Button asChild variant={action.variant === "ghost" ? "ghost" : "primary"} className="self-start md:self-auto">
@@ -114,18 +172,18 @@ export function StatsComponent({ stats }: { stats: Array<{ label: string; value:
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.45, delay: index * 0.05 }}
-          whileHover={{ y: -4 }}
-          className="group relative overflow-hidden rounded-[1.5rem] border border-glass-border bg-glass-bg p-5 backdrop-blur-xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.04)] dark:shadow-[0_15px_40px_-20px_rgba(255,122,0,0.2)] flex flex-col justify-between"
+          whileHover={{ y: -6, scale: 1.01 }}
+          className="group relative overflow-hidden rounded-[1.75rem] border border-border/70 dark:border-white/10 bg-card/70 dark:bg-card/40 p-8 sm:p-10 shadow-[0_10px_30px_-10px_rgba(255,122,0,0.12)] hover:shadow-[0_20px_45px_-12px_rgba(255,122,0,0.25)] flex flex-col justify-between transition-all duration-300"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_50%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="relative z-10">
-            <div className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.15),transparent_50%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="relative z-10 text-center">
+            <div className="font-display text-5xl sm:text-6xl font-black tracking-tight text-orange-600 dark:text-orange-400 drop-shadow-sm">
               <AnimatedValue value={stat.value} />
             </div>
-            <div className="mt-2 text-[11px] font-mono uppercase tracking-[0.24em] text-primary/90 font-medium">
+            <div className="mt-4 text-xs font-mono uppercase tracking-[0.24em] text-foreground font-bold">
               {stat.label}
             </div>
-            <p className="mt-2.5 text-xs leading-5 text-muted-foreground line-clamp-2">
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
               {stat.detail}
             </p>
           </div>

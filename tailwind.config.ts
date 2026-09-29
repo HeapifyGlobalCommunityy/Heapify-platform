@@ -42,8 +42,8 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
         primary: {
-          DEFAULT: "#FF7A00",
-          glow: "#FFA64D",
+          DEFAULT: "#FF5722",
+          glow: "#FF7A45",
           foreground: "#0A0A0B",
         },
         accent: {

@@ -50,6 +50,8 @@ export const viewport: Viewport = {
 
 import { createClient } from "@/lib/supabase/server";
 
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
+
 export default async function RootLayout({
   children,
 }: {
@@ -71,17 +73,19 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
         suppressHydrationWarning
-         className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <NavbarWithAuth isChapterLead={isChapterLead} />
-          <main className="min-h-screen pt-20">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
+          <SmoothScroll>
+            <NavbarWithAuth isChapterLead={isChapterLead} />
+            <main className="min-h-screen pt-20">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>
