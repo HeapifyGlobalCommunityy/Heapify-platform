@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HeapifyLogo } from "@/components/layout/logo";
-import { partners } from "@/lib/site-content";
 import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 
 const socialLinks = [
@@ -113,20 +112,6 @@ export function Footer() {
                 builders to learn, collaborate, compete, and create real-world
                 impact.
               </p>
-
-              {/* Partner badges */}
-              {partners.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {partners.map((partner) => (
-                    <span
-                      key={partner}
-                      className="inline-flex items-center rounded-full border border-border/60 bg-muted/30 px-2.5 py-1 eyebrow text-muted-foreground hover:border-primary/30 hover:bg-primary/6 hover:text-primary transition-colors duration-200 cursor-default"
-                    >
-                      {partner}
-                    </span>
-                  ))}
-                </div>
-              )}
 
               {/* Social icons */}
               <div className="flex items-center gap-2">

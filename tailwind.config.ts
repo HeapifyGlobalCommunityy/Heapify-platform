@@ -78,10 +78,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "Georgia", "serif"],
-        serif:   ["var(--font-cormorant)", "Georgia", "serif"],
-        sans:    ["var(--font-inter)", "system-ui", "sans-serif"],
-        mono:    ["var(--font-jetbrains-mono)", "monospace"],
+        display: ["var(--font-fraunces)", "Fraunces", "Georgia", "serif"],
+        serif:   ["var(--font-cormorant)", "Cormorant Garamond", "Georgia", "serif"],
+        sans:    ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        mono:    ["var(--font-jetbrains-mono)", "JetBrains Mono", "monospace"],
       },
       fontSize: {
         "display-2xl": ["5rem",   { lineHeight: "1.0", letterSpacing: "-0.035em" }],

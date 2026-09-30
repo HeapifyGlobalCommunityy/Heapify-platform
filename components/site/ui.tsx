@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, CalendarDays, ExternalLink, Filter,
   MapPin, Search, Sparkles, Github, Linkedin, ChevronDown
@@ -16,6 +16,23 @@ import { cn } from "@/lib/utils";
 import { HeapifyLogo } from "@/components/layout/logo";
 
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
+
+/* ─── ScrollProgressBar ───────────────────────────────────────── */
+export function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#FF5722] via-[#FF7A00] to-[#FF9100] origin-left z-[100] pointer-events-none shadow-[0_1px_8px_rgba(255,122,0,0.5)]"
+      style={{ scaleX }}
+    />
+  );
+}
 
 /* ─── Shared animation variants ─────────────────────────────── */
 const fadeUp = {
@@ -85,136 +102,217 @@ export function Hero({
   description: string;
   actions: Action[];
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 26,
+    restDelta: 0.001,
+  });
+
+  // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right side (left: 55%, width: 45%)
+  const desktopWidth = useTransform(smoothProgress, [0, 0.65], ["100%", "45%"]);
+  const desktopLeft = useTransform(smoothProgress, [0, 0.65], ["0%", "55%"]);
+  const desktopRadius = useTransform(smoothProgress, [0, 0.65], ["0px", "28px"]);
+  const desktopScale = useTransform(smoothProgress, [0, 0.65], [1.06, 1.0]);
+
+  // Mobile transforms: starts full height, contracts to top banner
+  const mobileHeight = useTransform(smoothProgress, [0, 0.65], ["100%", "42%"]);
+  const mobileRadius = useTransform(smoothProgress, [0, 0.65], ["0px", "24px"]);
+
+  // Overlay blends
+  const blendOpacity = useTransform(smoothProgress, [0.15, 0.65], [0, 1]);
+  const initialVignette = useTransform(smoothProgress, [0, 0.45], [0.35, 0]);
+
+  // Content text transforms
+  const textOpacity = useTransform(smoothProgress, [0, 0.55], [0.85, 1]);
+  const textX = useTransform(smoothProgress, [0, 0.65], [-20, 0]);
+
+  // Floating scroll prompt fades out immediately on scroll
+  const promptOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0]);
+  const promptY = useTransform(smoothProgress, [0, 0.12], [0, 10]);
+
   return (
-    <section className="relative isolate overflow-hidden min-h-[92vh] flex flex-col justify-center px-5 sm:px-8">
-      {/* Animated particle background */}
-      <AnimatedNetworkBackground />
+    <section ref={containerRef} className="relative h-[150vh] lg:h-[160vh]">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center px-5 sm:px-8">
+        {/* Animated particle background */}
+        <AnimatedNetworkBackground />
 
-      {/* Light slate ambient gradient overlays */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,122,0,0.08), transparent 70%),
-            radial-gradient(ellipse 40% 50% at 90% 50%, rgba(148,163,184,0.12), transparent 55%),
-            radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,122,0,0.04), transparent 50%)
-          `,
-        }}
-      />
-
-      {/* Full-bleed background image strip (right half) */}
-      <div className="absolute inset-y-0 right-0 w-[45%] hidden lg:block overflow-hidden">
-        <Image
-          src="/images/picofallparticipants.jpg"
-          alt="Heapify community gathering"
-          fill
-          className="object-cover object-center"
-          priority
-          sizes="45vw"
-        />
-        {/* Fade image into background */}
-        <div className="absolute inset-0"
+        {/* Light slate ambient gradient overlays */}
+        <div
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.75) 30%, transparent 65%)`
+            background: `
+              radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,122,0,0.08), transparent 70%),
+              radial-gradient(ellipse 40% 50% at 90% 50%, rgba(148,163,184,0.12), transparent 55%),
+              radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,122,0,0.04), transparent 50%)
+            `,
           }}
         />
-      </div>
 
-      {/* Content */}
-      <div className="relative mx-auto w-full max-w-7xl py-24 md:py-32 lg:py-36">
-        <div className="max-w-2xl xl:max-w-3xl">
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 inline-flex items-center gap-2.5"
-          >
-            <HeapifyLogo className="h-5 w-5 rounded-sm" />
-            <span className="eyebrow text-foreground/60">
-              Heapify Global Community
-            </span>
-            <span className="h-1 w-1 rounded-full bg-primary" />
-            <span className="eyebrow text-primary">Est. 2024</span>
-          </motion.div>
-
-          {/* Main headline — editorial serif */}
-          <motion.h1
-            initial="hidden"
-            animate="show"
-            variants={fadeUp}
-            className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-600 leading-[1.0] tracking-tight text-foreground mb-6"
-          >
-            Build with<br />
-            <em className="italic text-glow not-italic"
-              style={{ fontStyle: "italic", color: "transparent" }}>
-              people
-            </em>{" "}
-            who ship.
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            initial="hidden"
-            animate="show"
-            custom={1}
-            variants={fadeUp}
-            className="text-lg sm:text-xl text-foreground/70 font-300 leading-relaxed max-w-xl mb-3"
-          >
-            {tagline}
-          </motion.p>
-
-          {/* Description */}
-          <motion.p
-            initial="hidden"
-            animate="show"
-            custom={2}
-            variants={fadeUp}
-            className="text-base text-muted-foreground leading-7 max-w-lg mb-10"
-          >
-            {description}
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial="hidden"
-            animate="show"
-            custom={3}
-            variants={fadeUp}
-            className="flex flex-wrap items-center gap-3"
-          >
-            {actions.map((action, i) => (
-              <Button
-                key={action.href}
-                variant={action.variant === "ghost" ? "warm" : "primary"}
-                size="lg"
-                asChild
-              >
-                <Link href={action.href}>
-                  {action.label}
-                  {i === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
-                </Link>
-              </Button>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-foreground/35"
-      >
-        <span className="eyebrow text-[9px]">scroll</span>
+        {/* Animated Hero Photo (Desktop: morphs from full-screen to right side) */}
         <motion.div
-          animate={{ y: [0, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+          className="absolute inset-y-0 right-0 hidden lg:block overflow-hidden z-0 shadow-2xl"
+          style={{
+            width: desktopWidth,
+            left: desktopLeft,
+            borderTopLeftRadius: desktopRadius,
+            borderBottomLeftRadius: desktopRadius,
+          }}
         >
-          <ChevronDown className="h-4 w-4" />
+          <motion.div className="relative w-full h-full" style={{ scale: desktopScale }}>
+            <Image
+              src="/images/picofallparticipants.jpg"
+              alt="Heapify community gathering"
+              fill
+              className="object-cover object-center"
+              priority
+              sizes="100vw"
+            />
+          </motion.div>
+
+          {/* Initial subtle dark cinematic vignette (fades out as you scroll) */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent pointer-events-none"
+            style={{ opacity: initialVignette }}
+          />
+
+          {/* Fade image into background when docked on right */}
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              opacity: blendOpacity,
+              background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.75) 30%, transparent 65%)`,
+            }}
+          />
         </motion.div>
-      </motion.div>
+
+        {/* Animated Hero Photo (Mobile/Tablet: morphs from full-screen to top banner) */}
+        <motion.div
+          className="absolute inset-x-0 top-0 lg:hidden overflow-hidden z-0 shadow-xl"
+          style={{
+            height: mobileHeight,
+            borderBottomLeftRadius: mobileRadius,
+            borderBottomRightRadius: mobileRadius,
+          }}
+        >
+          <Image
+            src="/images/picofallparticipants.jpg"
+            alt="Heapify community gathering"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="100vw"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(to bottom, rgba(15,23,42,0.35) 0%, hsl(var(--background)) 100%)`,
+            }}
+          />
+        </motion.div>
+
+        {/* Content */}
+        <motion.div
+          style={{ opacity: textOpacity, x: textX }}
+          className="relative z-10 mx-auto w-full max-w-7xl py-24 md:py-32 lg:py-36"
+        >
+          <div className="max-w-2xl xl:max-w-3xl">
+            {/* Eyebrow badge */}
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-8 inline-flex items-center gap-2.5"
+            >
+              <HeapifyLogo className="h-5 w-5 rounded-sm" />
+              <span className="eyebrow text-foreground/60">
+                Heapify Global Community
+              </span>
+              <span className="h-1 w-1 rounded-full bg-primary" />
+              <span className="eyebrow text-primary">Est. 2024</span>
+            </motion.div>
+
+            {/* Main headline — editorial serif */}
+            <motion.h1
+              initial="hidden"
+              animate="show"
+              variants={fadeUp}
+              className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-600 leading-[1.0] tracking-tight text-foreground mb-6"
+            >
+              Build with<br />
+              <em className="italic text-glow not-italic"
+                style={{ fontStyle: "italic", color: "transparent" }}>
+                people
+              </em>{" "}
+              who ship.
+            </motion.h1>
+
+            {/* Tagline */}
+            <motion.p
+              initial="hidden"
+              animate="show"
+              custom={1}
+              variants={fadeUp}
+              className="text-lg sm:text-xl text-foreground/70 font-300 leading-relaxed max-w-xl mb-3"
+            >
+              {tagline}
+            </motion.p>
+
+            {/* Description */}
+            <motion.p
+              initial="hidden"
+              animate="show"
+              custom={2}
+              variants={fadeUp}
+              className="text-base text-muted-foreground leading-7 max-w-lg mb-10"
+            >
+              {description}
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial="hidden"
+              animate="show"
+              custom={3}
+              variants={fadeUp}
+              className="flex flex-wrap items-center gap-3"
+            >
+              {actions.map((action, i) => (
+                <Button
+                  key={action.href}
+                  variant={action.variant === "ghost" ? "ghost" : "primary"}
+                  size="lg"
+                  className={
+                    action.variant === "ghost"
+                      ? "border border-border/80 bg-card/80 text-foreground hover:bg-muted/60 hover:text-foreground shadow-sm font-sans"
+                      : "font-sans font-medium"
+                  }
+                  asChild
+                >
+                  <Link href={action.href}>
+                    {action.label}
+                    {i === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
+                  </Link>
+                </Button>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Scroll prompt on initial load */}
+        <motion.div
+          style={{ opacity: promptOpacity, y: promptY }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground/60 pointer-events-none z-20"
+        >
+          <span>Scroll</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/50 animate-bounce" />
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -227,6 +325,8 @@ export function SectionWrapper({
   action,
   children,
   className,
+  titleClassName,
+  centered = false,
 }: {
   eyebrow?: string;
   title?: string;
@@ -234,6 +334,8 @@ export function SectionWrapper({
   action?: Action;
   children?: React.ReactNode;
   className?: string;
+  titleClassName?: string;
+  centered?: boolean;
 }) {
   return (
     <section className={cn("px-5 py-16 sm:px-8 md:py-24", className)}>
@@ -244,19 +346,24 @@ export function SectionWrapper({
             whileInView="show"
             viewport={{ once: true, amount: 0.1 }}
             variants={fadeUp}
-            className="mb-10 flex flex-col gap-4 sm:mb-14 md:flex-row md:items-end md:justify-between"
+            className={cn(
+              "mb-10 flex flex-col gap-4 sm:mb-14",
+              centered
+                ? "items-center text-center mx-auto"
+                : "md:flex-row md:items-end md:justify-between"
+            )}
           >
-            <div className="max-w-2xl space-y-3">
+            <div className={cn("space-y-3", centered ? "max-w-4xl mx-auto text-center" : "max-w-2xl")}>
               {eyebrow && (
                 <div className="eyebrow text-primary/80">{eyebrow}</div>
               )}
               {title && (
-                <h2 className="font-display text-display-sm sm:text-display-md lg:text-display-lg font-600 text-foreground leading-tight tracking-tight">
+                <h2 className={cn("font-display text-display-sm sm:text-display-md lg:text-display-lg font-semibold text-foreground leading-tight tracking-tight", titleClassName)}>
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="text-base text-muted-foreground leading-7 max-w-xl">
+                <p className={cn("text-base text-muted-foreground leading-7", centered ? "max-w-2xl mx-auto" : "max-w-xl")}>
                   {description}
                 </p>
               )}
@@ -266,7 +373,7 @@ export function SectionWrapper({
                 asChild
                 variant={action.variant === "ghost" ? "ghost" : "primary"}
                 size="sm"
-                className="self-start"
+                className={centered ? "mx-auto" : "self-start"}
               >
                 <Link href={action.href}>
                   {action.label}
@@ -359,41 +466,57 @@ export function CTAComponent({
 }
 
 /* ─── AnimatedValue ──────────────────────────────────────────── */
-function AnimatedValue({ value }: { value: number }) {
-  const [current, setCurrent] = useState(0);
+function AnimatedValue({ value, suffix = "+" }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const digits = value.toString().split("");
 
-  useEffect(() => {
-    if (!isInView) return;
-    const duration = 2000;
-    const startedAt = performance.now();
-    let raf = 0;
-    const tick = (time: number) => {
-      const elapsed = time - startedAt;
-      const progress = Math.min(1, elapsed / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCurrent(Math.round(value * eased));
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [isInView, value]);
+  return (
+    <span ref={ref} className="inline-flex items-baseline">
+      {digits.map((digit, idx) => {
+        const num = parseInt(digit);
+        const isNum = !isNaN(num);
+        if (!isNum) return <span key={idx}>{digit}</span>;
 
-  return <span ref={ref}>{current.toLocaleString()}+</span>;
+        return (
+          <span key={idx} className="inline-block overflow-hidden h-[1.12em] relative">
+            <motion.span
+              initial={{ y: "0%" }}
+              animate={isInView ? { y: `-${num * 10}%` } : { y: "0%" }}
+              transition={{
+                duration: 1.8 + idx * 0.25,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1 + idx * 0.08,
+              }}
+              className="flex flex-col select-none"
+            >
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+                <span key={n} className="h-[1.12em] flex items-center justify-center">
+                  {n}
+                </span>
+              ))}
+            </motion.span>
+          </span>
+        );
+      })}
+      <span>{suffix}</span>
+    </span>
+  );
 }
 
 /* ─── StatsComponent ─────────────────────────────────────────── */
 export function StatsComponent({
   stats,
+  centered = true,
 }: {
-  stats: Array<{ label: string; value: number; detail: string }>;
+  stats: Array<{ label: string; value: number; detail: string; suffix?: string }>;
+  centered?: boolean;
 }) {
   const gridCols =
     stats.length === 1 ? "max-w-sm mx-auto grid-cols-1"
-    : stats.length === 2 ? "max-w-2xl mx-auto sm:grid-cols-2"
-    : stats.length === 3 ? "sm:grid-cols-3"
-    : "sm:grid-cols-2 lg:grid-cols-4";
+      : stats.length === 2 ? "max-w-2xl mx-auto sm:grid-cols-2"
+        : stats.length === 3 ? "sm:grid-cols-3"
+          : "sm:grid-cols-2 lg:grid-cols-4";
 
   return (
     <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
@@ -405,14 +528,17 @@ export function StatsComponent({
           custom={index}
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
-          className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm card-warm"
+          className={cn(
+            "group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm card-warm",
+            centered && "text-center"
+          )}
         >
           {/* Decorative orange corner */}
           <div className="absolute -top-8 -right-8 h-20 w-20 rounded-full bg-primary/6 group-hover:bg-primary/10 transition-colors duration-400" />
 
-          <div className="relative z-10">
+          <div className={cn("relative z-10", centered && "flex flex-col items-center")}>
             <div className="font-display text-4xl font-700 tracking-tight text-foreground sm:text-5xl">
-              <AnimatedValue value={stat.value} />
+              <AnimatedValue value={stat.value} suffix={stat.suffix ?? "+"} />
             </div>
             <div className="mt-2 eyebrow text-primary font-medium">
               {stat.label}
@@ -432,10 +558,12 @@ export function FeatureCard({
   eyebrow,
   title,
   description,
+  centered = false,
 }: {
   eyebrow: string;
   title: string;
   description: string;
+  centered?: boolean;
 }) {
   return (
     <motion.div
@@ -443,7 +571,10 @@ export function FeatureCard({
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
       variants={fadeUp}
-      className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1"
+      className={cn(
+        "group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1",
+        centered && "text-center flex flex-col items-center"
+      )}
     >
       <div className="eyebrow text-primary/90 font-medium mb-4">{eyebrow}</div>
       <h3 className="font-display text-xl font-600 tracking-tight mb-3">{title}</h3>
@@ -745,8 +876,8 @@ export function StatusBadge({
     s === "active" || s === "open" || s === "upcoming"
       ? "border-primary/25 bg-primary/8 text-primary"
       : s === "ongoing"
-      ? "border-emerald-500/25 bg-emerald-500/8 text-emerald-700"
-      : "border-border/70 bg-muted/40 text-muted-foreground";
+        ? "border-emerald-500/25 bg-emerald-500/8 text-emerald-700"
+        : "border-border/70 bg-muted/40 text-muted-foreground";
 
   return (
     <span

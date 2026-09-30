@@ -103,15 +103,17 @@ export default async function HomePage() {
 
       {/* ── Stats ── */}
       <SectionWrapper
+        centered
         eyebrow="Community Stats"
         title="A Growing Builder Network"
         description="Real numbers from a community built around action, not hype."
       >
-        <StatsComponent stats={statsData} />
+        <StatsComponent stats={statsData} centered />
       </SectionWrapper>
 
       {/* ── What We Do ── */}
       <SectionWrapper
+        centered
         eyebrow="What We Do"
         title="A Community Built Around Action"
         description="Everything Heapify does is about builders — people who learn, ship, and create."
@@ -130,6 +132,7 @@ export default async function HomePage() {
 
       {/* ── Latest Event Spotlight ── */}
       <SectionWrapper
+        centered
         eyebrow="Events"
         title="Where Builders Show Up"
         action={{ label: "See all events", href: "/events", variant: "ghost" }}
@@ -195,6 +198,7 @@ export default async function HomePage() {
 
       {/* ── Announcements ── */}
       <SectionWrapper
+        centered
         eyebrow="Community Announcements"
         title="What's Happening"
         description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
@@ -223,14 +227,16 @@ export default async function HomePage() {
       <CommunityJourney />
 
       {/* ── Collaborations ── */}
-      <SectionWrapper>
+      <SectionWrapper centered>
         <CollaborationsField />
       </SectionWrapper>
 
       {/* ── Flagship Event Spotlight ── */}
       <SectionWrapper
+        centered
         eyebrow="Our Flagship Event"
         title="A glimpse into where we've been"
+        titleClassName="font-display font-normal tracking-tight text-foreground text-2xl sm:text-3xl md:text-4xl leading-tight"
       >
         <ScrollReveal>
           <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-warm-lg transition-all duration-500 hover:border-primary/40 hover:shadow-orange">
@@ -271,7 +277,7 @@ export default async function HomePage() {
                   </span>
                 </div>
 
-                <h3 className="font-display text-2xl font-600 tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-foreground">
                   Build with Gemma:
                   <br className="hidden sm:block" /> Bengaluru AI Sprint
                 </h3>

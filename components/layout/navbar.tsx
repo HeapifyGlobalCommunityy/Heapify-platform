@@ -9,6 +9,7 @@ import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const pathname = usePathname();
@@ -37,6 +38,12 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     }
     return true;
   });
+
+  const allNavLinks = [
+    { href: "/", label: "Home" },
+    ...(isChapterLead ? [{ href: "/chapter", label: "Chapter" }] : []),
+    ...filteredLinks,
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -113,88 +120,87 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             </Link>
 
             {/* Desktop nav links */}
-            <nav className="hidden lg:flex items-center gap-1 text-sm" aria-label="Main navigation">
-              <Link
-                href="/"
-                className={[
-                  "px-3 py-1.5 rounded-full transition-all duration-200 text-sm",
-                  isActive("/")
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-foreground/70 hover:text-foreground hover:bg-muted/60",
-                ].join(" ")}
-              >
-                Home
-              </Link>
-              {isChapterLead && (
-                <Link
-                  href="/chapter"
-                  className={[
-                    "px-3 py-1.5 rounded-full transition-all duration-200 text-sm",
-                    isActive("/chapter")
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-foreground/70 hover:text-foreground hover:bg-muted/60",
-                  ].join(" ")}
-                >
-                  Chapter
-                </Link>
-              )}
-              {filteredLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={[
-                    "px-3 py-1.5 rounded-full transition-all duration-200 text-sm",
-                    isActive(link.href)
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-foreground/70 hover:text-foreground hover:bg-muted/60",
-                  ].join(" ")}
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <nav className="hidden lg:flex items-center gap-1.5 text-sm" aria-label="Main navigation">
+              {allNavLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "relative px-3 py-1.5 text-sm font-medium transition-colors duration-200 select-none",
+                      active
+                        ? "text-primary font-semibold"
+                        : "text-foreground/75 hover:text-primary"
+                    )}
+                  >
+                    {link.label}
+                    {active && (
+                      <motion.span
+                        layoutId="navbar-active-underline"
+                        className="absolute bottom-0 left-2.5 right-2.5 h-[2px] rounded-full bg-primary shadow-[0_1px_6px_rgba(255,122,0,0.5)]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Right side actions */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2.5 shrink-0">
               {mounted && user ? (
                 <>
                   {canCreateEvents && (
-                    <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-                      <Link href="/chapter/events/new">+ Event</Link>
-                    </Button>
+                    <Link
+                      href="/chapter/events/new"
+                      className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                      + Event
+                    </Link>
                   )}
                   {!isProd && (
-                    <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-                      <Link href="/dashboard">Dashboard</Link>
-                    </Button>
+                    <Link
+                      href="/dashboard"
+                      className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                    >
+                      Dashboard
+                    </Link>
                   )}
-                  <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-                    <Link href="/profile">Profile</Link>
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="hidden sm:inline-flex"
+                  <Link
+                    href="/profile"
+                    className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                  >
+                    Profile
+                  </Link>
+                  <button
                     onClick={handleSignOut}
                     disabled={isSigningOut}
+                    className="hidden sm:inline-flex items-center justify-center px-4 py-1.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white border border-orange-500/20 shadow-[0_4px_14px_-2px_rgba(255,122,0,0.4)] hover:shadow-[0_6px_20px_-2px_rgba(255,122,0,0.55)] transition-all duration-200 hover:-translate-y-0.5"
                   >
                     {isSigningOut ? "…" : "Sign Out"}
-                  </Button>
+                  </button>
                 </>
               ) : (
                 <>
-                  <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-                    <Link href="/login">Sign In</Link>
-                  </Button>
-                  <Button size="sm" asChild className="hidden sm:inline-flex">
-                    <Link href="/signup">Join Free</Link>
-                  </Button>
+                  <Link
+                    href="/login"
+                    className="hidden sm:inline-flex items-center justify-center px-4 py-1.5 text-sm font-semibold rounded-xl border border-border/90 bg-card/90 text-foreground/85 hover:text-primary hover:border-primary/60 hover:bg-card shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06)] hover:shadow-[0_4px_14px_-2px_rgba(15,23,42,0.12)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="hidden sm:inline-flex items-center justify-center px-4.5 py-1.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white border border-orange-500/25 shadow-[0_4px_14px_-2px_rgba(255,122,0,0.45)] hover:shadow-[0_8px_24px_-4px_rgba(255,122,0,0.65)] hover:brightness-105 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    Join Free
+                  </Link>
                 </>
               )}
 
               {/* Mobile hamburger */}
               <button
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-card/80 text-foreground/70 hover:text-foreground lg:hidden transition-all duration-200 hover:bg-muted/50"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/80 bg-card/80 text-foreground/70 hover:text-foreground lg:hidden transition-all duration-200 hover:bg-muted/50"
                 onClick={() => setOpen(!open)}
                 aria-label="Toggle menu"
                 aria-expanded={open}
@@ -216,17 +222,17 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="border-b border-border/80 bg-background/98 backdrop-blur-xl px-5 py-5 space-y-1 lg:hidden"
           >
-            {[{ href: "/", label: "Home" }, ...(isChapterLead ? [{ href: "/chapter", label: "Chapter" }] : []), ...filteredLinks].map((link) => (
+            {allNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className={[
-                  "flex py-2.5 px-3 rounded-xl text-sm transition-all duration-200",
+                className={cn(
+                  "flex py-2 px-3 text-sm font-medium transition-colors duration-200 border-l-2",
                   isActive(link.href)
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-foreground/70 hover:bg-muted/50 hover:text-foreground",
-                ].join(" ")}
+                    ? "border-primary text-primary font-semibold bg-primary/5 pl-4"
+                    : "border-transparent text-foreground/75 hover:text-primary"
+                )}
               >
                 {link.label}
               </Link>
@@ -249,12 +255,20 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                 </>
               ) : (
                 <>
-                  <Link href="/login" onClick={() => setOpen(false)} className="text-sm font-medium text-foreground py-2 px-3 rounded-xl hover:bg-muted/50 transition-colors">
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center py-2.5 px-4 text-sm font-semibold rounded-xl border border-border/90 bg-card text-foreground/85 shadow-sm hover:border-primary/50 transition-colors"
+                  >
                     Sign In
                   </Link>
-                  <Button asChild size="md">
-                    <Link href="/signup" onClick={() => setOpen(false)}>Join Free →</Link>
-                  </Button>
+                  <Link
+                    href="/signup"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center py-2.5 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white shadow-[0_4px_14px_-2px_rgba(255,122,0,0.45)] hover:brightness-105 transition-colors"
+                  >
+                    Join Free →
+                  </Link>
                 </>
               )}
             </div>

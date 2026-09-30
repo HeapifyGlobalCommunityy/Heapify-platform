@@ -89,7 +89,7 @@ export function CollaborationsField() {
           <div className="eyebrow text-primary/85 mb-3">
             Global Ecosystem
           </div>
-          <h2 className="font-display text-4xl font-600 tracking-tight text-foreground sm:text-5xl md:text-[3.2rem] md:leading-[1.08]">
+          <h2 className="font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-[3.2rem] md:leading-[1.08]">
             Partners who
             <br />
             <span className="text-glow" style={{ background: 'linear-gradient(130deg, #FF7A00, #E8531A)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>power progress.</span>
