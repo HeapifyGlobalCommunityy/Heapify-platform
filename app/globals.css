@@ -137,3 +137,64 @@
     animation: none;
   }
 }
+
+/* ── Scroll performance optimizations ── */
+
+/* Promote the Lenis scroll wrapper to its own GPU layer */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Hardware-accelerate heavy compositing layers during scroll */
+.backdrop-blur-xl,
+.backdrop-blur-md,
+.backdrop-blur-sm {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* Ensure canvas and animated backgrounds stay on GPU */
+canvas {
+  will-change: contents;
+}
+
+/* Prevent layout shifts from motion elements during scroll */
+[data-framer-appear-id] {
+  will-change: opacity, transform;
+}
+
+/* ── Floating Mascot Animations ── */
+@keyframes swim-float-left {
+  0%, 100% {
+    transform: translateY(0px) rotate(-8deg) scale(1);
+  }
+  50% {
+    transform: translateY(-24px) rotate(-2deg) scale(1.04);
+  }
+}
+
+@keyframes swim-float-right {
+  0%, 100% {
+    transform: translateY(0px) rotate(12deg) scaleX(-1) scaleY(1);
+  }
+  50% {
+    transform: translateY(-28px) rotate(6deg) scaleX(-1) scaleY(1.05);
+  }
+}
+
+.animate-swim-left {
+  animation: swim-float-left 7s ease-in-out infinite;
+}
+
+.animate-swim-right {
+  animation: swim-float-right 8.5s ease-in-out infinite;
+}

@@ -14,6 +14,10 @@ export function AnimatedNetworkBackground() {
     const context = canvas.getContext("2d");
     if (!context) return;
 
+    // Use devicePixelRatio for sharp rendering but limit to 2x to avoid
+    // unnecessarily large canvases on hi-DPI screens.
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
     let width = 0;
     let height = 0;
     let frame = 0;
@@ -39,22 +43,36 @@ export function AnimatedNetworkBackground() {
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
+    // Reduced node count from 54 → 32 for much better perf.
+    // The O(n²) connection loop drops from ~1431 to ~496 iterations per frame.
+    const NODE_COUNT = 32;
+    const CONNECTION_DISTANCE = 150;
+
     const resize = () => {
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      const rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       nodes.length = 0;
-      for (let index = 0; index < 54; index += 1) {
+      for (let index = 0; index < NODE_COUNT; index += 1) {
         nodes.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-          r: Math.random() * 1.7 + 0.8,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 0.8,
         });
       }
     };
 
+    // Throttle mousemove to every ~32ms (≈30fps) instead of every frame
+    let moveTimeout: ReturnType<typeof setTimeout> | null = null;
     const onMove = (event: MouseEvent) => {
+      if (moveTimeout) return;
+      moveTimeout = setTimeout(() => { moveTimeout = null; }, 32);
       const rect = canvas.getBoundingClientRect();
       mouse = { x: event.clientX - rect.left, y: event.clientY - rect.top, active: true };
     };
@@ -65,15 +83,26 @@ export function AnimatedNetworkBackground() {
 
     resize();
     window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseleave", onLeave);
 
-    const draw = () => {
+    // Throttle to ~30fps instead of 60fps — the animation is subtle
+    // enough that this is imperceptible, but halves GPU/CPU cost.
+    let lastTime = 0;
+    const FRAME_INTERVAL = 1000 / 30;
+
+    const draw = (time: number) => {
+      frame = requestAnimationFrame(draw);
+
+      if (time - lastTime < FRAME_INTERVAL) return;
+      lastTime = time;
+
       context.clearRect(0, 0, width, height);
       context.fillStyle = colors.canvasFill;
       context.fillRect(0, 0, width, height);
 
-      nodes.forEach((node) => {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
         node.x += node.vx;
         node.y += node.vy;
 
@@ -81,9 +110,9 @@ export function AnimatedNetworkBackground() {
           const dx = node.x - mouse.x;
           const dy = node.y - mouse.y;
           const distance = Math.max(80, Math.hypot(dx, dy));
-          if (distance < 260) {
-            node.x += (dx / distance) * 0.32;
-            node.y += (dy / distance) * 0.32;
+          if (distance < 240) {
+            node.x += (dx / distance) * 0.28;
+            node.y += (dy / distance) * 0.28;
           }
         }
 
@@ -91,36 +120,40 @@ export function AnimatedNetworkBackground() {
         if (node.x > width + 20) node.x = -20;
         if (node.y < -20) node.y = height + 20;
         if (node.y > height + 20) node.y = -20;
-      });
+      }
 
+      // Batch line drawing into a single path for fewer draw calls
+      context.lineWidth = 1;
+      context.beginPath();
       for (let i = 0; i < nodes.length; i += 1) {
         for (let j = i + 1; j < nodes.length; j += 1) {
           const first = nodes[i];
           const second = nodes[j];
-          const distance = Math.hypot(first.x - second.x, first.y - second.y);
-          if (distance < 160) {
-            const alpha = 0.12 * (1 - distance / 160);
-            context.beginPath();
+          const dx = first.x - second.x;
+          const dy = first.y - second.y;
+          // Skip sqrt when possible — compare squared distances
+          const distSq = dx * dx + dy * dy;
+          if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
+            const distance = Math.sqrt(distSq);
+            const alpha = 0.12 * (1 - distance / CONNECTION_DISTANCE);
+            context.strokeStyle = colors.lineColor.replace(/[\d.]+\)$/, `${alpha})`);
             context.moveTo(first.x, first.y);
             context.lineTo(second.x, second.y);
-            context.strokeStyle = colors.lineColor.replace(/[\d.]+\)$/, `${alpha})`);
-            context.lineWidth = 1;
-            context.stroke();
           }
         }
       }
+      context.stroke();
 
-      nodes.forEach((node, index) => {
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
         context.beginPath();
         context.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-        context.fillStyle = index % 9 === 0 ? colors.nodeAccent : colors.nodePrimary;
+        context.fillStyle = i % 9 === 0 ? colors.nodeAccent : colors.nodePrimary;
         context.fill();
-      });
-
-      frame = requestAnimationFrame(draw);
+      }
     };
 
-    draw();
+    frame = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(frame);

@@ -97,21 +97,51 @@ export function SectionWrapper({
 
 export function CTAComponent({ title, description, actions }: { title: string; description: string; actions: Action[] }) {
   return (
-    <motion.section initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.1 }} transition={{ duration: 0.55 }} className="px-4 py-6 sm:px-6">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.14),rgba(255,255,255,0.03),rgba(10,10,10,0.65))] p-6 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.06)] dark:shadow-[0_40px_120px_-60px_rgba(255,122,0,0.55)] sm:p-8 md:p-12">
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
-            <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+    <motion.section
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.55 }}
+      className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12"
+    >
+      <div className="w-full rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-[#FF5722] via-[#FF6735] to-[#FF7A45] dark:from-[#E64A19] dark:via-[#D84315] dark:to-[#BF360C] p-8 sm:p-12 md:p-16 relative overflow-hidden shadow-[0_20px_50px_-15px_rgba(255,87,34,0.35)]">
+        {/* Subtle decorative concentric circle accents */}
+        <div className="absolute -left-20 -top-20 w-80 h-80 rounded-full border border-white/20 pointer-events-none" />
+        <div className="absolute -left-10 -top-10 w-64 h-64 rounded-full border border-white/15 pointer-events-none" />
+        <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full border border-white/20 pointer-events-none" />
+        <div className="absolute -right-12 -bottom-12 w-72 h-72 rounded-full border border-white/15 pointer-events-none" />
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl space-y-5">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3.5 py-1 text-xs text-white font-mono uppercase tracking-wider backdrop-blur-sm">
+            <Sparkles className="h-3.5 w-3.5 text-white shrink-0" />
             <span className="truncate">premium community infrastructure</span>
           </div>
-          <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-5xl">{title}</h3>
-          <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+
+          <h3 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-[1.08]">
+            {title}
+          </h3>
+
+          <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-white/90 font-normal">
+            {description}
+          </p>
+
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3.5 pt-3">
             {actions.map((action) => (
-              <Button key={action.href} variant={action.variant === "ghost" ? "ghost" : "primary"} asChild className="w-full sm:w-auto">
-                <Link href={action.href}>
+              <Button
+                key={action.href}
+                variant={action.variant === "ghost" ? "ghost" : "primary"}
+                asChild
+                className={cn(
+                  "w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold transition-all duration-200 hover:-translate-y-0.5",
+                  action.variant === "ghost"
+                    ? "bg-white/15 hover:bg-white/25 border border-white/30 text-white backdrop-blur-sm"
+                    : "bg-white text-[#FF5722] hover:bg-white/95 shadow-lg hover:shadow-xl"
+                )}
+              >
+                <Link href={action.href} className="flex items-center gap-2">
                   {action.label}
-                  <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
+                  <ArrowRight className="h-4 w-4 shrink-0" />
                 </Link>
               </Button>
             ))}
@@ -124,7 +154,7 @@ export function CTAComponent({ title, description, actions }: { title: string; d
 
 import { useInView } from "framer-motion";
 
-function AnimatedValue({ value }: { value: number }) {
+function AnimatedValue({ value, suffix = "+" }: { value: number; suffix?: string }) {
   const [current, setCurrent] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -50px 0px" });
@@ -132,7 +162,7 @@ function AnimatedValue({ value }: { value: number }) {
   useEffect(() => {
     if (!isInView) return;
 
-    const duration = 2200;
+    const duration = 2000;
     const startedAt = performance.now();
     let raf = 0;
 
@@ -149,46 +179,99 @@ function AnimatedValue({ value }: { value: number }) {
     return () => cancelAnimationFrame(raf);
   }, [isInView, value]);
 
-  return <span ref={ref}>{current.toLocaleString()}+</span>;
+  return (
+    <span ref={ref}>
+      {current.toLocaleString()}
+      {suffix}
+    </span>
+  );
 }
 
-export function StatsComponent({ stats }: { stats: Array<{ label: string; value: number; detail: string }> }) {
-  const gridCols =
-    stats.length === 1
-      ? "max-w-md mx-auto grid-cols-1"
-      : stats.length === 2
-        ? "max-w-2xl mx-auto sm:grid-cols-2"
-        : stats.length === 3
-          ? "sm:grid-cols-3"
-          : "sm:grid-cols-2 lg:grid-cols-4";
-
+export function StatsComponent({
+  stats,
+  eyebrow = "Community Stats",
+  title = "A Growing Builder Network",
+  description = "Real numbers from a community built around action, not hype.",
+}: {
+  stats: Array<{ label: string; value: number; detail: string; suffix?: string }>;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+}) {
   return (
-    <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
-      {stats.map((stat, index) => (
-        <motion.div
-          key={stat.label}
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.45, delay: index * 0.05 }}
-          whileHover={{ y: -6, scale: 1.01 }}
-          className="group relative overflow-hidden rounded-[1.75rem] border border-border/70 dark:border-white/10 bg-card/70 dark:bg-card/40 p-8 sm:p-10 shadow-[0_10px_30px_-10px_rgba(255,122,0,0.12)] hover:shadow-[0_20px_45px_-12px_rgba(255,122,0,0.25)] flex flex-col justify-between transition-all duration-300"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.15),transparent_50%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="relative z-10 text-center">
-            <div className="font-display text-5xl sm:text-6xl font-black tracking-tight text-orange-600 dark:text-orange-400 drop-shadow-sm">
-              <AnimatedValue value={stat.value} />
-            </div>
-            <div className="mt-4 text-xs font-mono uppercase tracking-[0.24em] text-foreground font-bold">
-              {stat.label}
-            </div>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              {stat.detail}
-            </p>
+    <section className="w-full px-3 sm:px-6 md:px-8 lg:px-10 py-6 md:py-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.5 }}
+        className="w-full rounded-[2rem] sm:rounded-[2.5rem] border border-zinc-200/90 dark:border-zinc-800 bg-[#F4F5F7] dark:bg-[#18181b] pt-10 pb-12 sm:pt-14 sm:pb-16 md:pt-16 md:pb-20 px-6 sm:px-10 md:px-16 lg:px-20 relative overflow-hidden shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]"
+      >
+        {/* Subtle decorative concentric circle accents on the left */}
+        <div className="absolute -left-28 sm:-left-20 -top-24 sm:-top-16 w-80 sm:w-96 h-80 sm:h-96 rounded-full border border-orange-500/15 dark:border-orange-500/10 pointer-events-none" />
+        <div className="absolute -left-14 sm:-left-8 -top-12 sm:-top-4 w-60 sm:w-72 h-60 sm:h-72 rounded-full border border-orange-500/10 dark:border-orange-500/5 pointer-events-none" />
+
+        {/* Subtle decorative concentric circle accents on the right */}
+        <div className="absolute -right-28 sm:-right-20 -bottom-24 sm:-bottom-16 w-80 sm:w-96 h-80 sm:h-96 rounded-full border border-orange-500/15 dark:border-orange-500/10 pointer-events-none" />
+        <div className="absolute -right-12 sm:-right-6 -bottom-10 sm:-bottom-4 w-64 sm:w-72 h-64 sm:h-72 rounded-full border border-orange-500/10 dark:border-orange-500/5 pointer-events-none" />
+        <div className="absolute right-12 sm:right-20 -bottom-28 w-72 sm:w-80 h-72 sm:h-80 rounded-full border border-zinc-300/40 dark:border-zinc-700/30 pointer-events-none" />
+
+        {/* Soft radial overlay */}
+        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-500/5 via-transparent to-transparent pointer-events-none" />
+
+        <div className="relative z-10 w-full max-w-[1560px] mx-auto text-center">
+          {/* Header */}
+          <div className="mb-10 sm:mb-14 md:mb-16">
+            {eyebrow && (
+              <div className="text-xs sm:text-sm font-mono uppercase tracking-[0.28em] text-[#FF5722] dark:text-[#ff7a00] font-bold mb-2">
+                {eyebrow}
+              </div>
+            )}
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight text-foreground font-display">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-2.5 sm:mt-3 text-slate-600 dark:text-zinc-400 text-sm sm:text-base md:text-lg font-normal max-w-2xl mx-auto leading-relaxed">
+                {description}
+              </p>
+            )}
           </div>
-        </motion.div>
-      ))}
-    </div>
+
+          {/* Stats Horizontal Row */}
+          <div
+            className={cn(
+              "grid gap-8 sm:gap-10 lg:gap-12 items-start text-center w-full",
+              stats.length === 2 && "grid-cols-1 sm:grid-cols-2 max-w-4xl mx-auto",
+              stats.length === 3 && "grid-cols-1 sm:grid-cols-3 max-w-5xl mx-auto",
+              stats.length >= 4 && "grid-cols-2 lg:grid-cols-4"
+            )}
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                className="flex flex-col items-center px-2 sm:px-4"
+              >
+                <div className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-[#FF5722] dark:text-[#ff7a00] drop-shadow-sm">
+                  <AnimatedValue value={stat.value} suffix={stat.suffix ?? "+"} />
+                </div>
+                <div className="mt-3 sm:mt-4 text-base sm:text-lg font-bold text-foreground dark:text-zinc-100 tracking-wide">
+                  {stat.label}
+                </div>
+                {stat.detail && (
+                  <p className="mt-2 text-xs sm:text-sm md:text-[15px] text-slate-600 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto font-normal">
+                    {stat.detail}
+                  </p>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </section>
   );
 }
 
@@ -381,6 +464,39 @@ export function Hero({ title, tagline, description, actions }: { title: string; 
           background: `linear-gradient(180deg, var(--hero-overlay-from), var(--hero-overlay-mid) 65%, var(--hero-overlay-to))`,
         }}
       />
+
+      {/* Floating Mascot — Left Side */}
+      <motion.div
+        initial={{ opacity: 0, x: -50, scale: 0.85 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+        className="pointer-events-none absolute left-2 sm:left-6 md:left-12 lg:left-20 top-28 sm:top-36 md:top-48 z-10 hidden sm:block"
+      >
+        <div className="animate-swim-left">
+          <img
+            src="/heapify-mascot.png"
+            alt="Heapify Mascot"
+            className="w-24 sm:w-32 md:w-40 lg:w-48 h-auto object-contain drop-shadow-[0_16px_36px_rgba(255,87,34,0.32)] transition-transform duration-500 hover:scale-110 pointer-events-auto cursor-pointer"
+          />
+        </div>
+      </motion.div>
+
+      {/* Floating Mascot — Right Side */}
+      <motion.div
+        initial={{ opacity: 0, x: 50, scale: 0.85 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ duration: 1, delay: 0.35, ease: "easeOut" }}
+        className="pointer-events-none absolute right-2 sm:right-6 md:right-12 lg:right-20 top-36 sm:top-48 md:top-64 z-10 hidden sm:block"
+      >
+        <div className="animate-swim-right">
+          <img
+            src="/heapify-mascot.png"
+            alt="Heapify Mascot"
+            className="w-20 sm:w-28 md:w-36 lg:w-44 h-auto object-contain drop-shadow-[0_16px_36px_rgba(255,87,34,0.32)] transition-transform duration-500 hover:scale-110 pointer-events-auto cursor-pointer"
+          />
+        </div>
+      </motion.div>
+
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="relative mx-auto flex max-w-6xl flex-col items-center text-center">
         <div className="mb-6 flex max-w-full items-center gap-3 rounded-full border border-glass-border bg-glass-bg px-3.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-md sm:mb-8 sm:gap-4 sm:px-4 sm:py-2 sm:text-xs">
           <span className="h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_18px_rgba(255,122,0,0.8)]" />
