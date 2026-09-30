@@ -52,7 +52,7 @@ function StatusPill({ status }: { status: "active" | "past" }) {
         "rounded-full border px-3 py-1 text-[11px] font-medium",
         status === "active"
           ? "border-primary/30 bg-primary/10 text-primary"
-          : "border-zinc-700 bg-zinc-800/60 text-zinc-400",
+          : "border-border/80 bg-muted/50 text-muted-foreground",
       ].join(" ")}
     >
       {status === "active" ? "Active" : "Past"}
@@ -103,7 +103,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
     <motion.article
       whileHover={{ y: -7 }}
       transition={{ duration: 0.25 }}
-      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-6 backdrop-blur-xl"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1"
     >
       {/* Radial hover glow — identical to EventCard */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -207,7 +207,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
                           }}
                           placeholder="https://github.com/you/project"
                           disabled={isDisabled}
-                          className="flex-1 rounded-xl border border-zinc-800 bg-zinc-950/60 px-3.5 py-2.5 text-sm text-white placeholder:text-zinc-600 outline-none focus:border-primary/60 disabled:opacity-50 transition-colors"
+                          className="flex-1 rounded-xl border border-border bg-muted/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-50 transition-colors"
                         />
                         <Button
                           size="sm"
@@ -225,7 +225,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
                     </>
                   ) : (
                     /* Not authenticated — call to action */
-                    <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 text-center space-y-3">
+                    <div className="rounded-xl border border-border/80 bg-muted/30 p-4 text-center space-y-3">
                       <p className="text-sm text-muted-foreground">
                         Sign in to submit an entry for this challenge.
                       </p>

@@ -4,20 +4,52 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  [
+    "inline-flex items-center justify-center whitespace-nowrap font-sans font-medium",
+    "transition-all duration-200 cursor-pointer",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    "disabled:pointer-events-none disabled:opacity-40",
+    "select-none",
+  ].join(" "),
   {
     variants: {
       variant: {
-        primary:
-          "bg-primary text-white hover:-translate-y-0.5 hover:bg-[#ea6a0e] hover:shadow-[0_8px_30px_-8px_rgba(255,122,0,0.6)]",
-        ghost:
-          "border border-foreground/20 text-foreground/80 hover:border-primary/50 hover:bg-primary/5 hover:text-primary dark:border-border dark:text-inherit dark:hover:bg-muted dark:hover:text-inherit dark:hover:border-border",
-        link: "text-primary underline-offset-4 hover:underline",
+        primary: [
+          "bg-primary text-white rounded-full",
+          "shadow-[0_2px_12px_-4px_rgba(255,122,0,0.40)]",
+          "hover:bg-primary-hover hover:-translate-y-0.5",
+          "hover:shadow-[0_8px_28px_-6px_rgba(255,122,0,0.55)]",
+          "active:translate-y-0 active:shadow-none",
+        ].join(" "),
+
+        ghost: [
+          "border border-border/90 bg-card/70 text-foreground/85 rounded-full backdrop-blur-sm",
+          "hover:border-primary/45 hover:bg-primary/8 hover:text-primary",
+          "hover:-translate-y-0.5",
+          "active:translate-y-0",
+        ].join(" "),
+
+        outline: [
+          "border-2 border-foreground/20 bg-transparent text-foreground rounded-full",
+          "hover:border-primary hover:text-primary",
+          "hover:-translate-y-0.5",
+        ].join(" "),
+
+        warm: [
+          "bg-parchment-200 text-espresso-900 border border-parchment-300 rounded-full",
+          "hover:bg-parchment-300 hover:border-primary/30 hover:-translate-y-0.5",
+          "shadow-warm",
+        ].join(" "),
+
+        link: "text-primary underline-offset-4 hover:underline rounded",
       },
       size: {
-        sm: "h-9 px-4",
-        md: "h-11 px-6",
-        lg: "h-12 px-8 text-base",
+        xs: "h-8  px-4 text-xs  gap-1.5",
+        sm: "h-9  px-5 text-sm  gap-2",
+        md: "h-11 px-6 text-sm  gap-2",
+        lg: "h-12 px-8 text-base gap-2.5",
+        xl: "h-14 px-10 text-lg gap-3",
+        icon: "h-10 w-10 p-0",
       },
     },
     defaultVariants: {

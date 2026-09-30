@@ -1,17 +1,17 @@
 import { Suspense } from "react";
-import { brand, communityJourney, gemmaSprintDate } from "@/lib/site-content";
-import { CTAComponent, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
-
+import Image from "next/image";
+import Link from "next/link";
+import { brand, communityJourney, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
+import { CommunityJourney } from "@/components/site/CommunityJourney";
+import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
+import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
 import { getEvents, getSiteStats } from "@/lib/supabase/queries";
-import Link from "next/link";
-import { ArrowRight, CalendarDays, MapPin, Trophy, Users, Play, ExternalLink } from "lucide-react";
+import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollaborationsField } from "@/components/site/collaborations-field";
-import { WhatWeDoCards } from "@/components/site/WhatWeDoCards";
-import { CommunityJourney } from "@/components/site/CommunityJourney";
 
-// ─── Helpers (mirrored from events/page.tsx) ─────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatCategory(cat: string): string {
   const map: Record<string, string> = {
     web3: "Web3", blockchain: "Blockchain", hackathon: "Hackathon",
@@ -47,71 +47,32 @@ export default async function HomePage() {
   const isProd = process.env.NEXT_PUBLIC_STAGE === "production" || process.env.NODE_ENV === "production";
 
   let statsData = [
-    {
-      label: "Community Members",
-      value: 450,
-      suffix: "+",
-      detail: "Students, developers, and builders in the network",
-    },
-    {
-      label: "Events & Hackathons",
-      value: 5,
-      suffix: "+",
-      detail: "Workshops, technical sessions, and builder initiatives",
-    },
-    {
-      label: "Projects Built",
-      value: 25,
-      suffix: "+",
-      detail: "Real-world prototypes and applications shipped",
-    },
-    {
-      label: "Builder Driven",
-      value: 100,
-      suffix: "%",
-      detail: "Skill-validated learning and collaboration, action not hype",
-    },
+    { label: "Community Members", value: 450, detail: "Students, developers, and builders in the network" },
+    { label: "Events", value: 5, detail: "Hackathons, workshops, technical sessions, and builder initiatives" },
   ];
 
   if (isSupabaseConfigured) {
     try {
       const { data: dbStats, error: statsError } = await getSiteStats();
-      if (statsError) {
-        if (
-          statsError.message.includes("Supabase is not configured") ||
-          statsError.message.includes("placeholder")
-        ) {
-          console.warn("[HomePage] site stats are disabled because Supabase is not configured or is using placeholder env values.");
-        } else {
-          console.error("[HomePage] failed loading site stats:", statsError.message);
-        }
-      } else if (dbStats && dbStats.length > 0) {
-        const statsDetailMap: Record<string, { detail: string; suffix?: string }> = {
-          "Community Members": { detail: "Students, developers, and builders in the network", suffix: "+" },
-          Events: { detail: "Hackathons, workshops, technical sessions, and builder initiatives", suffix: "+" },
-          "Projects Built": { detail: "Real-world prototypes and applications shipped", suffix: "+" },
-          "Builder Driven": { detail: "Skill-validated learning and collaboration, action not hype", suffix: "%" },
+      if (!statsError && dbStats && dbStats.length > 0) {
+        const statsDetailMap: Record<string, string> = {
+          "Community Members": "Students, developers, and builders in the network",
+          Events: "Hackathons, workshops, technical sessions, and builder initiatives",
         };
-
         statsData = dbStats.map((row) => ({
           label: row.label,
           value: row.value ?? 0,
-          suffix: statsDetailMap[row.label]?.suffix ?? "+",
-          detail: statsDetailMap[row.label]?.detail ?? "",
+          detail: statsDetailMap[row.label] ?? "",
         }));
       }
-    } catch (error) {
-      console.error("[HomePage] unexpected error loading site stats:", error);
-    }
+    } catch { /* fallback to default */ }
   }
 
   let latestEvent = null;
   if (isSupabaseConfigured) {
     try {
       const { data: dbEvents, error: eventsError } = await getEvents(0, 5);
-      if (eventsError) {
-        console.warn("[HomePage] failed loading latest event:", eventsError.message);
-      } else if (dbEvents && dbEvents.length > 0) {
+      if (!eventsError && dbEvents && dbEvents.length > 0) {
         const ev = dbEvents[0];
         latestEvent = {
           slug: ev.slug,
@@ -124,13 +85,12 @@ export default async function HomePage() {
           description: ev.description || "",
         };
       }
-    } catch (error) {
-      console.error("[HomePage] unexpected error loading latest event:", error);
-    }
+    } catch { /* fallback */ }
   }
 
   return (
     <>
+      {/* ── Hero ── */}
       <Hero
         title={brand.name}
         tagline={brand.tagline}
@@ -141,73 +101,85 @@ export default async function HomePage() {
         ]}
       />
 
-      <StatsComponent
+      {/* ── Stats ── */}
+      <SectionWrapper
         eyebrow="Community Stats"
         title="A Growing Builder Network"
         description="Real numbers from a community built around action, not hype."
-        stats={statsData}
-      />
+      >
+        <StatsComponent stats={statsData} />
+      </SectionWrapper>
 
-      {/* What We Do Cards carousel matching the reference photo */}
-      <WhatWeDoCards />
-
-      {/* Latest event from DB — full-width spotlight */}
-      <section className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
-        <div className="text-center space-y-2.5 mb-8 sm:mb-12">
-          <ScrollReveal>
-            <div>
-              <div className="text-xs sm:text-sm font-mono uppercase tracking-[0.28em] text-[#FF5722] dark:text-[#ff7a00] font-bold mb-2">
-                EVENTS
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight text-foreground font-display">
-                Where Builders Show Up
-              </h2>
-            </div>
-          </ScrollReveal>
+      {/* ── What We Do ── */}
+      <SectionWrapper
+        eyebrow="What We Do"
+        title="A Community Built Around Action"
+        description="Everything Heapify does is about builders — people who learn, ship, and create."
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {whatWeDo.map((item) => (
+            <FeatureCard
+              key={item.title}
+              eyebrow={item.eyebrow}
+              title={item.title}
+              description={item.description}
+            />
+          ))}
         </div>
+      </SectionWrapper>
 
+      {/* ── Latest Event Spotlight ── */}
+      <SectionWrapper
+        eyebrow="Events"
+        title="Where Builders Show Up"
+        action={{ label: "See all events", href: "/events", variant: "ghost" }}
+      >
         {latestEvent ? (
           <ScrollReveal>
-            <div className="group relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-zinc-200/90 dark:border-zinc-800 bg-[#F4F5F7] dark:bg-[#18181b] p-6 sm:p-8 md:p-12 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] transition-all duration-300">
-              <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
-                <div className="max-w-2xl space-y-4 sm:space-y-5">
+            <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card p-6 sm:p-8 md:p-12 shadow-warm-lg hover:border-primary/40 hover:shadow-orange transition-all duration-500">
+              {/* Warm orange glow on right */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+              <div className="relative flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between">
+                <div className="max-w-2xl space-y-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-primary">
+                    <span className="inline-flex items-center rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-primary">
                       {latestEvent.category}
                     </span>
-                    <span className="rounded-full border border-zinc-300/80 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                    <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
                       {latestEvent.status}
                     </span>
-                    <span className="rounded-full border border-zinc-300/80 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
+                    <span className="inline-flex items-center rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground">
                       {latestEvent.format}
                     </span>
                   </div>
-                  <h3 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                  <h3 className="font-display text-2xl font-600 tracking-tight sm:text-3xl md:text-4xl">
                     {latestEvent.title}
                   </h3>
                   {latestEvent.description && (
-                    <p className="text-sm leading-7 text-slate-600 dark:text-zinc-400 md:text-base max-w-xl">
+                    <p className="text-sm leading-7 text-muted-foreground md:text-base max-w-xl">
                       {latestEvent.description}
                     </p>
                   )}
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-600 dark:text-zinc-400">
-                    <span className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4 text-primary shrink-0" />
+                  <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-1.5 text-xs">
+                      <CalendarDays className="h-3.5 w-3.5 text-primary shrink-0" />
                       {latestEvent.date}
                     </span>
-                    <span className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-primary shrink-0" />
+                    <span className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-1.5 text-xs">
+                      <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
                       {latestEvent.location}
                     </span>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row md:flex-col gap-3 md:shrink-0 md:items-end">
-                  <Button asChild className="w-full sm:w-auto">
+                  <Button asChild size="md">
                     <Link href={`/events/${latestEvent.slug}`}>
-                      View event <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
+                      View event <ArrowRight className="ml-1.5 h-4 w-4 shrink-0" />
                     </Link>
                   </Button>
-                  <Button variant="ghost" asChild className="w-full sm:w-auto">
+                  <Button variant="warm" size="md" asChild>
                     <Link href="/events">All events</Link>
                   </Button>
                 </div>
@@ -215,130 +187,140 @@ export default async function HomePage() {
             </div>
           </ScrollReveal>
         ) : (
-          <div className="rounded-[2rem] border border-zinc-200/90 dark:border-zinc-800 bg-[#F4F5F7] dark:bg-[#18181b] p-8 sm:p-12 text-center text-sm text-muted-foreground">
+          <div className="rounded-2xl border border-border/60 bg-card p-8 sm:p-12 text-center text-sm text-muted-foreground shadow-warm">
             No upcoming events right now — check back soon.
           </div>
         )}
-      </section>
+      </SectionWrapper>
 
+      {/* ── Announcements ── */}
+      <SectionWrapper
+        eyebrow="Community Announcements"
+        title="What's Happening"
+        description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
+      >
+        <Suspense
+          fallback={
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-border/60 bg-card p-6 space-y-3 animate-pulse shadow-warm">
+                  <div className="h-4 w-3/4 rounded-lg bg-muted" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-full rounded bg-muted/70" />
+                    <div className="h-3 w-5/6 rounded bg-muted/60" />
+                    <div className="h-3 w-2/3 rounded bg-muted/50" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          }
+        >
+          <AnnouncementsSection />
+        </Suspense>
+      </SectionWrapper>
+
+      {/* ── Community Journey ── */}
       <CommunityJourney />
 
-      <SectionWrapper title="">
+      {/* ── Collaborations ── */}
+      <SectionWrapper>
         <CollaborationsField />
       </SectionWrapper>
 
-      {/* Flagship event — at the bottom, above CTA */}
-      <section className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
-        <div className="text-center space-y-2.5 mb-8 sm:mb-12">
-          <ScrollReveal>
-            <div>
-              <div className="text-xs sm:text-sm font-mono uppercase tracking-[0.28em] text-[#FF5722] dark:text-[#ff7a00] font-bold mb-2">
-                OUR FLAGSHIP EVENT
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tight text-foreground font-display">
-                A glimpse into where we&apos;ve been
-              </h2>
-            </div>
-          </ScrollReveal>
-        </div>
-
+      {/* ── Flagship Event Spotlight ── */}
+      <SectionWrapper
+        eyebrow="Our Flagship Event"
+        title="A glimpse into where we've been"
+      >
         <ScrollReveal>
-          <div className="group relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-zinc-200/90 dark:border-zinc-800 bg-[#F4F5F7] dark:bg-[#18181b] p-6 sm:p-10 md:p-14 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] transition-all duration-300">
-            {/* Subtle decorative concentric circle accents */}
-            <div className="absolute -right-28 -top-24 w-80 h-80 rounded-full border border-orange-500/10 dark:border-orange-500/5 pointer-events-none" />
-            <div className="absolute -right-14 -top-12 w-60 h-60 rounded-full border border-orange-500/10 dark:border-orange-500/5 pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              {/* Left Column */}
-              <div className="max-w-2xl space-y-5">
-                {/* Badges */}
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="rounded-full border border-orange-500/30 bg-orange-500/10 px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-[#FF5722] dark:text-[#ff7a00] font-bold shadow-sm">
+          <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-warm-lg transition-all duration-500 hover:border-primary/40 hover:shadow-orange">
+
+            {/* Photo panel on right (desktop) */}
+            <div className="absolute inset-y-0 right-0 w-2/5 hidden md:block overflow-hidden">
+              <Image
+                src="/images/explainingproj2.jpg"
+                alt="Heapify Gemma Sprint — team explaining their project"
+                fill
+                className="object-cover object-center"
+                sizes="40vw"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(to right, hsl(40 35% 97%) 0%, rgba(250,247,242,0.6) 30%, transparent 60%)"
+                }}
+              />
+            </div>
+
+            {/* Ambient glow */}
+            <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-primary/8 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+            {/* Content */}
+            <div className="relative flex flex-col gap-8 p-6 sm:p-10 md:p-14 md:flex-row md:items-start md:justify-between md:gap-10">
+              <div className="max-w-xl space-y-5">
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-primary">
                     Hackathon
                   </span>
-                  <span className="rounded-full border border-zinc-300/80 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+                  <span className="rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
                     Past Event
                   </span>
-                  <span className="rounded-full border border-zinc-300/80 dark:border-zinc-700 bg-white/80 dark:bg-zinc-800/80 px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-[#FF5722]" />
+                  <span className="rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
                     MSRIT, Bengaluru
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-display text-3xl sm:text-4xl md:text-[2.6rem] font-black tracking-tight text-foreground leading-[1.12]">
-                  Build with Gemma:{" "}
-                  <span className="text-[#FF5722] dark:text-[#ff7a00]">
-                    Bengaluru AI Sprint
-                  </span>
+                <h3 className="font-display text-2xl font-600 tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                  Build with Gemma:
+                  <br className="hidden sm:block" /> Bengaluru AI Sprint
                 </h3>
 
-                {/* Description */}
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 md:text-base md:leading-8 font-normal">
+                <p className="text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
                   250 builders. One offline AI sprint. Heapify&apos;s first flagship
                   hackathon brought together students and developers at MSRIT to build
                   innovative solutions using Google&apos;s Gemma ecosystem — and it was
                   just the beginning.
                 </p>
 
-                {/* Stat Highlight Cards */}
-                <div className="grid gap-3.5 sm:grid-cols-3 pt-2">
-                  <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-sm hover:border-orange-500/40 transition-colors">
-                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                      <CalendarDays className="h-4 w-4 text-[#FF5722]" />
-                      Date
+                <div className="grid gap-2.5 sm:grid-cols-3">
+                  {[
+                    { label: "Date", value: gemmaSprintDate || "July 18, 2026" },
+                    { label: "Participants", value: "~250 builders" },
+                    { label: "Prize Pool", value: "$1,000", highlight: true },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-border/70 bg-background/60 px-4 py-3.5 hover:border-primary/30 transition-colors duration-200">
+                      <div className="eyebrow text-muted-foreground mb-1.5">{item.label}</div>
+                      <div className={`text-sm font-medium ${item.highlight ? "text-primary font-display" : "text-foreground"}`}>
+                        {item.value}
+                      </div>
                     </div>
-                    <div className="mt-2 text-sm sm:text-base font-bold text-foreground">
-                      {gemmaSprintDate || "18 July 2026"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-sm hover:border-orange-500/40 transition-colors">
-                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                      <Users className="h-4 w-4 text-[#FF5722]" />
-                      Participants
-                    </div>
-                    <div className="mt-2 text-sm sm:text-base font-bold text-foreground">
-                      ~250 builders
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 shadow-sm hover:border-orange-500/40 transition-colors">
-                    <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                      <Trophy className="h-4 w-4 text-[#FF5722]" />
-                      Prize Pool
-                    </div>
-                    <div className="mt-2 font-display text-base sm:text-lg font-black text-[#FF5722] dark:text-[#ff7a00]">
-                      $1,000
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Right Column: Actions */}
-              <div className="flex shrink-0 flex-col gap-3.5 sm:flex-row lg:flex-col lg:items-stretch w-full lg:w-56 pt-2 lg:pt-0">
+              <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col md:items-end">
                 <a
                   href="https://www.instagram.com/heapify_/reel/DbgUmHlSW0p/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A45] hover:from-[#e64a19] hover:to-[#FF5722] px-6 py-3.5 text-sm font-bold text-white shadow-[0_8px_25px_-4px_rgba(255,87,34,0.35)] hover:shadow-[0_12px_32px_-4px_rgba(255,87,34,0.55)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
                 >
-                  <Play className="h-4 w-4 fill-white shrink-0" />
-                  Take a glimpse
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-80" />
+                  <Button size="md">
+                    Take a glimpse <ArrowRight className="ml-1.5 h-4 w-4 shrink-0" />
+                  </Button>
                 </a>
-                <Link
-                  href="/events/build-with-gemma"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800/90 px-6 py-3.5 text-sm font-bold text-foreground hover:border-orange-500/60 transition-all duration-300 hover:-translate-y-0.5 shadow-sm active:scale-95 text-center"
-                >
-                  Event details →
-                </Link>
+                <Button variant="warm" size="md" asChild>
+                  <Link href="/events/build-with-gemma">
+                    Event details →
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
         </ScrollReveal>
-      </section>
+      </SectionWrapper>
 
+      {/* ── Final CTA ── */}
       <CTAComponent
         title="Ready to Build Something?"
         description="Join a community built for people who create, collaborate, and ship."

@@ -63,12 +63,12 @@ export function CollaborationsField() {
   const renderCard = (p: typeof partners[0], i: number) => (
     <div
       key={i}
-      className="flex aspect-square w-full items-center justify-center rounded-2xl border border-border/30 bg-white p-4 shadow-sm sm:rounded-[1.5rem] sm:p-6"
+      className="flex aspect-square w-full items-center justify-center rounded-2xl border border-border/50 bg-card p-4 shadow-warm sm:rounded-2xl sm:p-6"
     >
       <img
         src={p.logo}
         alt={p.name}
-        className="h-full w-full object-contain rounded-lg sm:rounded-xl"
+        className="h-full w-full object-contain rounded-lg"
         style={{ transform: `scale(${p.scale || 1})` }}
         loading="lazy"
       />
@@ -86,13 +86,13 @@ export function CollaborationsField() {
         className="flex max-w-md flex-col justify-center space-y-6"
       >
         <div className="space-y-4">
-          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-primary/80">
+          <div className="eyebrow text-primary/85 mb-3">
             Global Ecosystem
           </div>
-          <h2 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-[3.4rem] md:leading-[1.08]">
+          <h2 className="font-display text-4xl font-600 tracking-tight text-foreground sm:text-5xl md:text-[3.2rem] md:leading-[1.08]">
             Partners who
             <br />
-            <span className="text-primary">power progress.</span>
+            <span className="text-glow" style={{ background: 'linear-gradient(130deg, #FF7A00, #E8531A)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>power progress.</span>
           </h2>
         </div>
 
@@ -111,7 +111,7 @@ export function CollaborationsField() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-[2rem] border border-border/20 bg-muted/30 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8 dark:bg-muted/10"
+        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-3xl border border-border/60 bg-card/60 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8"
       >
         <style>{`
           .marquee-container {

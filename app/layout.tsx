@@ -1,20 +1,29 @@
-import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Fraunces, Inter, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import NavbarWithAuth from "@/components/layout/NavbarWithAuth";
 import { Footer } from "@/components/layout/footer";
 import { PageTransition } from "@/components/site/ui";
 
-const spaceGrotesk = Space_Grotesk({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["500", "600", "700"],
+  variable: "--font-fraunces",
+  weight: "variable",
+  style: ["normal", "italic"],
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-cormorant",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  weight: ["300", "400", "500", "600"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -24,7 +33,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Heapify Global",
+  title: "Heapify Global — Build with People Who Ship",
   description:
     "A global community of engineers, builders, and open-source contributors. Learn, build, contribute, lead.",
   metadataBase: new URL("https://heapify.community"),
@@ -39,18 +48,12 @@ export const metadata: Metadata = {
   },
 };
 
-import type { Viewport } from "next";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 import { createClient } from "@/lib/supabase/server";
-
-import { SmoothScroll } from "@/components/layout/smooth-scroll";
 
 export default async function RootLayout({
   children,
@@ -73,19 +76,17 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+    <html lang="en" suppressHydrationWarning className="light">
       <body
         suppressHydrationWarning
-        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}
+        className={`${fraunces.variable} ${cormorant.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}
       >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <SmoothScroll>
-            <NavbarWithAuth isChapterLead={isChapterLead} />
-            <main className="min-h-screen pt-20">
-              <PageTransition>{children}</PageTransition>
-            </main>
-            <Footer />
-          </SmoothScroll>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light">
+          <NavbarWithAuth isChapterLead={isChapterLead} />
+          <main className="min-h-screen pt-20">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

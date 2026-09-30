@@ -75,7 +75,9 @@ export default async function DashboardPage() {
     {
       label: "Account Status",
       value: userRole.replace("_", " ").toUpperCase(),
-      detail: profile?.chapter ? `Member of ${profile.chapter.name}` : "Verified global builder",
+      detail: (Array.isArray(profile?.chapter) ? profile.chapter[0]?.name : (profile?.chapter as unknown as { name?: string } | undefined)?.name)
+        ? `Member of ${Array.isArray(profile?.chapter) ? profile.chapter[0]?.name : (profile?.chapter as unknown as { name?: string })?.name}`
+        : "Verified global builder",
       icon: <ShieldCheck className="h-5 w-5 text-primary" />,
     },
   ];
@@ -84,7 +86,7 @@ export default async function DashboardPage() {
     <div className="pt-36 pb-20 space-y-12">
       {/* User Header / Hero */}
       <section className="px-6">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02),rgba(10,10,10,0.8))] p-8 md:p-10 backdrop-blur-2xl">
+        <div className="mx-auto max-w-6xl rounded-3xl border border-border/70 bg-card p-8 md:p-10 shadow-warm-lg">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               {profile?.avatar_url ? (
@@ -105,7 +107,7 @@ export default async function DashboardPage() {
                   </span>
                   {profile?.chapter && (
                     <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                      <Building2 className="h-3 w-3" /> {profile.chapter.name}
+                      <Building2 className="h-3 w-3" /> {(profile.chapter as unknown as { name?: string })?.name ?? "Chapter member"}
                     </span>
                   )}
                 </div>

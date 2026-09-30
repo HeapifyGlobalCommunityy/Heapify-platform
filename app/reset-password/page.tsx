@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.06),rgba(255,255,255,0.02),rgba(10,10,10,0.7))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.35)] backdrop-blur-2xl">
+        <div className="rounded-3xl border border-border/70 bg-card p-8 shadow-warm-lg">
           {success ? (
             <div className="rounded-md bg-green-500/15 p-3 text-sm text-green-500 text-center">
               Password updated successfully! Redirecting to dashboard...

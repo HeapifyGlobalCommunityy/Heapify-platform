@@ -45,8 +45,8 @@ export function AuthCard({ mode = "login" }: { mode?: "login" | "signup" }) {
           </div>
         </div>
 
-        {/* Auth form card with premium glassmorphism */}
-        <div className="rounded-[2rem] border border-glass-border bg-glass-bg dark:bg-[linear-gradient(135deg,rgba(255,122,0,0.06),rgba(255,255,255,0.02),rgba(10,10,10,0.7))] p-8 shadow-[0_40px_120px_-60px_rgba(255,122,0,0.35)] backdrop-blur-2xl">
+        {/* Auth form card */}
+        <div className="rounded-3xl border border-border/70 bg-card p-8 shadow-warm-lg">
           <div className="grid gap-5">
             <GoogleSignInButton
               mode={mode}
