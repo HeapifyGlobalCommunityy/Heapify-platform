@@ -103,46 +103,85 @@ export function Hero({
   actions: Action[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isInteractive, setIsInteractive] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
+  // Silky, over-damped physics for an organic "melting butter" scroll sensation
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 140,
-    damping: 26,
-    restDelta: 0.001,
+    stiffness: 85,
+    damping: 24,
+    mass: 0.25,
+    restDelta: 0.0001,
   });
 
-  // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right side (left: 55%, width: 45%)
-  const desktopWidth = useTransform(smoothProgress, [0, 0.65], ["100%", "45%"]);
-  const desktopLeft = useTransform(smoothProgress, [0, 0.65], ["0%", "55%"]);
-  const desktopRadius = useTransform(smoothProgress, [0, 0.65], ["0px", "28px"]);
-  const desktopScale = useTransform(smoothProgress, [0, 0.65], [1.06, 1.0]);
+  useEffect(() => {
+    const unsubscribe = smoothProgress.on("change", (latest) => {
+      setIsInteractive(latest > 0.32);
+    });
+    return () => unsubscribe();
+  }, [smoothProgress]);
+
+  // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right docked card
+  const desktopWidth = useTransform(smoothProgress, [0.10, 0.66], ["100%", "47%"]);
+  const desktopLeft = useTransform(smoothProgress, [0.10, 0.66], ["0%", "51%"]);
+  const desktopTop = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+  const desktopBottom = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+  const desktopRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "32px"]);
+  const desktopScale = useTransform(smoothProgress, [0.10, 0.66], [1.05, 1.0]);
+  const desktopShadow = useTransform(
+    smoothProgress,
+    [0.10, 0.66],
+    [
+      "0px 0px 0px rgba(0,0,0,0)",
+      "0 25px 60px -15px rgba(255, 122, 0, 0.12), 0 12px 36px -10px rgba(15, 23, 42, 0.16)"
+    ]
+  );
+  const desktopBorderWidth = useTransform(smoothProgress, [0.18, 0.66], ["0px", "1px"]);
 
   // Mobile transforms: starts full height, contracts to top banner
-  const mobileHeight = useTransform(smoothProgress, [0, 0.65], ["100%", "42%"]);
-  const mobileRadius = useTransform(smoothProgress, [0, 0.65], ["0px", "24px"]);
+  const mobileHeight = useTransform(smoothProgress, [0.10, 0.66], ["100%", "38%"]);
+  const mobileRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
 
-  // Overlay blends
-  const blendOpacity = useTransform(smoothProgress, [0.15, 0.65], [0, 1]);
-  const initialVignette = useTransform(smoothProgress, [0, 0.45], [0.35, 0]);
+  // Floating scroll prompt dissolves immediately on scroll
+  const promptOpacity = useTransform(smoothProgress, [0, 0.08], [1, 0]);
+  const promptY = useTransform(smoothProgress, [0, 0.08], [0, 12]);
 
-  // Content text transforms
-  const textOpacity = useTransform(smoothProgress, [0, 0.55], [0.85, 1]);
-  const textX = useTransform(smoothProgress, [0, 0.65], [-20, 0]);
+  // Photo subtle overlay blends
+  const vignetteOpacity = useTransform(smoothProgress, [0, 0.14], [0.45, 0]);
+  const blendOpacity = useTransform(smoothProgress, [0.22, 0.66], [0, 1]);
 
-  // Floating scroll prompt fades out immediately on scroll
-  const promptOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0]);
-  const promptY = useTransform(smoothProgress, [0, 0.12], [0, 10]);
+  // Content text transforms:
+  // When image is full screen (progress 0), text is completely hidden (opacity 0, blurred, shifted).
+  // As user scrolls, text smoothly glides & melts into view like butter on a hot pan.
+  const contentOpacity = useTransform(smoothProgress, [0.15, 0.58], [0, 1]);
+  const contentY = useTransform(smoothProgress, [0.15, 0.58], [32, 0]);
+  const contentBlur = useTransform(smoothProgress, [0.15, 0.52], [10, 0]);
+  const contentFilter = useTransform(contentBlur, (b) => `blur(${b}px)`);
+
+  // Staggered buttery feel for inner elements
+  const badgeOpacity = useTransform(smoothProgress, [0.18, 0.44], [0, 1]);
+  const badgeY = useTransform(smoothProgress, [0.18, 0.44], [18, 0]);
+
+  const headlineOpacity = useTransform(smoothProgress, [0.22, 0.48], [0, 1]);
+  const headlineY = useTransform(smoothProgress, [0.22, 0.48], [22, 0]);
+
+  const descOpacity = useTransform(smoothProgress, [0.26, 0.54], [0, 1]);
+  const descY = useTransform(smoothProgress, [0.26, 0.54], [18, 0]);
+
+  const actionsOpacity = useTransform(smoothProgress, [0.32, 0.62], [0, 1]);
+  const actionsY = useTransform(smoothProgress, [0.32, 0.62], [16, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[150vh] lg:h-[160vh]">
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-center px-5 sm:px-8">
+    <section ref={containerRef} className="relative h-[220vh] lg:h-[240vh] -mt-20">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end lg:justify-center px-5 sm:px-8 pb-12 lg:pb-0">
         {/* Animated particle background */}
         <AnimatedNetworkBackground />
 
-        {/* Light slate ambient gradient overlays */}
+        {/* Ambient background glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -154,14 +193,18 @@ export function Hero({
           }}
         />
 
-        {/* Animated Hero Photo (Desktop: morphs from full-screen to right side) */}
+        {/* Animated Hero Photo (Desktop: morphs from full-screen to docked showcase) */}
         <motion.div
-          className="absolute inset-y-0 right-0 hidden lg:block overflow-hidden z-0 shadow-2xl"
+          className="absolute hidden lg:block overflow-hidden z-0"
           style={{
             width: desktopWidth,
             left: desktopLeft,
-            borderTopLeftRadius: desktopRadius,
-            borderBottomLeftRadius: desktopRadius,
+            top: desktopTop,
+            bottom: desktopBottom,
+            borderRadius: desktopRadius,
+            boxShadow: desktopShadow,
+            borderWidth: desktopBorderWidth,
+            borderColor: "rgba(255, 122, 0, 0.2)",
           }}
         >
           <motion.div className="relative w-full h-full" style={{ scale: desktopScale }}>
@@ -175,18 +218,18 @@ export function Hero({
             />
           </motion.div>
 
-          {/* Initial subtle dark cinematic vignette (fades out as you scroll) */}
+          {/* Initial subtle bottom vignette for scroll prompt */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent pointer-events-none"
-            style={{ opacity: initialVignette }}
+            className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"
+            style={{ opacity: vignetteOpacity }}
           />
 
-          {/* Fade image into background when docked on right */}
+          {/* Subtle edge blend when docked */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
               opacity: blendOpacity,
-              background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.75) 30%, transparent 65%)`,
+              background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.6) 20%, transparent 50%)`,
             }}
           />
         </motion.div>
@@ -211,26 +254,31 @@ export function Hero({
           <div
             className="absolute inset-0"
             style={{
-              background: `linear-gradient(to bottom, rgba(15,23,42,0.35) 0%, hsl(var(--background)) 100%)`,
+              background: `linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, hsl(var(--background)) 100%)`,
             }}
           />
         </motion.div>
 
-        {/* Content */}
+        {/* Content (Appears only on scroll, like butter melting into place) */}
         <motion.div
-          style={{ opacity: textOpacity, x: textX }}
-          className="relative z-10 mx-auto w-full max-w-7xl py-24 md:py-32 lg:py-36"
+          style={{
+            opacity: contentOpacity,
+            y: contentY,
+            filter: contentFilter,
+          }}
+          className={cn(
+            "relative z-10 mx-auto w-full max-w-7xl pt-24 lg:pt-0 transition-[pointer-events]",
+            isInteractive ? "pointer-events-auto" : "pointer-events-none"
+          )}
         >
-          <div className="max-w-2xl xl:max-w-3xl">
+          <div className="max-w-xl xl:max-w-2xl">
             {/* Eyebrow badge */}
             <motion.div
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-8 inline-flex items-center gap-2.5"
+              style={{ opacity: badgeOpacity, y: badgeY }}
+              className="mb-6 lg:mb-8 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/70 bg-card/85 backdrop-blur-md shadow-sm"
             >
               <HeapifyLogo className="h-5 w-5 rounded-sm" />
-              <span className="eyebrow text-foreground/60">
+              <span className="eyebrow text-foreground/75">
                 Heapify Global Community
               </span>
               <span className="h-1 w-1 rounded-full bg-primary" />
@@ -239,10 +287,8 @@ export function Hero({
 
             {/* Main headline — editorial serif */}
             <motion.h1
-              initial="hidden"
-              animate="show"
-              variants={fadeUp}
-              className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-600 leading-[1.0] tracking-tight text-foreground mb-6"
+              style={{ opacity: headlineOpacity, y: headlineY }}
+              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-600 leading-[1.05] tracking-tight text-foreground mb-5 lg:mb-6"
             >
               Build with<br />
               <em className="italic text-glow not-italic"
@@ -254,32 +300,23 @@ export function Hero({
 
             {/* Tagline */}
             <motion.p
-              initial="hidden"
-              animate="show"
-              custom={1}
-              variants={fadeUp}
-              className="text-lg sm:text-xl text-foreground/70 font-300 leading-relaxed max-w-xl mb-3"
+              style={{ opacity: descOpacity, y: descY }}
+              className="text-lg sm:text-xl text-foreground/80 font-300 leading-relaxed max-w-lg mb-3"
             >
               {tagline}
             </motion.p>
 
             {/* Description */}
             <motion.p
-              initial="hidden"
-              animate="show"
-              custom={2}
-              variants={fadeUp}
-              className="text-base text-muted-foreground leading-7 max-w-lg mb-10"
+              style={{ opacity: descOpacity, y: descY }}
+              className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mb-8"
             >
               {description}
             </motion.p>
 
             {/* CTAs */}
             <motion.div
-              initial="hidden"
-              animate="show"
-              custom={3}
-              variants={fadeUp}
+              style={{ opacity: actionsOpacity, y: actionsY }}
               className="flex flex-wrap items-center gap-3"
             >
               {actions.map((action, i) => (
@@ -304,13 +341,19 @@ export function Hero({
           </div>
         </motion.div>
 
-        {/* Scroll prompt on initial load */}
+        {/* Floating bottom scroll prompt (visible on initial full screen, melts away as you scroll) */}
         <motion.div
           style={{ opacity: promptOpacity, y: promptY }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 text-[10px] font-mono uppercase tracking-[0.24em] text-muted-foreground/60 pointer-events-none z-20"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/25 bg-black/40 backdrop-blur-md text-white shadow-2xl pointer-events-none z-20"
         >
-          <span>Scroll</span>
-          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/50 animate-bounce" />
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+          </span>
+          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/95 font-medium">
+            Scroll to explore
+          </span>
+          <ChevronDown className="h-3.5 w-3.5 text-primary animate-bounce ml-0.5" />
         </motion.div>
       </div>
     </section>
