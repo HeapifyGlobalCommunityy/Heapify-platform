@@ -198,12 +198,13 @@ export default async function EventDetailPage({
   const formattedEvent = {
     slug: ev.slug,
     title: ev.title,
-    banner: ev.banner_url || ev.description || "",
+    banner: ev.banner_url || "",
     category: formatCategory(ev.category),
     status: formatStatus(computedStatus),
     date: formatEventDate(ev.start_at),
     time: formatEventTime(ev.start_at),
     location: ev.location || (ev.is_virtual ? "Virtual" : "TBD"),
+    description: ev.description || "",
     host: "Heapify Global Community",
     chapterName: (ev as unknown as { chapters: { name: string } | null }).chapters?.name || null,
     agenda: ((ev.agenda || []) as unknown as { time?: string; item?: string; title?: string }[]).map((a) => ({

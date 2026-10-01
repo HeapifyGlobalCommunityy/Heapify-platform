@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { brand, coreValues, timeline } from "@/lib/site-content";
 import { FeatureCard, SectionWrapper } from "@/components/site/ui";
+import { ParallaxDolphinWatermark } from "@/components/site/scroll-decorations";
 
 function TimelineItem({ item, index }: { item: { year: string; title: string; description: string }; index: number }) {
   const itemRef = useRef<HTMLDivElement>(null);
@@ -84,7 +85,28 @@ export default function AboutPage() {
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <>
+    <div className="relative overflow-hidden">
+      {/* Background dolphin watermarks */}
+      <ParallaxDolphinWatermark
+        className="absolute -right-8 sm:right-6 top-24 w-36 h-36 sm:w-48 sm:h-48 opacity-[0.08] mix-blend-multiply"
+        speed={30}
+        direction="down"
+        initialRotate={18}
+        flip={true}
+      />
+      <ParallaxDolphinWatermark
+        className="absolute -left-10 sm:left-6 top-[45%] w-40 h-40 sm:w-52 sm:h-52 opacity-[0.07] mix-blend-multiply"
+        speed={40}
+        direction="up"
+        initialRotate={-16}
+      />
+      <ParallaxDolphinWatermark
+        className="absolute -right-8 sm:right-8 top-[80%] w-36 h-36 sm:w-44 sm:h-44 opacity-[0.07] mix-blend-multiply"
+        speed={25}
+        direction="down"
+        initialRotate={12}
+      />
+
       <SectionWrapper
         eyebrow="Mission & Vision"
         title="We are building the operating system for global builders"
@@ -167,6 +189,6 @@ export default function AboutPage() {
           ))}
         </div>
       </SectionWrapper>
-    </>
+    </div>
   );
 }
