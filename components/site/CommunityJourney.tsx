@@ -1,9 +1,27 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 export function CommunityJourney() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 85%", "center 45%"],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 26,
+    restDelta: 0.001,
+  });
+
+  // Parallax shifts for background concentric rings
+  const ringRotateLeft = useTransform(smoothProgress, [0, 1], [-8, 12]);
+  const ringRotateRight = useTransform(smoothProgress, [0, 1], [8, -12]);
+  const ringScale = useTransform(smoothProgress, [0, 1], [0.94, 1.05]);
+
   const steps = [
     {
       step: "01",
@@ -56,13 +74,25 @@ export function CommunityJourney() {
   ];
 
   return (
-    <section className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+    <section ref={containerRef} className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
       <div className="w-full rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-[#FF5722] via-[#FF6735] to-[#FF7A45] dark:from-[#E64A19] dark:via-[#D84315] dark:to-[#BF360C] pt-7 pb-8 md:pt-9 md:pb-10 px-5 sm:px-8 md:px-10 relative overflow-hidden shadow-[0_20px_50px_-15px_rgba(255,87,34,0.35)]">
-        {/* Subtle decorative concentric circle accents */}
-        <div className="absolute -left-20 -top-20 w-80 h-80 rounded-full border border-white/20 pointer-events-none" />
-        <div className="absolute -left-10 -top-10 w-64 h-64 rounded-full border border-white/15 pointer-events-none" />
-        <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full border border-white/20 pointer-events-none" />
-        <div className="absolute -right-12 -bottom-12 w-72 h-72 rounded-full border border-white/15 pointer-events-none" />
+        {/* Subtle decorative concentric circle accents with scroll parallax */}
+        <motion.div
+          style={{ rotate: ringRotateLeft, scale: ringScale, willChange: "transform" }}
+          className="absolute -left-20 -top-20 w-80 h-80 rounded-full border border-white/20 pointer-events-none"
+        />
+        <motion.div
+          style={{ rotate: ringRotateLeft, willChange: "transform" }}
+          className="absolute -left-10 -top-10 w-64 h-64 rounded-full border border-white/15 pointer-events-none"
+        />
+        <motion.div
+          style={{ rotate: ringRotateRight, scale: ringScale, willChange: "transform" }}
+          className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full border border-white/20 pointer-events-none"
+        />
+        <motion.div
+          style={{ rotate: ringRotateRight, willChange: "transform" }}
+          className="absolute -right-12 -bottom-12 w-72 h-72 rounded-full border border-white/15 pointer-events-none"
+        />
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-[1220px] mx-auto">
@@ -70,6 +100,7 @@ export function CommunityJourney() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="mb-5 md:mb-6 px-1 text-center"
           >
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white font-display mb-1.5 drop-shadow-sm">
@@ -83,7 +114,7 @@ export function CommunityJourney() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 md:gap-5">
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 md:gap-5">
             {steps.map((step, index) => (
               <motion.div
                 key={step.step}

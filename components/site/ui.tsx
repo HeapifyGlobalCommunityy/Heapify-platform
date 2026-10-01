@@ -21,16 +21,20 @@ type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 export function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
+    stiffness: 110,
     damping: 30,
     restDelta: 0.001,
   });
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#FF5722] via-[#FF7A00] to-[#FF9100] origin-left z-[100] pointer-events-none shadow-[0_1px_8px_rgba(255,122,0,0.5)]"
-      style={{ scaleX }}
-    />
+    <div className="fixed top-0 left-0 right-0 h-[2.5px] z-[100] pointer-events-none">
+      <motion.div
+        className="relative h-full w-full bg-gradient-to-r from-[#FF5722] via-[#FF7A00] to-[#FF9100] origin-left shadow-[0_1px_8px_rgba(255,122,0,0.5)]"
+        style={{ scaleX }}
+      >
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-6 h-3 bg-gradient-to-r from-transparent to-white/95 rounded-full blur-[1px] shadow-[0_0_10px_rgba(255,122,0,0.9)]" />
+      </motion.div>
+    </div>
   );
 }
 
@@ -40,7 +44,7 @@ const fadeUp = {
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.65, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
@@ -71,18 +75,40 @@ export function ScrollReveal({
   children,
   className,
   delay = 0,
+  direction = "up",
+  distance = 24,
+  duration = 0.65,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  direction?: "up" | "down" | "left" | "right" | "none";
+  distance?: number;
+  duration?: number;
 }) {
+  const getInitialPosition = () => {
+    switch (direction) {
+      case "up": return { y: distance, x: 0 };
+      case "down": return { y: -distance, x: 0 };
+      case "left": return { x: distance, y: 0 };
+      case "right": return { x: -distance, y: 0 };
+      case "none": return { x: 0, y: 0 };
+    }
+  };
+
+  const initialPos = getInitialPosition();
+
   return (
     <motion.div
-      initial="hidden"
-      whileInView="show"
-      custom={delay / 0.07}
+      initial={{ opacity: 0, ...initialPos }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, amount: 0.08 }}
-      variants={fadeUp}
+      transition={{
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{ willChange: "transform, opacity" }}
       className={className}
     >
       {children}
@@ -173,6 +199,7 @@ export function Hero({
 
   const actionsOpacity = useTransform(smoothProgress, [0.32, 0.62], [0, 1]);
   const actionsY = useTransform(smoothProgress, [0.32, 0.62], [16, 0]);
+  const dolphinOpacity = useTransform(smoothProgress, [0.12, 0.45], [0, 1]);
 
   return (
     <section ref={containerRef} className="relative h-[220vh] lg:h-[240vh] -mt-20">
@@ -191,6 +218,44 @@ export function Hero({
             `,
           }}
         />
+
+        {/* Dolphin Mascot Watermarks (Left top & Right side) */}
+        <motion.div
+          style={{ opacity: dolphinOpacity }}
+          className="pointer-events-none absolute left-3 sm:left-6 lg:left-12 top-20 sm:top-24 lg:top-28 w-28 sm:w-36 md:w-44 aspect-square select-none z-0"
+        >
+          <motion.div
+            animate={{ y: [-5, 5, -5], rotate: [-14, -8, -14] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-full h-full opacity-[0.18] mix-blend-multiply"
+          >
+            <Image
+              src="/heapify-mascot.png"
+              alt="Heapify Mascot Watermark"
+              fill
+              className="object-contain"
+              priority
+            />
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          style={{ opacity: dolphinOpacity }}
+          className="pointer-events-none absolute right-3 sm:right-6 lg:right-10 top-[52%] -translate-y-1/2 w-28 sm:w-36 md:w-42 aspect-square select-none z-0"
+        >
+          <motion.div
+            animate={{ y: [5, -5, 5], rotate: [12, 18, 12] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-full h-full opacity-[0.15] mix-blend-multiply scale-x-[-1]"
+          >
+            <Image
+              src="/heapify-mascot.png"
+              alt="Heapify Mascot Watermark"
+              fill
+              className="object-contain"
+            />
+          </motion.div>
+        </motion.div>
 
         {/* Animated Hero Photo (Desktop: morphs from full-screen to docked showcase) */}
         <motion.div
@@ -227,7 +292,7 @@ export function Hero({
 
         {/* Animated Hero Photo (Mobile/Tablet: morphs from full-screen to top banner) */}
         <motion.div
-          className="absolute inset-x-0 top-0 lg:hidden overflow-hidden z-0 shadow-xl"
+          className="absolute inset-x-0 top-0 lg:hidden overflow-hidden z-0 border-b border-border/60 shadow-md"
           style={{
             height: mobileHeight,
             borderBottomLeftRadius: mobileRadius,
@@ -241,12 +306,6 @@ export function Hero({
             className="object-cover object-center"
             priority
             sizes="100vw"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, hsl(var(--background)) 100%)`,
-            }}
           />
         </motion.div>
 
@@ -262,7 +321,7 @@ export function Hero({
             isInteractive ? "pointer-events-auto" : "pointer-events-none"
           )}
         >
-          <div className="max-w-xl xl:max-w-2xl">
+          <div className="max-w-3xl xl:max-w-4xl lg:pr-4">
             {/* Eyebrow badge */}
             <motion.div
               style={{ opacity: badgeOpacity, y: badgeY }}
@@ -279,13 +338,12 @@ export function Hero({
             {/* Main headline — editorial serif */}
             <motion.h1
               style={{ opacity: headlineOpacity, y: headlineY }}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-600 leading-[1.05] tracking-tight text-foreground mb-5 lg:mb-6"
+              className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6.25rem] font-600 leading-[1.02] tracking-tight text-foreground mb-6"
             >
               Build with<br />
-              <em className="italic text-glow not-italic"
-                style={{ fontStyle: "italic", color: "transparent" }}>
+              <span className="font-serif italic font-normal text-glow inline-block pr-2">
                 people
-              </em>{" "}
+              </span>{" "}
               who ship.
             </motion.h1>
 
@@ -433,64 +491,83 @@ export function CTAComponent({
   description: string;
   actions: Action[];
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const ringRotate = useTransform(scrollYProgress, [0, 1], [-10, 15]);
+  const ringScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.02, 0.98]);
+
   return (
     <motion.section
+      ref={cardRef}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
       variants={fadeUp}
-      className="px-5 py-12 sm:px-8"
+      className="px-5 py-8 sm:px-8"
     >
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl relative">
-        {/* Background — community photo with warm overlay */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/guygivingspeech.jpg"
-            alt="Heapify community event"
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1200px) 100vw, 1200px"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(135deg,
-                rgba(232,236,242,0.97) 0%,
-                rgba(232,236,242,0.88) 35%,
-                rgba(232,236,242,0.70) 65%,
-                rgba(255,122,0,0.15) 100%)`,
-            }}
-          />
-        </div>
+      <div className="group mx-auto max-w-4xl overflow-hidden rounded-3xl relative bg-[#FF5722] shadow-[0_16px_40px_-12px_rgba(255,87,34,0.45)] border border-white/20 transition-all duration-500">
+        {/* Concentric decorative outline rings matching the community stats card with scroll parallax */}
+        <motion.div
+          style={{ rotate: ringRotate, scale: ringScale, willChange: "transform" }}
+          className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full border border-white/15"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, willChange: "transform" }}
+          className="pointer-events-none absolute -right-36 -top-36 h-[28rem] w-[28rem] rounded-full border border-white/10"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, scale: ringScale, willChange: "transform" }}
+          className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full border border-white/15"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, willChange: "transform" }}
+          className="pointer-events-none absolute -left-28 -bottom-28 h-80 w-80 rounded-full border border-white/10"
+        />
 
-        {/* Border & shadow */}
-        <div className="absolute inset-0 rounded-3xl ring-1 ring-border/50" />
-
-        {/* Content */}
-        <div className="relative z-10 p-8 sm:p-12 md:p-16">
-          <div className="max-w-xl space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="eyebrow text-primary">Premium community</span>
-            </div>
-            <h3 className="font-display text-display-sm sm:text-display-md font-600 tracking-tight leading-tight">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center p-6 sm:p-8 md:p-9 relative z-10">
+          {/* Content Column */}
+          <div className="md:col-span-7 space-y-4">
+            <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight leading-tight text-white drop-shadow-sm">
               {title}
             </h3>
-            <p className="text-base text-muted-foreground leading-7">{description}</p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              {actions.map((action) => (
+            <p className="text-sm sm:text-base text-white/90 leading-relaxed max-w-md font-normal">
+              {description}
+            </p>
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {actions.map((action, idx) => (
                 <Button
                   key={action.href}
-                  variant={action.variant === "ghost" ? "warm" : "primary"}
-                  size="lg"
+                  variant={action.variant === "ghost" ? "ghost" : "primary"}
+                  size="md"
+                  className={
+                    action.variant === "ghost"
+                      ? "border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white shadow-sm font-sans backdrop-blur-sm h-10 px-5 text-sm"
+                      : "bg-white text-[#FF5722] font-sans font-semibold shadow-md hover:bg-white/95 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 h-10 px-5 text-sm"
+                  }
                   asChild
                 >
                   <Link href={action.href}>
                     {action.label}
-                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                    {idx === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
                   </Link>
                 </Button>
               ))}
+            </div>
+          </div>
+
+          {/* Cleanly Framed Photo Column (Compact) */}
+          <div className="md:col-span-5 w-full">
+            <div className="relative aspect-[16/10] sm:aspect-[16/10] md:aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 border-white/25 shadow-xl">
+              <Image
+                src="/images/guygivingspeech.jpg"
+                alt="Heapify community event"
+                fill
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 360px"
+              />
             </div>
           </div>
         </div>
@@ -571,13 +648,13 @@ export function StatsComponent({
           <div className="absolute -top-8 -right-8 h-20 w-20 rounded-full bg-primary/6 group-hover:bg-primary/10 transition-colors duration-400" />
 
           <div className={cn("relative z-10", centered && "flex flex-col items-center")}>
-            <div className="font-display text-4xl font-700 tracking-tight text-foreground sm:text-5xl">
+            <div className="font-display text-4xl sm:text-5xl font-700 tracking-tight text-primary drop-shadow-[0_2px_12px_rgba(255,122,0,0.22)]">
               <AnimatedValue value={stat.value} suffix={stat.suffix ?? "+"} />
             </div>
-            <div className="mt-2 eyebrow text-primary font-medium">
+            <div className="mt-2.5 font-display text-base sm:text-lg font-semibold text-foreground tracking-tight">
               {stat.label}
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+            <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-muted-foreground">
               {stat.detail}
             </p>
           </div>
@@ -587,32 +664,61 @@ export function StatsComponent({
   );
 }
 
+/* ─── FeatureCard Animation (GPU-accelerated, zero lag) ────────── */
+const fastCardEntrance = {
+  hidden: {
+    opacity: 0,
+    y: 22,
+  },
+  show: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      delay: (i % 3) * 0.08,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
 /* ─── FeatureCard ────────────────────────────────────────────── */
 export function FeatureCard({
   eyebrow,
   title,
   description,
   centered = false,
+  index = 0,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
   centered?: boolean;
+  index?: number;
 }) {
   return (
     <motion.div
+      custom={index}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
-      variants={fadeUp}
+      variants={fastCardEntrance}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      style={{ willChange: "transform, opacity" }}
       className={cn(
-        "group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1",
+        "group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-warm transition-colors duration-200 hover:border-primary/40 hover:shadow-orange",
         centered && "text-center flex flex-col items-center"
       )}
     >
-      <div className="eyebrow text-primary/90 font-medium mb-4">{eyebrow}</div>
-      <h3 className="font-display text-xl font-600 tracking-tight mb-3">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-7">{description}</p>
+      {/* Subtle ambient warm glow on hover */}
+      <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative z-10">
+        <h3 className="font-display text-xl font-600 tracking-tight mb-3 text-foreground group-hover:text-primary transition-colors duration-200">
+          {title}
+        </h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      </div>
     </motion.div>
   );
 }

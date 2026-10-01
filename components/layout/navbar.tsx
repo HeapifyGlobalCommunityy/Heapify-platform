@@ -19,7 +19,8 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const isHome = pathname === "/";
+  const [visible, setVisible] = useState(!isHome);
   const lastScrollY = useRef(0);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -59,22 +60,42 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   }, [profile, isChapterLead]);
 
   useEffect(() => {
+    setVisible(pathname !== "/");
+  }, [pathname]);
+
+  useEffect(() => {
     const onScroll = () => {
       const currentY = window.scrollY;
       setScrolled(currentY > 24);
-      if (currentY < 80) {
-        setVisible(true);
-      } else if (currentY > lastScrollY.current + 4) {
-        setVisible(false);
-        setOpen(false);
-      } else if (currentY < lastScrollY.current - 4) {
-        setVisible(true);
+
+      if (isHome) {
+        // On home page: hide while hero photo is full-screen at the top
+        if (currentY < 180) {
+          setVisible(false);
+          setOpen(false);
+        } else if (currentY > lastScrollY.current + 4 && currentY > 400) {
+          setVisible(false);
+          setOpen(false);
+        } else if (currentY < lastScrollY.current - 4 || (currentY >= 180 && currentY <= 400)) {
+          setVisible(true);
+        }
+      } else {
+        if (currentY < 80) {
+          setVisible(true);
+        } else if (currentY > lastScrollY.current + 4) {
+          setVisible(false);
+          setOpen(false);
+        } else if (currentY < lastScrollY.current - 4) {
+          setVisible(true);
+        }
       }
       lastScrollY.current = currentY;
     };
+
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
 
   const handleSignOut = async () => {
     if (isSigningOut) return;

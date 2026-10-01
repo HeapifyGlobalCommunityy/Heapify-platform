@@ -117,6 +117,7 @@ export default function AboutPage() {
       </SectionWrapper>
 
       <SectionWrapper
+        centered
         eyebrow="Core Values"
         title="The principles that guide our network"
       >
@@ -124,6 +125,7 @@ export default function AboutPage() {
           {coreValues.map((value, i) => (
             <FeatureCard
               key={value.title}
+              index={i}
               eyebrow={`0${i + 1}`}
               title={value.title}
               description={value.description}
@@ -133,6 +135,7 @@ export default function AboutPage() {
       </SectionWrapper>
 
       <SectionWrapper
+        centered
         eyebrow="Timeline"
         title="Our journey so far"
         description="From a small local group to a distributed network of builders."
