@@ -120,7 +120,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             </Link>
 
             {/* Desktop nav links */}
-            <nav className="hidden lg:flex items-center gap-1.5 text-sm" aria-label="Main navigation">
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-xs xl:text-sm shrink min-w-0" aria-label="Main navigation">
               {allNavLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
@@ -128,7 +128,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "relative px-3 py-1.5 text-sm font-medium transition-colors duration-200 select-none",
+                      "relative px-2.5 xl:px-3 py-1.5 font-medium transition-colors duration-200 select-none whitespace-nowrap",
                       active
                         ? "text-primary font-semibold"
                         : "text-foreground/75 hover:text-primary"
@@ -138,7 +138,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                     {active && (
                       <motion.span
                         layoutId="navbar-active-underline"
-                        className="absolute bottom-0 left-2.5 right-2.5 h-[2px] rounded-full bg-primary shadow-[0_1px_6px_rgba(255,122,0,0.5)]"
+                        className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-primary shadow-[0_1px_6px_rgba(255,122,0,0.5)]"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -148,13 +148,13 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             </nav>
 
             {/* Right side actions */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
               {mounted && user ? (
                 <>
                   {canCreateEvents && (
                     <Link
                       href="/chapter/events/new"
-                      className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                      className="hidden sm:inline-flex items-center justify-center h-9 px-3.5 text-xs sm:text-sm font-medium rounded-full border border-border/80 bg-card/80 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-xs transition-all duration-200 whitespace-nowrap"
                     >
                       + Event
                     </Link>
@@ -162,21 +162,21 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                   {!isProd && (
                     <Link
                       href="/dashboard"
-                      className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                      className="hidden sm:inline-flex items-center justify-center h-9 px-3.5 text-xs sm:text-sm font-medium rounded-full border border-border/80 bg-card/80 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-xs transition-all duration-200 whitespace-nowrap"
                     >
                       Dashboard
                     </Link>
                   )}
                   <Link
                     href="/profile"
-                    className="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 text-sm font-medium rounded-xl border border-border/80 bg-card/90 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                    className="hidden sm:inline-flex items-center justify-center h-9 px-3.5 text-xs sm:text-sm font-medium rounded-full border border-border/80 bg-card/80 text-foreground/80 hover:text-foreground hover:border-primary/50 shadow-xs transition-all duration-200 whitespace-nowrap"
                   >
                     Profile
                   </Link>
                   <button
                     onClick={handleSignOut}
                     disabled={isSigningOut}
-                    className="hidden sm:inline-flex items-center justify-center px-4 py-1.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white border border-orange-500/20 shadow-[0_4px_14px_-2px_rgba(255,122,0,0.4)] hover:shadow-[0_6px_20px_-2px_rgba(255,122,0,0.55)] transition-all duration-200 hover:-translate-y-0.5"
+                    className="hidden sm:inline-flex items-center justify-center h-9 px-4 text-xs sm:text-sm font-semibold rounded-full bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white shadow-[0_2px_10px_-2px_rgba(255,122,0,0.4)] hover:shadow-[0_4px_16px_-2px_rgba(255,122,0,0.55)] active:scale-95 transition-all duration-200 whitespace-nowrap"
                   >
                     {isSigningOut ? "…" : "Sign Out"}
                   </button>
@@ -185,13 +185,13 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                 <>
                   <Link
                     href="/login"
-                    className="hidden sm:inline-flex items-center justify-center px-4 py-1.5 text-sm font-semibold rounded-xl border border-border/90 bg-card/90 text-foreground/85 hover:text-primary hover:border-primary/60 hover:bg-card shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06)] hover:shadow-[0_4px_14px_-2px_rgba(15,23,42,0.12)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    className="hidden sm:inline-flex items-center justify-center h-9 px-3.5 sm:px-4 text-xs sm:text-sm font-medium rounded-full border border-border/80 bg-card/75 backdrop-blur-md text-foreground/80 hover:text-foreground hover:border-primary/50 hover:bg-card shadow-xs transition-all duration-200 whitespace-nowrap shrink-0"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/signup"
-                    className="hidden sm:inline-flex items-center justify-center px-4.5 py-1.5 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white border border-orange-500/25 shadow-[0_4px_14px_-2px_rgba(255,122,0,0.45)] hover:shadow-[0_8px_24px_-4px_rgba(255,122,0,0.65)] hover:brightness-105 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    className="hidden sm:inline-flex items-center justify-center h-9 px-4 sm:px-5 text-xs sm:text-sm font-semibold rounded-full bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white shadow-[0_2px_10px_-2px_rgba(255,122,0,0.4)] hover:shadow-[0_4px_16px_-2px_rgba(255,122,0,0.55)] hover:brightness-105 active:scale-95 transition-all duration-200 whitespace-nowrap shrink-0"
                   >
                     Join Free
                   </Link>
@@ -220,7 +220,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="border-b border-border/80 bg-background/98 backdrop-blur-xl px-5 py-5 space-y-1 lg:hidden"
+            className="border-b border-border/80 bg-white shadow-xl px-5 py-6 space-y-1.5 lg:hidden"
           >
             {allNavLinks.map((link) => (
               <Link
@@ -228,28 +228,28 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                 href={link.href}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  "flex py-2 px-3 text-sm font-medium transition-colors duration-200 border-l-2",
+                  "flex py-2.5 px-3.5 text-sm font-medium transition-colors duration-200 rounded-xl",
                   isActive(link.href)
-                    ? "border-primary text-primary font-semibold bg-primary/5 pl-4"
-                    : "border-transparent text-foreground/75 hover:text-primary"
+                    ? "bg-primary/10 text-primary font-semibold"
+                    : "text-foreground/80 hover:bg-muted/50 hover:text-foreground"
                 )}
               >
                 {link.label}
               </Link>
             ))}
 
-            <div className="pt-3 mt-3 border-t border-border/50 flex flex-col gap-2">
+            <div className="pt-3 mt-3 border-t border-border/60 flex flex-col gap-2">
               {mounted && user ? (
                 <>
                   {!isProd && (
-                    <Link href="/dashboard" onClick={() => setOpen(false)} className="text-sm text-foreground/70 py-2 px-3 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
+                    <Link href="/dashboard" onClick={() => setOpen(false)} className="text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
                       Dashboard
                     </Link>
                   )}
-                  <Link href="/profile" onClick={() => setOpen(false)} className="text-sm text-foreground/70 py-2 px-3 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
+                  <Link href="/profile" onClick={() => setOpen(false)} className="text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
                     Profile
                   </Link>
-                  <button onClick={handleSignOut} disabled={isSigningOut} className="text-left text-sm text-foreground/70 py-2 px-3 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
+                  <button onClick={handleSignOut} disabled={isSigningOut} className="text-left text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
                     {isSigningOut ? "Signing out…" : "Sign Out"}
                   </button>
                 </>
@@ -258,16 +258,16 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-center py-2.5 px-4 text-sm font-semibold rounded-xl border border-border/90 bg-card text-foreground/85 shadow-sm hover:border-primary/50 transition-colors"
+                    className="flex items-center justify-center h-10 px-4 text-sm font-medium rounded-xl border border-border/90 bg-muted/30 text-foreground hover:bg-muted/60 transition-colors whitespace-nowrap"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/signup"
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-center py-2.5 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white shadow-[0_4px_14px_-2px_rgba(255,122,0,0.45)] hover:brightness-105 transition-colors"
+                    className="flex items-center justify-center h-10 px-4 text-sm font-semibold rounded-xl bg-gradient-to-r from-[#FF7A00] to-[#FF5722] text-white shadow-[0_2px_10px_-2px_rgba(255,122,0,0.4)] hover:brightness-105 transition-colors whitespace-nowrap"
                   >
-                    Join Free →
+                    Join Free
                   </Link>
                 </>
               )}

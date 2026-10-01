@@ -26,7 +26,7 @@ function TimelineItem({ item, index }: { item: { year: string; title: string; de
     "0px 0px 20px 6px rgba(255,122,0,0.9)",
   ]);
   const dotBg = useTransform(scrollYProgress, [0, 1], [
-    "rgba(255,255,255,0.25)",
+    "rgba(148,163,184,0.3)",
     "rgba(255,122,0,1)",
   ]);
 
@@ -38,7 +38,7 @@ function TimelineItem({ item, index }: { item: { year: string; title: string; de
       } group`}
     >
       {/* Dot Container */}
-      <div className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full border border-glass-border bg-black shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+      <div className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full border border-border/80 bg-card shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
         <motion.div
           style={{
             opacity: dotOpacity,
@@ -46,7 +46,7 @@ function TimelineItem({ item, index }: { item: { year: string; title: string; de
             boxShadow: dotGlow,
             backgroundColor: dotBg,
           }}
-          className="w-3 h-3 rounded-full transition-shadow duration-300 group-hover:shadow-[0_0_25px_rgba(255,122,0,1)]"
+          className="w-3.5 h-3.5 rounded-full transition-shadow duration-300 group-hover:shadow-[0_0_25px_rgba(255,122,0,1)]"
         />
       </div>
 
@@ -57,12 +57,12 @@ function TimelineItem({ item, index }: { item: { year: string; title: string; de
           y: cardY,
           x: cardX,
         }}
-        className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-[1.5rem] border border-glass-border bg-glass-bg backdrop-blur-xl hover:-translate-y-1.5 hover:border-primary/40 transition-all duration-300 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)]"
+        className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 sm:p-7 rounded-3xl border border-border/75 bg-card hover:-translate-y-1.5 hover:border-primary/40 transition-all duration-300 shadow-warm"
       >
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary/80">
+        <span className="font-mono text-xs uppercase tracking-[0.2em] text-primary font-semibold">
           {item.year}
         </span>
-        <h3 className="mt-2 font-display text-xl font-semibold">
+        <h3 className="mt-2 font-display text-xl font-semibold text-foreground">
           {item.title}
         </h3>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -89,16 +89,29 @@ export default function AboutPage() {
         eyebrow="Mission & Vision"
         title="We are building the operating system for global builders"
         description="A look into the community's core purpose, values, and the journey that brought us here."
-        className="pt-40"
+        className="pt-10 sm:pt-14"
       >
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(255,122,0,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_12px_40px_rgba(255,122,0,0.12)]">
-            <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-primary">Mission</h3>
-            <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.mission}</p>
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {/* Mission Card */}
+          <div className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-10 shadow-warm hover:border-primary/40 hover:shadow-orange hover:-translate-y-1 transition-all duration-300">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+            <h3 className="font-mono text-xs sm:text-sm uppercase tracking-[0.24em] text-primary font-semibold">
+              Mission
+            </h3>
+            <p className="mt-5 font-display text-2xl sm:text-3xl font-500 leading-relaxed text-foreground/90">
+              {brand.mission}
+            </p>
           </div>
-          <div className="rounded-[2rem] border border-glass-border bg-[linear-gradient(135deg,rgba(59,130,246,0.08),rgba(255,255,255,0.02))] p-10 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_12px_40px_rgba(59,130,246,0.12)]">
-            <h3 className="font-mono text-sm uppercase tracking-[0.2em] text-blue-400">Vision</h3>
-            <p className="mt-6 font-display text-2xl font-medium leading-relaxed text-foreground/90">{brand.vision}</p>
+
+          {/* Vision Card */}
+          <div className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-10 shadow-warm hover:border-primary/40 hover:shadow-orange hover:-translate-y-1 transition-all duration-300">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+            <h3 className="font-mono text-xs sm:text-sm uppercase tracking-[0.24em] text-primary font-semibold">
+              Vision
+            </h3>
+            <p className="mt-5 font-display text-2xl sm:text-3xl font-500 leading-relaxed text-foreground/90">
+              {brand.vision}
+            </p>
           </div>
         </div>
       </SectionWrapper>
@@ -129,7 +142,7 @@ export default function AboutPage() {
           className="relative mt-12 max-w-4xl space-y-12 mx-auto"
         >
           {/* Background track line */}
-          <div className="absolute top-0 bottom-0 ml-5 -translate-x-px md:left-1/2 md:ml-0 md:-translate-x-1/2 w-0.5 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+          <div className="absolute top-0 bottom-0 ml-5 -translate-x-px md:left-1/2 md:ml-0 md:-translate-x-1/2 w-0.5 bg-gradient-to-b from-transparent via-border/80 to-transparent" />
 
           {/* Animated progress line with elegant glowing tip */}
           <motion.div
@@ -137,11 +150,11 @@ export default function AboutPage() {
             className="absolute top-0 ml-5 -translate-x-px md:left-1/2 md:ml-0 md:-translate-x-1/2 w-[2px] bg-gradient-to-b from-primary/10 via-primary/60 to-primary origin-top z-0"
           >
             {/* Elegant Glowing Tip */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full z-20 shadow-[0_0_12px_3px_rgba(255,122,0,0.8)]">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 bg-primary rounded-full z-20 shadow-[0_0_12px_3px_rgba(255,122,0,0.8)]">
               <motion.div 
                 animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-0 bg-white rounded-full shadow-[0_0_20px_5px_rgba(255,122,0,0.6)]"
+                className="absolute inset-0 bg-primary rounded-full shadow-[0_0_20px_5px_rgba(255,122,0,0.6)]"
               />
             </div>
           </motion.div>

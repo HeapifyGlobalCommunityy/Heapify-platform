@@ -152,7 +152,6 @@ export function Hero({
 
   // Photo subtle overlay blends
   const vignetteOpacity = useTransform(smoothProgress, [0, 0.14], [0.45, 0]);
-  const blendOpacity = useTransform(smoothProgress, [0.22, 0.66], [0, 1]);
 
   // Content text transforms:
   // When image is full screen (progress 0), text is completely hidden (opacity 0, blurred, shifted).
@@ -224,14 +223,6 @@ export function Hero({
             style={{ opacity: vignetteOpacity }}
           />
 
-          {/* Subtle edge blend when docked */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              opacity: blendOpacity,
-              background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.6) 20%, transparent 50%)`,
-            }}
-          />
         </motion.div>
 
         {/* Animated Hero Photo (Mobile/Tablet: morphs from full-screen to top banner) */}
