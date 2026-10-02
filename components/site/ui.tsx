@@ -147,8 +147,20 @@ export function Hero({
   useEffect(() => {
     const unsubscribe = smoothProgress.on("change", (latest) => {
       setIsInteractive(latest > 0.32);
+      const isComplete = latest >= 0.66;
+      if (typeof window !== "undefined") {
+        (window as any).__heroImageResizeComplete = isComplete;
+        window.dispatchEvent(
+          new CustomEvent("hero-image-resize", { detail: { isComplete, progress: latest } })
+        );
+      }
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (typeof window !== "undefined") {
+        (window as any).__heroImageResizeComplete = false;
+      }
+    };
   }, [smoothProgress]);
 
   // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right docked card

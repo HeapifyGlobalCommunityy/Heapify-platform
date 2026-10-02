@@ -21,6 +21,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const isHome = pathname === "/";
   const [visible, setVisible] = useState(!isHome);
+  const [heroResizeComplete, setHeroResizeComplete] = useState(false);
   const lastScrollY = useRef(0);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
@@ -61,7 +62,43 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
 
   useEffect(() => {
     setVisible(pathname !== "/");
+    if (pathname !== "/") {
+      setHeroResizeComplete(true);
+    } else {
+      setHeroResizeComplete(false);
+    }
   }, [pathname]);
+
+  // Listen for the hero image to finish resizing and docking at the right
+  useEffect(() => {
+    if (!isHome) {
+      setHeroResizeComplete(true);
+      return;
+    }
+
+    const handleHeroResize = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isComplete: boolean }>;
+      const isDone = !!customEvent.detail?.isComplete;
+      setHeroResizeComplete(isDone);
+    };
+
+    window.addEventListener("hero-image-resize", handleHeroResize);
+    return () => {
+      window.removeEventListener("hero-image-resize", handleHeroResize);
+    };
+  }, [isHome]);
+
+  // Synchronize visibility when hero resize completes or reverses
+  useEffect(() => {
+    if (isHome) {
+      if (heroResizeComplete) {
+        setVisible(true);
+      } else if (typeof window !== "undefined" && window.scrollY < 1100) {
+        setVisible(false);
+        setOpen(false);
+      }
+    }
+  }, [heroResizeComplete, isHome]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -69,15 +106,22 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
       setScrolled(currentY > 24);
 
       if (isHome) {
-        // On home page: hide while hero photo is full-screen at the top
-        if (currentY < 180) {
+        // Fallback: if user scrolled past the hero section (> 1100px), assume hero is passed
+        const isPastHero = currentY > 1100;
+        const isReady = heroResizeComplete || isPastHero;
+
+        if (!isReady) {
+          // Hero image is still resizing or at full screen: hide navbar completely
           setVisible(false);
           setOpen(false);
-        } else if (currentY > lastScrollY.current + 4 && currentY > 400) {
-          setVisible(false);
-          setOpen(false);
-        } else if (currentY < lastScrollY.current - 4 || (currentY >= 180 && currentY <= 400)) {
-          setVisible(true);
+        } else {
+          // Hero image has finished resizing completely: show navbar, hide only when scrolling down fast past hero
+          if (currentY > lastScrollY.current + 6 && currentY > 1200) {
+            setVisible(false);
+            setOpen(false);
+          } else if (currentY < lastScrollY.current - 4 || currentY <= 1200) {
+            setVisible(true);
+          }
         }
       } else {
         if (currentY < 80) {
@@ -95,7 +139,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
+  }, [isHome, heroResizeComplete]);
 
   const handleSignOut = async () => {
     if (isSigningOut) return;

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 
@@ -57,22 +56,17 @@ export function Footer() {
 
   return (
     <footer className="relative mt-24 overflow-hidden">
-      {/* Photo strip accent at very top */}
-      <div className="relative h-44 sm:h-52 overflow-hidden border-y border-border/60">
-        <Image
-          src="/images/studsexplainingproj1.jpg"
-          alt="Heapify community members collaborating"
-          fill
-          className="object-cover object-center brightness-75 contrast-105"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        {/* Centered quote overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
-          <p className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-white font-medium max-w-2xl leading-snug tracking-tight drop-shadow-md">
+      {/* Quote banner accent at top - clean page-matching background */}
+      <div className="relative py-12 sm:py-14 overflow-hidden border-y border-border/40 bg-background">
+        {/* Very subtle warm ambient glow matching page theme */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
+
+        {/* Centered quote */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-5 text-center">
+          <p className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-foreground font-medium max-w-2xl leading-snug tracking-tight">
             &ldquo;Built to learn. Built to ship.&rdquo;
           </p>
-          <div className="mt-3.5 h-0.5 w-16 bg-primary rounded-full shadow-[0_0_12px_rgba(255,122,0,0.8)]" />
+          <div className="mt-3.5 h-0.5 w-16 bg-primary rounded-full shadow-[0_0_12px_rgba(255,122,0,0.4)]" />
         </div>
       </div>
 
