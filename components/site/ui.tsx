@@ -17,6 +17,12 @@ import { HeapifyLogo } from "@/components/layout/logo";
 
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 
+declare global {
+  interface Window {
+    __heroImageResizeComplete?: boolean;
+  }
+}
+
 /* ─── ScrollProgressBar ───────────────────────────────────────── */
 export function ScrollProgressBar() {
   const { scrollYProgress } = useScroll();
@@ -149,7 +155,7 @@ export function Hero({
       setIsInteractive(latest > 0.32);
       const isComplete = latest >= 0.66;
       if (typeof window !== "undefined") {
-        (window as any).__heroImageResizeComplete = isComplete;
+        window.__heroImageResizeComplete = isComplete;
         window.dispatchEvent(
           new CustomEvent("hero-image-resize", { detail: { isComplete, progress: latest } })
         );
@@ -158,7 +164,7 @@ export function Hero({
     return () => {
       unsubscribe();
       if (typeof window !== "undefined") {
-        (window as any).__heroImageResizeComplete = false;
+        window.__heroImageResizeComplete = false;
       }
     };
   }, [smoothProgress]);
