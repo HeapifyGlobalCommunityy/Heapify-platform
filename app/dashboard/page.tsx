@@ -7,13 +7,11 @@ import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/ui/safe-image";
 import {
   Calendar,
-  User as UserIcon,
   Trophy,
   Award,
   ArrowRight,
   ShieldCheck,
   Building2,
-  ExternalLink,
   Github,
   Linkedin,
   Twitter,
