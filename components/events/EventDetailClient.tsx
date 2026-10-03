@@ -8,12 +8,11 @@ import {
   Clock,
   MapPin,
   Ticket,
-  Users,
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EventCard, SectionWrapper } from "@/components/site/ui";
+import { EventCard } from "@/components/site/ui";
 import RegistrationForm from "@/components/registration/RegistrationForm";
 import { ExportRegistrationsButton } from "@/components/events/ExportRegistrationsButton";
 import { ParallaxDolphinWatermark } from "@/components/site/scroll-decorations";
