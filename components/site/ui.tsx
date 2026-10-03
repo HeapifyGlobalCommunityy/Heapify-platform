@@ -54,13 +54,6 @@ const fadeUp = {
   }),
 };
 
-const fadeIn = {
-  hidden: { opacity: 0 },
-  show: (i = 0) => ({
-    opacity: 1,
-    transition: { duration: 0.5, delay: i * 0.06, ease: "easeOut" },
-  }),
-};
 
 /* ─── PageTransition ─────────────────────────────────────────── */
 export function PageTransition({ children }: { children: React.ReactNode }) {
@@ -129,11 +122,12 @@ export function Hero({
   description,
   actions,
 }: {
-  title: string;
+  title?: string;
   tagline: string;
   description: string;
   actions: Action[];
 }) {
+  void title;
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInteractive, setIsInteractive] = useState(false);
 
@@ -732,6 +726,9 @@ export function FeatureCard({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative z-10">
+        {eyebrow && (
+          <p className="font-mono text-xs uppercase tracking-wider text-primary font-medium mb-2">{eyebrow}</p>
+        )}
         <h3 className="font-display text-xl font-600 tracking-tight mb-3 text-foreground group-hover:text-primary transition-colors duration-200">
           {title}
         </h3>
