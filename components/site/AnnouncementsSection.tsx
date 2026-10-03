@@ -3,6 +3,7 @@
 // Renders only audience='all' rows. Empty state is intentional and visible.
 
 import { getPublicAnnouncements } from "@/lib/supabase/queries";
+import { ScrollRevealCard } from "@/components/site/scroll-decorations";
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -39,25 +40,26 @@ export default async function AnnouncementsSection() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {announcements.map((a: { id: string; title: string; body: string | null; created_at: string }) => (
-        <article
-          key={a.id}
-          className="rounded-2xl border border-border/70 bg-card p-6 flex flex-col gap-3 shadow-warm hover:border-primary/30 hover:shadow-warm-lg transition-all duration-300"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display text-lg font-600 tracking-tight leading-snug text-foreground">
-              {a.title}
-            </h3>
-            <span className="shrink-0 eyebrow text-muted-foreground mt-1">
-              {timeAgo(a.created_at)}
-            </span>
-          </div>
-          {a.body && (
-            <p className="text-sm leading-7 text-muted-foreground line-clamp-3">
-              {a.body}
-            </p>
-          )}
-        </article>
+      {announcements.map((a: { id: string; title: string; body: string | null; created_at: string }, idx: number) => (
+        <ScrollRevealCard key={a.id} index={idx}>
+          <article
+            className="h-full rounded-2xl border border-border/70 bg-card p-6 flex flex-col gap-3 shadow-warm hover:border-primary/30 hover:shadow-warm-lg transition-all duration-300"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="font-display text-lg font-600 tracking-tight leading-snug text-foreground">
+                {a.title}
+              </h3>
+              <span className="shrink-0 eyebrow text-muted-foreground mt-1">
+                {timeAgo(a.created_at)}
+              </span>
+            </div>
+            {a.body && (
+              <p className="text-sm leading-7 text-muted-foreground line-clamp-3">
+                {a.body}
+              </p>
+            )}
+          </article>
+        </ScrollRevealCard>
       ))}
     </div>
   );

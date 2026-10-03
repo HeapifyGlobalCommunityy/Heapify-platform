@@ -315,7 +315,7 @@ export default async function BuildWithGemmaPage() {
           {/* Photo 4: Students Explaining Project 1 */}
           <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
             <Image
-              src="/images/studsexplainingproj1.jpg"
+              src="/images/placeholder-hackathon-floor.jpg"
               alt="Students presenting AI project"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

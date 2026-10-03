@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getActiveChallenges, getPastChallenges } from "@/lib/supabase/queries";
 import { SectionWrapper } from "@/components/site/ui";
 import ChallengeCard, { type ChallengeData } from "@/components/challenges/ChallengeCard";
+import { ParallaxDolphinWatermark } from "@/components/site/scroll-decorations";
 
 // PostgREST always returns joined rows as an array, even for many-to-one FKs.
 // This mapper normalises winner from { ... }[] → { ... } | null so the data
@@ -146,12 +147,27 @@ export default async function ChallengesPage() {
   }
 
   return (
-    <>
+    <div className="relative min-h-screen pb-16 overflow-hidden">
+      {/* Background dolphin watermarks */}
+      <ParallaxDolphinWatermark
+        className="absolute -right-8 sm:right-6 top-32 w-36 h-36 sm:w-48 sm:h-48 opacity-[0.08] mix-blend-multiply"
+        speed={30}
+        direction="down"
+        initialRotate={18}
+        flip={true}
+      />
+      <ParallaxDolphinWatermark
+        className="absolute -left-10 sm:left-6 top-[55%] w-40 h-40 sm:w-52 sm:h-52 opacity-[0.07] mix-blend-multiply"
+        speed={40}
+        direction="up"
+        initialRotate={-16}
+      />
+
       <SectionWrapper
         eyebrow="Monthly Challenges"
         title="Build. Ship. Get noticed."
         description="Community challenges with real prizes and visibility. Submit a link to your entry — repos, deployed sites, or docs all qualify."
-        className="pt-36 pb-12"
+        className="pt-28 sm:pt-36 pb-12"
       >
         <Suspense fallback={<ChallengeSkeleton />}>
           <ActiveChallenges isAuthenticated={isAuthenticated} />
@@ -168,6 +184,6 @@ export default async function ChallengesPage() {
           <PastChallenges />
         </Suspense>
       </SectionWrapper>
-    </>
+    </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowRight, ArrowUpRight, CalendarDays, ExternalLink, Filter,
   MapPin, Search, Sparkles, Github, Linkedin, ChevronDown
@@ -17,13 +17,40 @@ import { HeapifyLogo } from "@/components/layout/logo";
 
 type Action = { label: string; href: string; variant?: "primary" | "ghost" };
 
+declare global {
+  interface Window {
+    __heroImageResizeComplete?: boolean;
+  }
+}
+
+/* ─── ScrollProgressBar ───────────────────────────────────────── */
+export function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  return (
+    <div className="fixed top-0 left-0 right-0 h-[2.5px] z-[100] pointer-events-none">
+      <motion.div
+        className="relative h-full w-full bg-gradient-to-r from-[#FF5722] via-[#FF7A00] to-[#FF9100] origin-left shadow-[0_1px_8px_rgba(255,122,0,0.5)]"
+        style={{ scaleX }}
+      >
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-6 h-3 bg-gradient-to-r from-transparent to-white/95 rounded-full blur-[1px] shadow-[0_0_10px_rgba(255,122,0,0.9)]" />
+      </motion.div>
+    </div>
+  );
+}
+
 /* ─── Shared animation variants ─────────────────────────────── */
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.65, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
@@ -54,18 +81,40 @@ export function ScrollReveal({
   children,
   className,
   delay = 0,
+  direction = "up",
+  distance = 24,
+  duration = 0.65,
 }: {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  direction?: "up" | "down" | "left" | "right" | "none";
+  distance?: number;
+  duration?: number;
 }) {
+  const getInitialPosition = () => {
+    switch (direction) {
+      case "up": return { y: distance, x: 0 };
+      case "down": return { y: -distance, x: 0 };
+      case "left": return { x: distance, y: 0 };
+      case "right": return { x: -distance, y: 0 };
+      case "none": return { x: 0, y: 0 };
+    }
+  };
+
+  const initialPos = getInitialPosition();
+
   return (
     <motion.div
-      initial="hidden"
-      whileInView="show"
-      custom={delay / 0.07}
+      initial={{ opacity: 0, ...initialPos }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, amount: 0.08 }}
-      variants={fadeUp}
+      transition={{
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      style={{ willChange: "transform, opacity" }}
       className={className}
     >
       {children}
@@ -85,136 +134,295 @@ export function Hero({
   description: string;
   actions: Action[];
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInteractive, setIsInteractive] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Silky, over-damped physics for an organic "melting butter" scroll sensation
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 85,
+    damping: 24,
+    mass: 0.25,
+    restDelta: 0.0001,
+  });
+
+  useEffect(() => {
+    const unsubscribe = smoothProgress.on("change", (latest) => {
+      setIsInteractive(latest > 0.32);
+      const isComplete = latest >= 0.66;
+      if (typeof window !== "undefined") {
+        window.__heroImageResizeComplete = isComplete;
+        window.dispatchEvent(
+          new CustomEvent("hero-image-resize", { detail: { isComplete, progress: latest } })
+        );
+      }
+    });
+    return () => {
+      unsubscribe();
+      if (typeof window !== "undefined") {
+        window.__heroImageResizeComplete = false;
+      }
+    };
+  }, [smoothProgress]);
+
+  // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right docked card
+  const desktopWidth = useTransform(smoothProgress, [0.10, 0.66], ["100%", "47%"]);
+  const desktopLeft = useTransform(smoothProgress, [0.10, 0.66], ["0%", "51%"]);
+  const desktopTop = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+  const desktopBottom = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+  const desktopRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "32px"]);
+  const desktopScale = useTransform(smoothProgress, [0.10, 0.66], [1.05, 1.0]);
+  const desktopShadow = useTransform(
+    smoothProgress,
+    [0.10, 0.66],
+    [
+      "0px 0px 0px rgba(0,0,0,0)",
+      "0 25px 60px -15px rgba(255, 122, 0, 0.12), 0 12px 36px -10px rgba(15, 23, 42, 0.16)"
+    ]
+  );
+  const desktopBorderWidth = useTransform(smoothProgress, [0.18, 0.66], ["0px", "1px"]);
+
+  // Mobile transforms: starts full height, contracts to top banner
+  const mobileHeight = useTransform(smoothProgress, [0.10, 0.66], ["100%", "38%"]);
+  const mobileRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+
+  // Floating scroll prompt dissolves immediately on scroll
+  const promptOpacity = useTransform(smoothProgress, [0, 0.08], [1, 0]);
+  const promptY = useTransform(smoothProgress, [0, 0.08], [0, 12]);
+
+  // Photo subtle overlay blends
+  const vignetteOpacity = useTransform(smoothProgress, [0, 0.14], [0.45, 0]);
+
+  // Content text transforms:
+  // When image is full screen (progress 0), text is completely hidden (opacity 0, blurred, shifted).
+  // As user scrolls, text smoothly glides & melts into view like butter on a hot pan.
+  const contentOpacity = useTransform(smoothProgress, [0.15, 0.58], [0, 1]);
+  const contentY = useTransform(smoothProgress, [0.15, 0.58], [32, 0]);
+  const contentBlur = useTransform(smoothProgress, [0.15, 0.52], [10, 0]);
+  const contentFilter = useTransform(contentBlur, (b) => `blur(${b}px)`);
+
+  // Staggered buttery feel for inner elements
+  const badgeOpacity = useTransform(smoothProgress, [0.18, 0.44], [0, 1]);
+  const badgeY = useTransform(smoothProgress, [0.18, 0.44], [18, 0]);
+
+  const headlineOpacity = useTransform(smoothProgress, [0.22, 0.48], [0, 1]);
+  const headlineY = useTransform(smoothProgress, [0.22, 0.48], [22, 0]);
+
+  const descOpacity = useTransform(smoothProgress, [0.26, 0.54], [0, 1]);
+  const descY = useTransform(smoothProgress, [0.26, 0.54], [18, 0]);
+
+  const actionsOpacity = useTransform(smoothProgress, [0.32, 0.62], [0, 1]);
+  const actionsY = useTransform(smoothProgress, [0.32, 0.62], [16, 0]);
+  const dolphinOpacity = useTransform(smoothProgress, [0.12, 0.45], [0, 1]);
+
   return (
-    <section className="relative isolate overflow-hidden min-h-[92vh] flex flex-col justify-center px-5 sm:px-8">
-      {/* Animated particle background */}
-      <AnimatedNetworkBackground />
+    <section ref={containerRef} className="relative h-[220vh] lg:h-[240vh] -mt-20">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end lg:justify-center px-5 sm:px-8 pb-12 lg:pb-0">
+        {/* Animated particle background */}
+        <AnimatedNetworkBackground />
 
-      {/* Light slate ambient gradient overlays */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,122,0,0.08), transparent 70%),
-            radial-gradient(ellipse 40% 50% at 90% 50%, rgba(148,163,184,0.12), transparent 55%),
-            radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,122,0,0.04), transparent 50%)
-          `,
-        }}
-      />
-
-      {/* Full-bleed background image strip (right half) */}
-      <div className="absolute inset-y-0 right-0 w-[45%] hidden lg:block overflow-hidden">
-        <Image
-          src="/images/picofallparticipants.jpg"
-          alt="Heapify community gathering"
-          fill
-          className="object-cover object-center"
-          priority
-          sizes="45vw"
-        />
-        {/* Fade image into background */}
-        <div className="absolute inset-0"
+        {/* Ambient background glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: `linear-gradient(to right, hsl(var(--background)) 0%, rgba(232,236,242,0.75) 30%, transparent 65%)`
+            background: `
+              radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,122,0,0.08), transparent 70%),
+              radial-gradient(ellipse 40% 50% at 90% 50%, rgba(148,163,184,0.12), transparent 55%),
+              radial-gradient(ellipse 40% 40% at 10% 80%, rgba(255,122,0,0.04), transparent 50%)
+            `,
           }}
         />
-      </div>
 
-      {/* Content */}
-      <div className="relative mx-auto w-full max-w-7xl py-24 md:py-32 lg:py-36">
-        <div className="max-w-2xl xl:max-w-3xl">
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-8 inline-flex items-center gap-2.5"
-          >
-            <HeapifyLogo className="h-5 w-5 rounded-sm" />
-            <span className="eyebrow text-foreground/60">
-              Heapify Global Community
-            </span>
-            <span className="h-1 w-1 rounded-full bg-primary" />
-            <span className="eyebrow text-primary">Est. 2024</span>
-          </motion.div>
-
-          {/* Main headline — editorial serif */}
-          <motion.h1
-            initial="hidden"
-            animate="show"
-            variants={fadeUp}
-            className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-600 leading-[1.0] tracking-tight text-foreground mb-6"
-          >
-            Build with<br />
-            <em className="italic text-glow not-italic"
-              style={{ fontStyle: "italic", color: "transparent" }}>
-              people
-            </em>{" "}
-            who ship.
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            initial="hidden"
-            animate="show"
-            custom={1}
-            variants={fadeUp}
-            className="text-lg sm:text-xl text-foreground/70 font-300 leading-relaxed max-w-xl mb-3"
-          >
-            {tagline}
-          </motion.p>
-
-          {/* Description */}
-          <motion.p
-            initial="hidden"
-            animate="show"
-            custom={2}
-            variants={fadeUp}
-            className="text-base text-muted-foreground leading-7 max-w-lg mb-10"
-          >
-            {description}
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial="hidden"
-            animate="show"
-            custom={3}
-            variants={fadeUp}
-            className="flex flex-wrap items-center gap-3"
-          >
-            {actions.map((action, i) => (
-              <Button
-                key={action.href}
-                variant={action.variant === "ghost" ? "warm" : "primary"}
-                size="lg"
-                asChild
-              >
-                <Link href={action.href}>
-                  {action.label}
-                  {i === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
-                </Link>
-              </Button>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-foreground/35"
-      >
-        <span className="eyebrow text-[9px]">scroll</span>
+        {/* Dolphin Mascot Watermarks (Left top & Right side) */}
         <motion.div
-          animate={{ y: [0, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+          style={{ opacity: dolphinOpacity }}
+          className="pointer-events-none absolute left-3 sm:left-6 lg:left-12 top-20 sm:top-24 lg:top-28 w-28 sm:w-36 md:w-44 aspect-square select-none z-0"
         >
-          <ChevronDown className="h-4 w-4" />
+          <motion.div
+            animate={{ y: [-5, 5, -5], rotate: [-14, -8, -14] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-full h-full opacity-[0.18] mix-blend-multiply"
+          >
+            <Image
+              src="/heapify-mascot.png"
+              alt="Heapify Mascot Watermark"
+              fill
+              className="object-contain"
+              priority
+            />
+          </motion.div>
         </motion.div>
-      </motion.div>
+
+        <motion.div
+          style={{ opacity: dolphinOpacity }}
+          className="pointer-events-none absolute right-3 sm:right-6 lg:right-10 top-[52%] -translate-y-1/2 w-28 sm:w-36 md:w-42 aspect-square select-none z-0"
+        >
+          <motion.div
+            animate={{ y: [5, -5, 5], rotate: [12, 18, 12] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="relative w-full h-full opacity-[0.15] mix-blend-multiply scale-x-[-1]"
+          >
+            <Image
+              src="/heapify-mascot.png"
+              alt="Heapify Mascot Watermark"
+              fill
+              className="object-contain"
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* Animated Hero Photo (Desktop: morphs from full-screen to docked showcase) */}
+        <motion.div
+          className="absolute hidden lg:block overflow-hidden z-0"
+          style={{
+            width: desktopWidth,
+            left: desktopLeft,
+            top: desktopTop,
+            bottom: desktopBottom,
+            borderRadius: desktopRadius,
+            boxShadow: desktopShadow,
+            borderWidth: desktopBorderWidth,
+            borderColor: "rgba(255, 122, 0, 0.2)",
+          }}
+        >
+          <motion.div className="relative w-full h-full" style={{ scale: desktopScale }}>
+            <Image
+              src="/images/picofallparticipants.jpg"
+              alt="Heapify community gathering"
+              fill
+              className="object-cover object-center"
+              priority
+              sizes="100vw"
+            />
+          </motion.div>
+
+          {/* Initial subtle bottom vignette for scroll prompt */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"
+            style={{ opacity: vignetteOpacity }}
+          />
+
+        </motion.div>
+
+        {/* Animated Hero Photo (Mobile/Tablet: morphs from full-screen to top banner) */}
+        <motion.div
+          className="absolute inset-x-0 top-0 lg:hidden overflow-hidden z-0 border-b border-border/60 shadow-md"
+          style={{
+            height: mobileHeight,
+            borderBottomLeftRadius: mobileRadius,
+            borderBottomRightRadius: mobileRadius,
+          }}
+        >
+          <Image
+            src="/images/picofallparticipants.jpg"
+            alt="Heapify community gathering"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="100vw"
+          />
+        </motion.div>
+
+        {/* Content (Appears only on scroll, like butter melting into place) */}
+        <motion.div
+          style={{
+            opacity: contentOpacity,
+            y: contentY,
+            filter: contentFilter,
+          }}
+          className={cn(
+            "relative z-10 mx-auto w-full max-w-7xl pt-24 lg:pt-0 transition-[pointer-events]",
+            isInteractive ? "pointer-events-auto" : "pointer-events-none"
+          )}
+        >
+          <div className="max-w-3xl xl:max-w-4xl lg:pr-4">
+            {/* Eyebrow badge */}
+            <motion.div
+              style={{ opacity: badgeOpacity, y: badgeY }}
+              className="mb-6 lg:mb-8 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/70 bg-card/85 backdrop-blur-md shadow-sm"
+            >
+              <HeapifyLogo className="h-5 w-5 rounded-sm" />
+              <span className="eyebrow text-foreground/75">
+                Heapify Global Community
+              </span>
+              <span className="h-1 w-1 rounded-full bg-primary" />
+              <span className="eyebrow text-primary">Est. 2024</span>
+            </motion.div>
+
+            {/* Main headline — editorial serif */}
+            <motion.h1
+              style={{ opacity: headlineOpacity, y: headlineY }}
+              className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6.25rem] font-600 leading-[1.02] tracking-tight text-foreground mb-6"
+            >
+              Build with<br />
+              <span className="font-serif italic font-normal text-glow inline-block pr-2">
+                people
+              </span>{" "}
+              who ship.
+            </motion.h1>
+
+            {/* Tagline */}
+            <motion.p
+              style={{ opacity: descOpacity, y: descY }}
+              className="text-lg sm:text-xl text-foreground/80 font-300 leading-relaxed max-w-lg mb-3"
+            >
+              {tagline}
+            </motion.p>
+
+            {/* Description */}
+            <motion.p
+              style={{ opacity: descOpacity, y: descY }}
+              className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mb-8"
+            >
+              {description}
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              style={{ opacity: actionsOpacity, y: actionsY }}
+              className="flex flex-wrap items-center gap-3"
+            >
+              {actions.map((action, i) => (
+                <Button
+                  key={action.href}
+                  variant={action.variant === "ghost" ? "ghost" : "primary"}
+                  size="lg"
+                  className={
+                    action.variant === "ghost"
+                      ? "border border-border/80 bg-card/80 text-foreground hover:bg-muted/60 hover:text-foreground shadow-sm font-sans"
+                      : "font-sans font-medium"
+                  }
+                  asChild
+                >
+                  <Link href={action.href}>
+                    {action.label}
+                    {i === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
+                  </Link>
+                </Button>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Floating bottom scroll prompt (visible on initial full screen, melts away as you scroll) */}
+        <motion.div
+          style={{ opacity: promptOpacity, y: promptY }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/25 bg-black/40 backdrop-blur-md text-white shadow-2xl pointer-events-none z-20"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+          </span>
+          <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-white/95 font-medium">
+            Scroll to explore
+          </span>
+          <ChevronDown className="h-3.5 w-3.5 text-primary animate-bounce ml-0.5" />
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -227,6 +435,8 @@ export function SectionWrapper({
   action,
   children,
   className,
+  titleClassName,
+  centered = false,
 }: {
   eyebrow?: string;
   title?: string;
@@ -234,6 +444,8 @@ export function SectionWrapper({
   action?: Action;
   children?: React.ReactNode;
   className?: string;
+  titleClassName?: string;
+  centered?: boolean;
 }) {
   return (
     <section className={cn("px-5 py-16 sm:px-8 md:py-24", className)}>
@@ -244,19 +456,24 @@ export function SectionWrapper({
             whileInView="show"
             viewport={{ once: true, amount: 0.1 }}
             variants={fadeUp}
-            className="mb-10 flex flex-col gap-4 sm:mb-14 md:flex-row md:items-end md:justify-between"
+            className={cn(
+              "mb-10 flex flex-col gap-4 sm:mb-14",
+              centered
+                ? "items-center text-center mx-auto"
+                : "md:flex-row md:items-end md:justify-between"
+            )}
           >
-            <div className="max-w-2xl space-y-3">
+            <div className={cn("space-y-3", centered ? "max-w-4xl mx-auto text-center" : "max-w-2xl")}>
               {eyebrow && (
                 <div className="eyebrow text-primary/80">{eyebrow}</div>
               )}
               {title && (
-                <h2 className="font-display text-display-sm sm:text-display-md lg:text-display-lg font-600 text-foreground leading-tight tracking-tight">
+                <h2 className={cn("font-display text-display-sm sm:text-display-md lg:text-display-lg font-semibold text-foreground leading-tight tracking-tight", titleClassName)}>
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="text-base text-muted-foreground leading-7 max-w-xl">
+                <p className={cn("text-base text-muted-foreground leading-7", centered ? "max-w-2xl mx-auto" : "max-w-xl")}>
                   {description}
                 </p>
               )}
@@ -266,7 +483,7 @@ export function SectionWrapper({
                 asChild
                 variant={action.variant === "ghost" ? "ghost" : "primary"}
                 size="sm"
-                className="self-start"
+                className={centered ? "mx-auto" : "self-start"}
               >
                 <Link href={action.href}>
                   {action.label}
@@ -292,64 +509,83 @@ export function CTAComponent({
   description: string;
   actions: Action[];
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const ringRotate = useTransform(scrollYProgress, [0, 1], [-10, 15]);
+  const ringScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.02, 0.98]);
+
   return (
     <motion.section
+      ref={cardRef}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
       variants={fadeUp}
-      className="px-5 py-12 sm:px-8"
+      className="px-5 py-8 sm:px-8"
     >
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl relative">
-        {/* Background — community photo with warm overlay */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/guygivingspeech.jpg"
-            alt="Heapify community event"
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1200px) 100vw, 1200px"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(135deg,
-                rgba(232,236,242,0.97) 0%,
-                rgba(232,236,242,0.88) 35%,
-                rgba(232,236,242,0.70) 65%,
-                rgba(255,122,0,0.15) 100%)`,
-            }}
-          />
-        </div>
+      <div className="group mx-auto max-w-4xl overflow-hidden rounded-3xl relative bg-[#FF5722] shadow-[0_16px_40px_-12px_rgba(255,87,34,0.45)] border border-white/20 transition-all duration-500">
+        {/* Concentric decorative outline rings matching the community stats card with scroll parallax */}
+        <motion.div
+          style={{ rotate: ringRotate, scale: ringScale, willChange: "transform" }}
+          className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full border border-white/15"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, willChange: "transform" }}
+          className="pointer-events-none absolute -right-36 -top-36 h-[28rem] w-[28rem] rounded-full border border-white/10"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, scale: ringScale, willChange: "transform" }}
+          className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full border border-white/15"
+        />
+        <motion.div
+          style={{ rotate: ringRotate, willChange: "transform" }}
+          className="pointer-events-none absolute -left-28 -bottom-28 h-80 w-80 rounded-full border border-white/10"
+        />
 
-        {/* Border & shadow */}
-        <div className="absolute inset-0 rounded-3xl ring-1 ring-border/50" />
-
-        {/* Content */}
-        <div className="relative z-10 p-8 sm:p-12 md:p-16">
-          <div className="max-w-xl space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="eyebrow text-primary">Premium community</span>
-            </div>
-            <h3 className="font-display text-display-sm sm:text-display-md font-600 tracking-tight leading-tight">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center p-6 sm:p-8 md:p-9 relative z-10">
+          {/* Content Column */}
+          <div className="md:col-span-7 space-y-4">
+            <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight leading-tight text-white drop-shadow-sm">
               {title}
             </h3>
-            <p className="text-base text-muted-foreground leading-7">{description}</p>
-            <div className="flex flex-wrap gap-3 pt-2">
-              {actions.map((action) => (
+            <p className="text-sm sm:text-base text-white/90 leading-relaxed max-w-md font-normal">
+              {description}
+            </p>
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {actions.map((action, idx) => (
                 <Button
                   key={action.href}
-                  variant={action.variant === "ghost" ? "warm" : "primary"}
-                  size="lg"
+                  variant={action.variant === "ghost" ? "ghost" : "primary"}
+                  size="md"
+                  className={
+                    action.variant === "ghost"
+                      ? "border border-white/40 bg-white/10 text-white hover:bg-white/20 hover:border-white shadow-sm font-sans backdrop-blur-sm h-10 px-5 text-sm"
+                      : "bg-white text-[#FF5722] font-sans font-semibold shadow-md hover:bg-white/95 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 h-10 px-5 text-sm"
+                  }
                   asChild
                 >
                   <Link href={action.href}>
                     {action.label}
-                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                    {idx === 0 && <ArrowRight className="ml-1.5 h-4 w-4" />}
                   </Link>
                 </Button>
               ))}
+            </div>
+          </div>
+
+          {/* Cleanly Framed Photo Column (Compact) */}
+          <div className="md:col-span-5 w-full">
+            <div className="relative aspect-[16/10] sm:aspect-[16/10] md:aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 border-white/25 shadow-xl">
+              <Image
+                src="/images/guygivingspeech.jpg"
+                alt="Heapify community event"
+                fill
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 360px"
+              />
             </div>
           </div>
         </div>
@@ -359,41 +595,57 @@ export function CTAComponent({
 }
 
 /* ─── AnimatedValue ──────────────────────────────────────────── */
-function AnimatedValue({ value }: { value: number }) {
-  const [current, setCurrent] = useState(0);
+function AnimatedValue({ value, suffix = "+" }: { value: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -60px 0px" });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const digits = value.toString().split("");
 
-  useEffect(() => {
-    if (!isInView) return;
-    const duration = 2000;
-    const startedAt = performance.now();
-    let raf = 0;
-    const tick = (time: number) => {
-      const elapsed = time - startedAt;
-      const progress = Math.min(1, elapsed / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCurrent(Math.round(value * eased));
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [isInView, value]);
+  return (
+    <span ref={ref} className="inline-flex items-baseline">
+      {digits.map((digit, idx) => {
+        const num = parseInt(digit);
+        const isNum = !isNaN(num);
+        if (!isNum) return <span key={idx}>{digit}</span>;
 
-  return <span ref={ref}>{current.toLocaleString()}+</span>;
+        return (
+          <span key={idx} className="inline-block overflow-hidden h-[1.12em] relative">
+            <motion.span
+              initial={{ y: "0%" }}
+              animate={isInView ? { y: `-${num * 10}%` } : { y: "0%" }}
+              transition={{
+                duration: 1.8 + idx * 0.25,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1 + idx * 0.08,
+              }}
+              className="flex flex-col select-none"
+            >
+              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+                <span key={n} className="h-[1.12em] flex items-center justify-center">
+                  {n}
+                </span>
+              ))}
+            </motion.span>
+          </span>
+        );
+      })}
+      <span>{suffix}</span>
+    </span>
+  );
 }
 
 /* ─── StatsComponent ─────────────────────────────────────────── */
 export function StatsComponent({
   stats,
+  centered = true,
 }: {
-  stats: Array<{ label: string; value: number; detail: string }>;
+  stats: Array<{ label: string; value: number; detail: string; suffix?: string }>;
+  centered?: boolean;
 }) {
   const gridCols =
     stats.length === 1 ? "max-w-sm mx-auto grid-cols-1"
-    : stats.length === 2 ? "max-w-2xl mx-auto sm:grid-cols-2"
-    : stats.length === 3 ? "sm:grid-cols-3"
-    : "sm:grid-cols-2 lg:grid-cols-4";
+      : stats.length === 2 ? "max-w-2xl mx-auto sm:grid-cols-2"
+        : stats.length === 3 ? "sm:grid-cols-3"
+          : "sm:grid-cols-2 lg:grid-cols-4";
 
   return (
     <div className={`grid gap-4 sm:gap-5 ${gridCols}`}>
@@ -405,19 +657,22 @@ export function StatsComponent({
           custom={index}
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
-          className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm card-warm"
+          className={cn(
+            "group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm card-warm",
+            centered && "text-center"
+          )}
         >
           {/* Decorative orange corner */}
           <div className="absolute -top-8 -right-8 h-20 w-20 rounded-full bg-primary/6 group-hover:bg-primary/10 transition-colors duration-400" />
 
-          <div className="relative z-10">
-            <div className="font-display text-4xl font-700 tracking-tight text-foreground sm:text-5xl">
-              <AnimatedValue value={stat.value} />
+          <div className={cn("relative z-10", centered && "flex flex-col items-center")}>
+            <div className="font-display text-4xl sm:text-5xl font-700 tracking-tight text-primary drop-shadow-[0_2px_12px_rgba(255,122,0,0.22)]">
+              <AnimatedValue value={stat.value} suffix={stat.suffix ?? "+"} />
             </div>
-            <div className="mt-2 eyebrow text-primary font-medium">
+            <div className="mt-2.5 font-display text-base sm:text-lg font-semibold text-foreground tracking-tight">
               {stat.label}
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+            <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-muted-foreground">
               {stat.detail}
             </p>
           </div>
@@ -427,27 +682,61 @@ export function StatsComponent({
   );
 }
 
+/* ─── FeatureCard Animation (GPU-accelerated, zero lag) ────────── */
+const fastCardEntrance = {
+  hidden: {
+    opacity: 0,
+    y: 22,
+  },
+  show: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.45,
+      delay: (i % 3) * 0.08,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
+
 /* ─── FeatureCard ────────────────────────────────────────────── */
 export function FeatureCard({
   eyebrow,
   title,
   description,
+  centered = false,
+  index = 0,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description: string;
+  centered?: boolean;
+  index?: number;
 }) {
   return (
     <motion.div
+      custom={index}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
-      variants={fadeUp}
-      className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1"
+      variants={fastCardEntrance}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      style={{ willChange: "transform, opacity" }}
+      className={cn(
+        "group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-warm transition-colors duration-200 hover:border-primary/40 hover:shadow-orange",
+        centered && "text-center flex flex-col items-center"
+      )}
     >
-      <div className="eyebrow text-primary/90 font-medium mb-4">{eyebrow}</div>
-      <h3 className="font-display text-xl font-600 tracking-tight mb-3">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-7">{description}</p>
+      {/* Subtle ambient warm glow on hover */}
+      <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="relative z-10">
+        <h3 className="font-display text-xl font-600 tracking-tight mb-3 text-foreground group-hover:text-primary transition-colors duration-200">
+          {title}
+        </h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      </div>
     </motion.div>
   );
 }
@@ -745,8 +1034,8 @@ export function StatusBadge({
     s === "active" || s === "open" || s === "upcoming"
       ? "border-primary/25 bg-primary/8 text-primary"
       : s === "ongoing"
-      ? "border-emerald-500/25 bg-emerald-500/8 text-emerald-700"
-      : "border-border/70 bg-muted/40 text-muted-foreground";
+        ? "border-emerald-500/25 bg-emerald-500/8 text-emerald-700"
+        : "border-border/70 bg-muted/40 text-muted-foreground";
 
   return (
     <span

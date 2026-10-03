@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { brand, communityJourney, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
+import { CommunityJourney } from "@/components/site/CommunityJourney";
 import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +10,7 @@ import { getEvents, getSiteStats } from "@/lib/supabase/queries";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollaborationsField } from "@/components/site/collaborations-field";
+import { ParallaxDolphinWatermark, ParallaxPhoto } from "@/components/site/scroll-decorations";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatCategory(cat: string): string {
@@ -100,25 +102,51 @@ export default async function HomePage() {
         ]}
       />
 
-      {/* ── Stats ── */}
-      <SectionWrapper
-        eyebrow="Community Stats"
-        title="A Growing Builder Network"
-        description="Real numbers from a community built around action, not hype."
-      >
-        <StatsComponent stats={statsData} />
+      {/* ── Main Page Body with Background Dolphin Watermarks ── */}
+      <div className="relative overflow-hidden">
+        {/* Subtle compact printed dolphin watermarks with organic scroll parallax */}
+        <ParallaxDolphinWatermark
+          className="absolute -right-8 sm:right-4 top-[12%] w-36 h-36 sm:w-44 sm:h-44 opacity-[0.08] mix-blend-multiply"
+          speed={35}
+          direction="down"
+          initialRotate={22}
+          flip={true}
+        />
+        <ParallaxDolphinWatermark
+          className="absolute -left-8 sm:left-4 top-[48%] w-40 h-40 sm:w-48 sm:h-48 opacity-[0.07] mix-blend-multiply"
+          speed={45}
+          direction="up"
+          initialRotate={-18}
+        />
+        <ParallaxDolphinWatermark
+          className="absolute -right-6 sm:right-6 top-[78%] w-36 h-36 sm:w-44 sm:h-44 opacity-[0.07] mix-blend-multiply"
+          speed={30}
+          direction="down"
+          initialRotate={14}
+        />
+
+        {/* ── Stats ── */}
+        <SectionWrapper
+          centered
+          eyebrow="Community Stats"
+          title="A Growing Builder Network"
+          description="Real numbers from a community built around action, not hype."
+        >
+        <StatsComponent stats={statsData} centered />
       </SectionWrapper>
 
       {/* ── What We Do ── */}
       <SectionWrapper
+        centered
         eyebrow="What We Do"
         title="A Community Built Around Action"
         description="Everything Heapify does is about builders — people who learn, ship, and create."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {whatWeDo.map((item) => (
+          {whatWeDo.map((item, index) => (
             <FeatureCard
               key={item.title}
+              index={index}
               eyebrow={item.eyebrow}
               title={item.title}
               description={item.description}
@@ -129,6 +157,7 @@ export default async function HomePage() {
 
       {/* ── Latest Event Spotlight ── */}
       <SectionWrapper
+        centered
         eyebrow="Events"
         title="Where Builders Show Up"
         action={{ label: "See all events", href: "/events", variant: "ghost" }}
@@ -194,6 +223,7 @@ export default async function HomePage() {
 
       {/* ── Announcements ── */}
       <SectionWrapper
+        centered
         eyebrow="Community Announcements"
         title="What's Happening"
         description="Stay updated with the latest events, opportunities, initiatives, and announcements from the Heapify community."
@@ -219,66 +249,31 @@ export default async function HomePage() {
       </SectionWrapper>
 
       {/* ── Community Journey ── */}
-      <SectionWrapper>
-        <ScrollReveal className="mb-12 flex max-w-3xl flex-col space-y-4 md:mb-16">
-          <div className="eyebrow text-primary/85">Community Journey</div>
-          <h2 className="font-display text-4xl font-600 tracking-tight text-foreground sm:text-5xl md:text-[3.25rem] md:leading-[1.1]">
-            From discovery to{" "}
-            <span className="text-muted-foreground italic font-serif">leadership.</span>
-          </h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base md:leading-8">
-            The path every Heapify builder takes — from first event to community leader.
-          </p>
-          <div className="h-px w-14 bg-gradient-to-r from-primary/60 to-transparent" />
-        </ScrollReveal>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {communityJourney.map((step, index) => (
-            <ScrollReveal key={step.step} delay={index * 0.08}>
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-warm-lg shadow-warm">
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl" />
-                <div className="relative">
-                  <div className="eyebrow text-primary/85 mb-4">{step.step}</div>
-                  <h3 className="font-display text-xl font-600 tracking-tight text-foreground mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm leading-7 text-muted-foreground">{step.description}</p>
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </SectionWrapper>
+      <CommunityJourney />
 
       {/* ── Collaborations ── */}
-      <SectionWrapper>
+      <SectionWrapper centered>
         <CollaborationsField />
       </SectionWrapper>
 
       {/* ── Flagship Event Spotlight ── */}
       <SectionWrapper
+        centered
         eyebrow="Our Flagship Event"
         title="A glimpse into where we've been"
+        titleClassName="font-display font-normal tracking-tight text-foreground text-2xl sm:text-3xl md:text-4xl leading-tight"
       >
         <ScrollReveal>
           <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-warm-lg transition-all duration-500 hover:border-primary/40 hover:shadow-orange">
 
-            {/* Photo panel on right (desktop) */}
-            <div className="absolute inset-y-0 right-0 w-2/5 hidden md:block overflow-hidden">
-              <Image
-                src="/images/explainingproj2.jpg"
-                alt="Heapify Gemma Sprint — team explaining their project"
-                fill
-                className="object-cover object-center"
-                sizes="40vw"
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(to right, hsl(40 35% 97%) 0%, rgba(250,247,242,0.6) 30%, transparent 60%)"
-                }}
-              />
-            </div>
+            {/* Photo panel on right (desktop) with smooth scroll parallax */}
+            <ParallaxPhoto
+              src="/images/explainingproj2.jpg"
+              alt="Heapify Gemma Sprint — team explaining their project"
+              className="absolute inset-y-4 right-4 w-[40%] hidden md:block rounded-2xl border border-border/60 shadow-sm"
+              sizes="40vw"
+              shiftPercent={7}
+            />
 
             {/* Ambient glow */}
             <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-primary/8 blur-3xl opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
@@ -299,7 +294,7 @@ export default async function HomePage() {
                   </span>
                 </div>
 
-                <h3 className="font-display text-2xl font-600 tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-foreground">
                   Build with Gemma:
                   <br className="hidden sm:block" /> Bengaluru AI Sprint
                 </h3>
@@ -348,15 +343,16 @@ export default async function HomePage() {
         </ScrollReveal>
       </SectionWrapper>
 
-      {/* ── Final CTA ── */}
-      <CTAComponent
-        title="Ready to Build Something?"
-        description="Join a community built for people who create, collaborate, and ship."
-        actions={[
-          { label: (!isProd && isAuthenticated) ? "Go to Dashboard" : "Join Heapify", href: (!isProd && isAuthenticated) ? "/dashboard" : "/forms" },
-          { label: "Explore Events", href: "/events", variant: "ghost" },
-        ]}
-      />
+        {/* ── Final CTA ── */}
+        <CTAComponent
+          title="Ready to Build Something?"
+          description="Join a community built for people who create, collaborate, and ship."
+          actions={[
+            { label: (!isProd && isAuthenticated) ? "Go to Dashboard" : "Join Heapify", href: (!isProd && isAuthenticated) ? "/dashboard" : "/forms" },
+            { label: "Explore Events", href: "/events", variant: "ghost" },
+          ]}
+        />
+      </div>
     </>
   );
 }

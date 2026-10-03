@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import Image from "next/image";
 import { Fraunces, Inter, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import NavbarWithAuth from "@/components/layout/NavbarWithAuth";
 import { Footer } from "@/components/layout/footer";
-import { PageTransition } from "@/components/site/ui";
+import { PageTransition, ScrollProgressBar } from "@/components/site/ui";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
-  weight: "variable",
-  style: ["normal", "italic"],
+  display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
@@ -18,18 +19,19 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  weight: ["300", "400", "500", "600"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
-  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -76,17 +78,24 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className="light">
+    <html lang="en" suppressHydrationWarning className={`light ${fraunces.variable} ${cormorant.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body
         suppressHydrationWarning
         className={`${fraunces.variable} ${cormorant.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans antialiased overflow-x-hidden`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} forcedTheme="light">
-          <NavbarWithAuth isChapterLead={isChapterLead} />
-          <main className="min-h-screen pt-20">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
+          <SmoothScroll>
+            <ScrollProgressBar />
+            {/* Global ambient printed dolphin watermark */}
+            <div className="fixed -bottom-12 -left-12 w-64 h-64 sm:w-80 sm:h-80 pointer-events-none select-none opacity-[0.045] mix-blend-multiply -z-20 rotate-[-12deg]">
+              <Image src="/heapify-mascot.png" alt="" fill className="object-contain" priority={false} />
+            </div>
+            <NavbarWithAuth isChapterLead={isChapterLead} />
+            <main className="min-h-screen pt-20">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+          </SmoothScroll>
         </ThemeProvider>
       </body>
     </html>

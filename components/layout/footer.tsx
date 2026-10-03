@@ -1,7 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
 import { HeapifyLogo } from "@/components/layout/logo";
-import { partners } from "@/lib/site-content";
 import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 
 const socialLinks = [
@@ -58,51 +56,40 @@ export function Footer() {
 
   return (
     <footer className="relative mt-24 overflow-hidden">
-      {/* Photo strip accent at very top */}
-      <div className="relative h-40 sm:h-52 overflow-hidden">
-        <Image
-          src="/images/studsexplainingproj1.jpg"
-          alt="Heapify community members collaborating"
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, hsl(var(--background)) 0%, rgba(232,236,242,0.3) 40%, rgba(232,236,242,0.6) 70%, hsl(var(--background)) 100%)",
-          }}
-        />
-        {/* Centered quote overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
-          <p className="font-serif italic text-xl sm:text-2xl md:text-3xl text-foreground/85 max-w-2xl leading-snug tracking-tight">
-            "Built to learn. Built to ship."
+      {/* Quote banner accent at top - clean page-matching background */}
+      <div className="relative py-12 sm:py-14 overflow-hidden border-y border-border/40 bg-background">
+        {/* Very subtle warm ambient glow matching page theme */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
+
+        {/* Centered quote */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-5 text-center">
+          <p className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-foreground font-medium max-w-2xl leading-snug tracking-tight">
+            &ldquo;Built to learn. Built to ship.&rdquo;
           </p>
-          <div className="mt-3 h-px w-16 bg-primary/50" />
+          <div className="mt-3.5 h-0.5 w-16 bg-primary rounded-full shadow-[0_0_12px_rgba(255,122,0,0.4)]" />
         </div>
       </div>
 
       {/* Main footer area */}
-      <div className="border-t border-border/50 bg-background">
-        {/* Subtle warm top line */}
+      <div className="relative border-t border-border/70 bg-background text-foreground overflow-hidden">
+        {/* Subtle orange accent top hairline */}
         <div
           aria-hidden
           className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
         />
 
-        <div className="mx-auto max-w-6xl px-5 sm:px-8 pt-14 pb-10">
+        <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-8 pt-14 pb-10">
           <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
 
             {/* Brand column */}
             <div className="md:col-span-5 space-y-6">
               <div className="flex items-center gap-2.5">
-                <HeapifyLogo className="h-6 w-6 rounded-md" />
+                <HeapifyLogo className="h-6 w-6 rounded-md shadow-sm" />
                 <div>
                   <div className="font-display text-sm font-600 tracking-tight text-foreground">
                     Heapify Global Community
                   </div>
-                  <div className="eyebrow text-muted-foreground mt-0.5">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-primary font-medium mt-0.5">
                     For Builders, Not Spectators.
                   </div>
                 </div>
@@ -113,20 +100,6 @@ export function Footer() {
                 builders to learn, collaborate, compete, and create real-world
                 impact.
               </p>
-
-              {/* Partner badges */}
-              {partners.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {partners.map((partner) => (
-                    <span
-                      key={partner}
-                      className="inline-flex items-center rounded-full border border-border/60 bg-muted/30 px-2.5 py-1 eyebrow text-muted-foreground hover:border-primary/30 hover:bg-primary/6 hover:text-primary transition-colors duration-200 cursor-default"
-                    >
-                      {partner}
-                    </span>
-                  ))}
-                </div>
-              )}
 
               {/* Social icons */}
               <div className="flex items-center gap-2">
@@ -139,7 +112,7 @@ export function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={s.label}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-muted/20 text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/8 hover:text-primary"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border/70 bg-card text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/8 hover:text-primary shadow-sm"
                     >
                       <Icon className="h-3.5 w-3.5" />
                     </a>
@@ -152,7 +125,7 @@ export function Footer() {
             <div className="md:col-span-7 grid grid-cols-2 gap-8 sm:grid-cols-3">
               {filteredColumns.map((col) => (
                 <div key={col.title} className="space-y-4">
-                  <h3 className="eyebrow text-foreground/60 font-medium">
+                  <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/75 font-semibold">
                     {col.title}
                   </h3>
                   <ul className="space-y-2.5">
@@ -173,14 +146,14 @@ export function Footer() {
           </div>
 
           {/* Divider */}
-          <div className="my-10 divider-warm" />
+          <div className="my-10 h-px bg-border/60" />
 
           {/* Bottom bar */}
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-            <span className="eyebrow text-muted-foreground/70">
+            <span className="font-mono text-xs text-muted-foreground/80">
               Heapify Global Community © {new Date().getFullYear()}
             </span>
-            <span className="eyebrow text-muted-foreground/50">
+            <span className="font-mono text-xs text-muted-foreground/60">
               Made with care in India 🇮🇳
             </span>
           </div>
