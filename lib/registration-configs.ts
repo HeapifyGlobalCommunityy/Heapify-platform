@@ -26,11 +26,11 @@ export interface RegistrationConfig {
   isHackathon: boolean;
   capacity: number;
   registeredCount: number;
-  teamConfig: TeamConfig | null; // null means "not a team event" — NEVER undefined
-  customQuestions: CustomQuestion[]; // empty array means "no extra questions" — NEVER undefined
+  teamConfig: TeamConfig | null; // null means "not a team event" - NEVER undefined
+  customQuestions: CustomQuestion[]; // empty array means "no extra questions" - NEVER undefined
 }
 
-// ─── Default — used when no event-specific config is found ────────────────────
+// ─── Default - used when no event-specific config is found ────────────────────
 export const defaultRegistrationConfig: RegistrationConfig = {
   isHackathon: false,
   capacity: 100,
@@ -76,7 +76,7 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
     ],
   },
 
-  // Example: a workshop — no teams, simple questions
+  // Example: a workshop - no teams, simple questions
   "intro-to-llms-workshop": {
     isHackathon: false,
     capacity: 50,
@@ -87,7 +87,7 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
         id: "experience",
         label: "Years of experience with AI/ML",
         type: "single_choice",
-        options: ["< 1 year", "1–3 years", "3–5 years", "5+ years"],
+        options: ["< 1 year", "1-3 years", "3-5 years", "5+ years"],
         required: true,
       },
       {
@@ -99,7 +99,7 @@ export const registrationConfigs: Record<string, RegistrationConfig> = {
     ],
   },
 
-  // Example: a webinar — bare minimum
+  // Example: a webinar - bare minimum
   "community-ama-webinar": {
     isHackathon: false,
     capacity: 500,

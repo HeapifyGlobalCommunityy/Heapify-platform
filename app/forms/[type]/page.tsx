@@ -166,7 +166,7 @@ const FORM_CONFIG: Record<string, FormConfig> = {
   ambassador: {
     title: "Ambassador Form",
     description:
-      "Represent Heapify locally — expand our reach on campuses, within companies, or across your community.",
+      "Represent Heapify locally - expand our reach on campuses, within companies, or across your community.",
     fields: [
       { name: "name", label: "Full Name", type: "text", required: true, placeholder: "Stavan Khobare" },
       { name: "email", label: "Email Address", type: "email", required: true, placeholder: "you@example.com" },

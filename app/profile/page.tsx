@@ -3,13 +3,13 @@
 // ┌─ CRITICAL RENDERING NOTES ───────────────────────────────────────────────
 // │ 1. export const dynamic = "force-dynamic"
 // │    This route MUST never be statically cached or served from a shared
-// │    Next.js cache. Each request is one user's private data — a shared
+// │    Next.js cache. Each request is one user's private data - a shared
 // │    cached response would expose one user's profile to another.
 // │
 // │ 2. Server-side auth check only.
 // │    We call supabase.auth.getUser() here, server-side, and redirect()
 // │    before any data fetch if there is no session. No data is fetched,
-// │    no JSX is rendered, no client-side bounce — the response never
+// │    no JSX is rendered, no client-side bounce - the response never
 // │    leaves the server if the user is unauthenticated.
 // └──────────────────────────────────────────────────────────────────────────
 
@@ -71,11 +71,11 @@ function InitialsAvatar({ name }: { name: string }) {
 // ─── Page ─────────────────────────────────────────────────────────────────
 
 export default async function ProfilePage() {
-  // ── Step 1: Auth check — server-side, blocks everything if no session ──
+  // ── Step 1: Auth check - server-side, blocks everything if no session ──
   const supabase = await createClient();
 
   if (!supabase) {
-    // Supabase not configured — show a clear dev-mode message
+    // Supabase not configured - show a clear dev-mode message
     return (
       <SectionWrapper eyebrow="Profile" title="Supabase not configured" className="pt-36">
         <p className="text-sm text-muted-foreground">
@@ -90,7 +90,7 @@ export default async function ProfilePage() {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    // Hard server-side redirect — no data is fetched, no JSX rendered
+    // Hard server-side redirect - no data is fetched, no JSX rendered
     redirect("/login?next=/profile");
   }
 
@@ -107,7 +107,7 @@ export default async function ProfilePage() {
     getMyChallengeSubmissions(user.id),
   ]);
 
-  // Profile is the critical fetch — surface a clear error if it fails,
+  // Profile is the critical fetch - surface a clear error if it fails,
   // or a setup form if the row simply doesn't exist yet.
   if (profileError) {
     return (
@@ -131,7 +131,7 @@ export default async function ProfilePage() {
     );
   }
 
-  // Non-critical failures — log, don't crash
+  // Non-critical failures - log, don't crash
   if (badgesError) console.error("[profile] badges error:", badgesError.message);
   if (historyError) console.error("[profile] history error:", historyError.message);
   if (submissionsError) console.error("[profile] submissions error:", submissionsError.message);
@@ -306,7 +306,7 @@ export default async function ProfilePage() {
         {typedBadges.length === 0 && (!typedProfile.won_challenges || typedProfile.won_challenges.length === 0) ? (
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 flex items-center gap-4 text-muted-foreground">
             <Award className="h-5 w-5 text-zinc-600 shrink-0" />
-            <span className="text-sm">No badges or awards yet — earn them by attending events, winning challenges, and contributing.</span>
+            <span className="text-sm">No badges or awards yet - earn them by attending events, winning challenges, and contributing.</span>
           </div>
         ) : (
           <div className="flex flex-wrap gap-3">

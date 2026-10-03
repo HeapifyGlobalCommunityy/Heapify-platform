@@ -344,7 +344,7 @@ export function Hero({
               <span className="eyebrow text-primary">Est. 2024</span>
             </motion.div>
 
-            {/* Main headline — editorial serif with responsive clamp preventing overlap on laptops */}
+            {/* Main headline - editorial serif with responsive clamp preventing overlap on laptops */}
             <motion.h1
               style={{ opacity: headlineOpacity, y: headlineY }}
               className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[3.15rem] xl:text-[4rem] 2xl:text-[5.15rem] font-600 leading-[1.06] tracking-tight text-foreground mb-4 sm:mb-6"

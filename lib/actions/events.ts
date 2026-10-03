@@ -4,7 +4,7 @@
 // Tables affected: event_registrations (INSERT only)
 // RLS status: ✅ RLS is enabled on event_registrations with:
 //   - "users insert own registrations" FOR INSERT WITH CHECK (auth.uid() = user_id)
-// This server action is correct both now and after RLS is active — user_id
+// This server action is correct both now and after RLS is active - user_id
 // always comes from the server session, never from the client.
 //
 // Dependencies:
@@ -12,9 +12,9 @@
 //    Currently events come from mock data in site-content.ts. If the event
 //    slug isn't seeded in Supabase, this will return a clear error.
 // 2. The user must have a `profiles` row (FK constraint). If they haven't
-//    set up their profile yet, this will fail with a FK violation — handled.
+//    set up their profile yet, this will fail with a FK violation - handled.
 //
-// Constraint: unique(event_id, user_id) — one registration per user per event.
+// Constraint: unique(event_id, user_id) - one registration per user per event.
 // Handled gracefully with a user-friendly error.
 
 "use server";
@@ -49,7 +49,7 @@ export async function registerForEvent(
   eventSlug: string,
   payload: RegistrationPayload
 ): Promise<RegisterResult> {
-  // 1. Server-side auth check — never trust the client
+  // 1. Server-side auth check - never trust the client
   const supabase = await createClient();
   if (!supabase) {
     return { success: false, error: "Service unavailable. Please try again later." };
@@ -61,7 +61,7 @@ export async function registerForEvent(
   }
 
   // 2. Look up the event's UUID by slug
-  //    Events currently come from mock data — if not seeded in Supabase,
+  //    Events currently come from mock data - if not seeded in Supabase,
   //    this returns null and we surface a clear message.
   const { data: event, error: eventError } = await supabase
     .from("events")
@@ -131,12 +131,12 @@ export async function registerForEvent(
   }
 
   // 6. Insert into event_registrations
-  //    user_id = user.id (session-derived — never from client)
+  //    user_id = user.id (session-derived - never from client)
   const { error: insertError } = await supabase
     .from("event_registrations")
     .insert({
       event_id: event.id,
-      user_id: user.id,           // session-derived — this is the security guarantee
+      user_id: user.id,           // session-derived - this is the security guarantee
       full_name: payload.fullName.trim(),
       email: payload.email.trim(),
       github_url: payload.githubUrl.trim() || null,
@@ -754,7 +754,7 @@ export async function adminUpdateEvent(
     return { success: false, error: "Admin service is unavailable." };
   }
 
-  // 1. Fetch target event (no ownership check — admins manage every event)
+  // 1. Fetch target event (no ownership check - admins manage every event)
   const { data: event, error: eventError } = await adminClient
     .from("events")
     .select("id, slug, capacity")
@@ -890,7 +890,7 @@ export async function adminDeleteEvent(eventId: string) {
     return { success: false, error: "Event not found." };
   }
 
-  // Only allow deletion when no registrations exist — otherwise require cancellation.
+  // Only allow deletion when no registrations exist - otherwise require cancellation.
   const { count, error: countError } = await adminClient
     .from("event_registrations")
     .select("id", { count: "exact", head: true })

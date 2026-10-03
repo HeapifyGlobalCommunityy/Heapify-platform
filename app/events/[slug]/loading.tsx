@@ -1,4 +1,4 @@
-// app/events/[slug]/loading.tsx — skeleton shown while the event detail page resolves
+// app/events/[slug]/loading.tsx - skeleton shown while the event detail page resolves
 export default function EventDetailLoading() {
   return (
     <div className="pt-32 min-h-screen">

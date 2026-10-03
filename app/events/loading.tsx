@@ -1,4 +1,4 @@
-// app/events/loading.tsx — skeleton shown while the events list page loads
+// app/events/loading.tsx - skeleton shown while the events list page loads
 export default function EventsLoading() {
   return (
     <div className="pt-40 pb-12 max-w-7xl mx-auto px-6">

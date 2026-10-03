@@ -17,7 +17,7 @@ begin
   base_username := split_part(new.email, '@', 1);
   final_username := base_username;
 
-  -- profiles.username is unique — guard against collisions
+  -- profiles.username is unique - guard against collisions
   while exists (select 1 from public.profiles where username = final_username) loop
     suffix := suffix + 1;
     final_username := base_username || suffix::text;

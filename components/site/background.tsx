@@ -94,7 +94,7 @@ export function AnimatedNetworkBackground() {
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseleave", onLeave);
 
-    // Throttle to ~30fps instead of 60fps — the animation is subtle
+    // Throttle to ~30fps instead of 60fps - the animation is subtle
     // enough that this is imperceptible, but halves GPU/CPU cost.
     let lastTime = 0;
     const FRAME_INTERVAL = 1000 / 30;
@@ -140,7 +140,7 @@ export function AnimatedNetworkBackground() {
           const second = nodes[j];
           const dx = first.x - second.x;
           const dy = first.y - second.y;
-          // Skip sqrt when possible — compare squared distances
+          // Skip sqrt when possible - compare squared distances
           const distSq = dx * dx + dy * dy;
           if (distSq < connectionDistance * connectionDistance) {
             const distance = Math.sqrt(distSq);
@@ -182,7 +182,7 @@ export function AnimatedNetworkBackground() {
       <div className="absolute inset-0 opacity-55 [mask-image:linear-gradient(to_bottom,black,transparent_90%)]">
         <canvas ref={canvasRef} className="h-full w-full" aria-hidden="true" />
       </div>
-      {/* Bottom fade to page background — uses CSS variable */}
+      {/* Bottom fade to page background - uses CSS variable */}
       <div
         className="absolute inset-0"
         style={{

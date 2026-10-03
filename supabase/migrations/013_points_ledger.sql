@@ -1,22 +1,22 @@
 -- ============================================================
--- MIGRATION 013 — Challenges & Leaderboard: points ledger + reviewer RPCs
+-- MIGRATION 013 - Challenges & Leaderboard: points ledger + reviewer RPCs
 -- Slice: CL-P1 (docs/challenges-leaderboard/EXECUTION_PLAN.md)
 -- Project: hfdymlfamjyonzasxwvc
 -- Depends on: 012_challenges_rls.sql (hardened has_role, challenge_submissions
 --             lifecycle columns, leaderboard_entries unique index).
 --
 -- Scope of this file:
---   * point_awards — immutable audit ledger (R2)
+--   * point_awards - immutable audit ledger (R2)
 --   * RLS + full client-role DML revocation on point_awards
---   * review_challenge_submission() — atomic review + award + board upsert (R3)
---   * set_challenge_winner()         — approved-submission precondition (R8)
---   * recompute_leaderboard_category() — ledger-derived repair (R11 / F11)
+--   * review_challenge_submission() - atomic review + award + board upsert (R3)
+--   * set_challenge_winner()         - approved-submission precondition (R8)
+--   * recompute_leaderboard_category() - ledger-derived repair (R11 / F11)
 --
 -- Point constants (D1): base completion 100, winner bonus 250. Tune here only.
 -- ============================================================
 
 -- ---------------------------------------------------------------------------
--- 1. point_awards — the ledger IS the audit log
+-- 1. point_awards - the ledger IS the audit log
 -- ---------------------------------------------------------------------------
 create table if not exists public.point_awards (
   id          uuid primary key default uuid_generate_v4(),
@@ -27,7 +27,7 @@ create table if not exists public.point_awards (
   points      int  not null check (points > 0),
   awarded_by  uuid references public.profiles(id) on delete set null,
   created_at  timestamptz not null default now(),
-  -- one award per source per user — blocks double awards even under races
+  -- one award per source per user - blocks double awards even under races
   unique (source_type, source_id, user_id)
 );
 
@@ -61,7 +61,7 @@ revoke insert, update, delete, truncate, references, trigger
   on public.point_awards from anon, authenticated, service_role;
 
 -- ---------------------------------------------------------------------------
--- 2. review_challenge_submission — atomic review + award + board upsert (R3)
+-- 2. review_challenge_submission - atomic review + award + board upsert (R3)
 --    Approved rows: stamp + ledger insert + leaderboard increment commit or
 --    roll back together. Non-pending input returns a structured no-op.
 -- ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@ revoke all on function public.review_challenge_submission(uuid, text, text) from
 grant execute on function public.review_challenge_submission(uuid, text, text) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- 3. set_challenge_winner — explicit winner RPC with precondition (R8 / D2)
+-- 3. set_challenge_winner - explicit winner RPC with precondition (R8 / D2)
 --    Idempotent on an unchanged winner; awards 250 only when the winner moves.
 -- ---------------------------------------------------------------------------
 create or replace function public.set_challenge_winner(
@@ -227,7 +227,7 @@ revoke all on function public.set_challenge_winner(uuid, uuid) from public;
 grant execute on function public.set_challenge_winner(uuid, uuid) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- 4. recompute_leaderboard_category — repair from the ledger (R11 / F11)
+-- 4. recompute_leaderboard_category - repair from the ledger (R11 / F11)
 --    Parameterless by contract: it ONLY ever rebuilds ('contributors','all_time'),
 --    so no other partition can be blanked. Callable by super_admin, or with no
 --    session (SQL editor / owner context, where auth.uid() is null).

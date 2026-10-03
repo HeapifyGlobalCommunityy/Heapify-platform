@@ -1,9 +1,9 @@
 // lib/actions/challenges.ts
 // Server action for challenge submissions.
 // CRITICAL: user_id is always derived from the authenticated session
-// server-side. The client never sends a user_id — whatever the browser
+// server-side. The client never sends a user_id - whatever the browser
 // sends is ignored. This is correct both now (no RLS on challenge_submissions)
-// and after RLS Change 1 is approved — genuine defence in depth.
+// and after RLS Change 1 is approved - genuine defence in depth.
 //
 // DB NOTE (no change made): Until RLS Change 1 is approved, a direct
 // Supabase REST call (bypassing this server action, e.g. via curl with
@@ -24,7 +24,7 @@ export async function submitChallengeEntry(
   challengeId: string,
   submissionUrl: string
 ): Promise<SubmitChallengeResult> {
-  // 1. Get server-side session — never trust any client-supplied identity
+  // 1. Get server-side session - never trust any client-supplied identity
   const supabase = await createClient();
   if (!supabase) {
     return { success: false, error: "Service unavailable. Please try again later." };
@@ -36,7 +36,7 @@ export async function submitChallengeEntry(
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    // Redirect rather than return error — this is a hard auth boundary
+    // Redirect rather than return error - this is a hard auth boundary
     redirect("/login?next=/challenges");
   }
 
@@ -55,12 +55,12 @@ export async function submitChallengeEntry(
     return { success: false, error: "Invalid challenge." };
   }
 
-  // 3. Insert — user_id comes from session, never from the client
+  // 3. Insert - user_id comes from session, never from the client
   const { error: insertError } = await supabase
     .from("challenge_submissions")
     .insert({
       challenge_id: challengeId,
-      user_id: user.id, // server-derived — this is the security guarantee
+      user_id: user.id, // server-derived - this is the security guarantee
       submission_url: submissionUrl.trim(),
     });
 

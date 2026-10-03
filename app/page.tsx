@@ -139,7 +139,7 @@ export default async function HomePage() {
         centered
         eyebrow="What We Do"
         title="A Community Built Around Action"
-        description="Everything Heapify does is about builders — people who learn, ship, and create."
+        description="Everything Heapify does is about builders - people who learn, ship, and create."
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {whatWeDo.map((item, index) => (
@@ -215,7 +215,7 @@ export default async function HomePage() {
           </ScrollReveal>
         ) : (
           <div className="rounded-2xl border border-border/60 bg-card p-8 sm:p-12 text-center text-sm text-muted-foreground shadow-warm">
-            No upcoming events right now — check back soon.
+            No upcoming events right now - check back soon.
           </div>
         )}
       </SectionWrapper>
@@ -268,7 +268,7 @@ export default async function HomePage() {
             {/* Photo panel on right (desktop) with smooth scroll parallax */}
             <ParallaxPhoto
               src="/images/explainingproj2.jpg"
-              alt="Heapify Gemma Sprint — team explaining their project"
+              alt="Heapify Gemma Sprint - team explaining their project"
               className="absolute inset-y-4 right-4 w-[40%] hidden md:block rounded-2xl border border-border/60 shadow-sm"
               sizes="40vw"
               shiftPercent={7}
@@ -301,7 +301,7 @@ export default async function HomePage() {
                 <p className="text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
                   250 builders. One offline AI sprint. Heapify&apos;s first flagship
                   hackathon brought together students and developers at MSRIT to build
-                  innovative solutions using Google&apos;s Gemma ecosystem — and it was
+                  innovative solutions using Google&apos;s Gemma ecosystem - and it was
                   just the beginning.
                 </p>
 

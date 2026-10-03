@@ -1,5 +1,5 @@
 -- ============================================================
--- MIGRATION 012 — Challenges & Leaderboard: RLS + privileges + submission RPC
+-- MIGRATION 012 - Challenges & Leaderboard: RLS + privileges + submission RPC
 -- Slice: CL-P1 (docs/challenges-leaderboard/EXECUTION_PLAN.md)
 -- Project: hfdymlfamjyonzasxwvc
 --
@@ -11,8 +11,8 @@
 --   * Unique indexes required by the RPC upserts
 --   * Enable RLS + scoped SELECT policies on challenges / challenge_submissions /
 --     leaderboard_entries, revoke ALL client-role DML (review F1/F5/F8)
---   * submit_challenge_entry()  — the ONLY member write path
---   * get_approved_submission_counts() — anon-safe aggregate (review F10)
+--   * submit_challenge_entry()  - the ONLY member write path
+--   * get_approved_submission_counts() - anon-safe aggregate (review F10)
 --
 -- The ledger table and the reviewer RPCs live in 013 (they depend on point_awards).
 --
@@ -46,7 +46,7 @@ revoke all on function public.has_role(public.user_role) from public;
 grant execute on function public.has_role(public.user_role) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- 1. Preflight — dedupe historical (challenge_id, user_id) duplicates
+-- 1. Preflight - dedupe historical (challenge_id, user_id) duplicates
 --    Keeps the most recent submission per pair. Idempotent: re-running deletes
 --    nothing. MUST run before the unique index is created.
 -- ---------------------------------------------------------------------------
@@ -136,7 +136,7 @@ on public.leaderboard_entries for select
 using (true);
 
 -- ---------------------------------------------------------------------------
--- 6. Privilege revocation — no client role holds DML on any of these tables
+-- 6. Privilege revocation - no client role holds DML on any of these tables
 --    (all writes flow through the RPCs). SELECT is scoped by RLS above.
 -- ---------------------------------------------------------------------------
 grant select on public.challenges to anon, authenticated;
@@ -153,7 +153,7 @@ revoke insert, update, delete, truncate, references, trigger
   on public.leaderboard_entries from anon, authenticated, service_role;
 
 -- ---------------------------------------------------------------------------
--- 7. submit_challenge_entry — the ONLY member write path (R1)
+-- 7. submit_challenge_entry - the ONLY member write path (R1)
 --    Identity is derived from auth.uid() inside Postgres. A single atomic
 --    INSERT ... ON CONFLICT makes concurrent submits safe and keeps exactly
 --    one row per (challenge_id, user_id).
@@ -181,7 +181,7 @@ begin
     raise exception 'Submission URL cannot be empty';
   end if;
 
-  -- http(s) only — closes the javascript: / data: scheme vector (review F6)
+  -- http(s) only - closes the javascript: / data: scheme vector (review F6)
   if v_url !~* '^https?://' then
     raise exception 'Submission URL must start with http:// or https://';
   end if;
@@ -230,7 +230,7 @@ revoke all on function public.submit_challenge_entry(uuid, text) from public;
 grant execute on function public.submit_challenge_entry(uuid, text) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- 8. get_approved_submission_counts — anon-safe aggregate (R7 / review F10)
+-- 8. get_approved_submission_counts - anon-safe aggregate (R7 / review F10)
 --    Returns counts only: no URLs, identities, or notes.
 -- ---------------------------------------------------------------------------
 create or replace function public.get_approved_submission_counts()

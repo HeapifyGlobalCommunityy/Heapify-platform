@@ -113,14 +113,14 @@ export async function submitForm(
   }
   const type = formType as FormType;
 
-  // 2. Server-side field validation — independent of client checks
+  // 2. Server-side field validation - independent of client checks
   const required = REQUIRED_FIELDS[type];
   const emailFields = EMAIL_FIELDS[type];
   const fieldErrors: Record<string, string> = {};
 
   for (const field of required) {
     const value = payload[field];
-    // multi-select fields may be arrays — check for empty array too
+    // multi-select fields may be arrays - check for empty array too
     if (Array.isArray(value)) {
       if (value.length === 0) {
         fieldErrors[field] = "This field is required.";
@@ -151,7 +151,7 @@ export async function submitForm(
     return { success: false, error: "Service temporarily unavailable. Please try again." };
   }
 
-  // 4. Derive submitted_by from session — never trust client-supplied value
+  // 4. Derive submitted_by from session - never trust client-supplied value
   let submittedBy: string | null = null;
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
@@ -162,12 +162,12 @@ export async function submitForm(
   const { submitted_by: _a, status: _b, ...safePayload } = payload as Record<string, unknown>;
   void _a; void _b;
 
-  // 6. Insert — RLS policy: auth.uid() = submitted_by OR submitted_by IS NULL
+  // 6. Insert - RLS policy: auth.uid() = submitted_by OR submitted_by IS NULL
   const { error } = await supabase.from("form_submissions").insert({
     form_type: type,
     submitted_by: submittedBy,
     payload: safePayload,
-    // status defaults to "pending" via DB default — do not set here
+    // status defaults to "pending" via DB default - do not set here
   });
 
   if (error) {

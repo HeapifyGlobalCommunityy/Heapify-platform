@@ -1,7 +1,7 @@
 // lib/supabase/queries.ts
-// Centralised read-only query helpers — all server-side, anon key only.
+// Centralised read-only query helpers - all server-side, anon key only.
 // Each function returns { data, error } so callers can always handle
-// the error branch explicitly — no silent failures.
+// the error branch explicitly - no silent failures.
 
 import { createClient } from "@/lib/supabase/server";
 
@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 // DB NOTE: challenges/announcements currently have no RLS. The WHERE clause
 // filters correctly in SQL, but until RLS Change 2 is approved, a direct
 // API call (bypassing this helper) can still read core_team rows.
-// This is a read-only helper — no write risk here.
+// This is a read-only helper - no write risk here.
 export async function getPublicAnnouncements(limit = 6) {
   const supabase = await createClient();
   if (!supabase) return { data: null, error: new Error("Supabase not configured") };
@@ -156,7 +156,7 @@ export async function getEventHistory(userId: string, page = 0) {
 }
 
 // ─── Events (paginated & single) ─────────────────────────────────────────
-// Fetches all events — both upcoming/ongoing and past — so the events page
+// Fetches all events - both upcoming/ongoing and past - so the events page
 // can display them in separate sections. Past events are shown with a muted
 // visual treatment; their detail pages remain accessible but registration
 // is closed. Limit is 50 to comfortably cover both temporal segments.

@@ -135,7 +135,7 @@ export async function POST(
   }
 
   // ---------------------------------------------------------------------
-  // 1. Auth check — reject unauthenticated requests immediately.
+  // 1. Auth check - reject unauthenticated requests immediately.
   //    RLS would also block the insert, but failing fast here gives a
   //    clean 401 instead of letting a bad request fall through to a
   //    confusing Postgres-level rejection.
@@ -151,7 +151,7 @@ export async function POST(
 
   // ---------------------------------------------------------------------
   // 2. Parse + minimally validate the body shape.
-  //    This is NOT full validation yet — just enough to avoid crashing
+  //    This is NOT full validation yet - just enough to avoid crashing
   //    on garbage input before we even load the event.
   // ---------------------------------------------------------------------
   let rawBody: RawRegisterBody;
@@ -250,7 +250,7 @@ export async function POST(
   }
 
   // ---------------------------------------------------------------------
-  // 6. Custom question validation — every required question needs an answer.
+  // 6. Custom question validation - every required question needs an answer.
   //    custom_questions shape: { id, label, type, required, options? }[]
   // ---------------------------------------------------------------------
   const customQuestions = (event.custom_questions ?? []) as unknown as {
@@ -280,7 +280,7 @@ export async function POST(
     // 2. Type & Option Validation with explicit coercion (only if a value is provided)
     if (val !== undefined && val !== null && val !== "") {
       if (q.type === "number") {
-        // Arrays are rejected — number questions expect a scalar
+        // Arrays are rejected - number questions expect a scalar
         if (Array.isArray(val)) {
           validationErrors.push(`Answer for "${q.label}" must be a valid number.`);
         } else {
@@ -328,7 +328,7 @@ export async function POST(
   }
 
   // ---------------------------------------------------------------------
-  // 7. Capacity check — count only registrations that actually hold a
+  // 7. Capacity check - count only registrations that actually hold a
   //    seat. 'waitlisted' and 'cancelled' don't count against capacity.
   // ---------------------------------------------------------------------
   let registrationStatus: "registered" | "waitlisted" = "registered";
@@ -354,7 +354,7 @@ export async function POST(
 
   // ---------------------------------------------------------------------
   // 8. Insert. RLS's `with check (auth.uid() = user_id)` is the real
-  //    enforcement — this insert will fail at the DB level if user_id
+  //    enforcement - this insert will fail at the DB level if user_id
   //    doesn't match the session, even if something upstream is wrong.
   // ---------------------------------------------------------------------
   const { data: registration, error: insertError } = await supabase
@@ -376,7 +376,7 @@ export async function POST(
 
   if (insertError) {
     // Postgres unique_violation on (event_id, user_id).
-    // Don't leak the raw Postgres error — return a clean, specific message.
+    // Don't leak the raw Postgres error - return a clean, specific message.
     if (insertError.code === "23505") {
       return NextResponse.json(
         { error: "You're already registered for this event" },

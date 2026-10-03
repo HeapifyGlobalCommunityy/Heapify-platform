@@ -100,7 +100,7 @@ export default function DynamicForm({ formType, config }: Props) {
         </h2>
         <p className="text-sm text-muted-foreground leading-7 max-w-md mx-auto">
           Your <span className="text-foreground font-medium capitalize">{formType.replace(/_/g, " ")}</span> submission
-          is currently pending review. We will reach out to you shortly — keep
+          is currently pending review. We will reach out to you shortly - keep
           an eye on your inbox.
         </p>
       </div>
@@ -189,7 +189,7 @@ export default function DynamicForm({ formType, config }: Props) {
                 className={cn(baseInputClass, "cursor-pointer")}
               >
                 <option value="" disabled className="bg-background text-foreground">
-                  — Select one —
+                  - Select one -
                 </option>
                 {field.options?.map((opt) => (
                   <option key={optionValue(opt)} value={optionValue(opt)} className="bg-background text-foreground">

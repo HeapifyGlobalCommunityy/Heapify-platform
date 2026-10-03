@@ -1,7 +1,7 @@
 "use client";
 
 // components/challenges/ChallengeCard.tsx
-// Client component — handles expand/collapse toggle and submission form.
+// Client component - handles expand/collapse toggle and submission form.
 // The actual submission goes to a server action; this component only
 // manages local UI state (open, pending, form value, my-submissions list).
 
@@ -39,7 +39,7 @@ interface Props {
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
 function formatDate(dateStr: string | null): string {
-  if (!dateStr) return "—";
+  if (!dateStr) return "-";
   return new Date(dateStr).toLocaleDateString("en-US", {
     month: "short", day: "numeric", year: "numeric",
   });
@@ -73,7 +73,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   // useTransition prevents the button from being re-enabled during the
-  // server action round-trip — double-submit guard
+  // server action round-trip - double-submit guard
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = useCallback(() => {
@@ -105,7 +105,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
       transition={{ duration: 0.25 }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:border-primary/35 hover:shadow-warm-lg hover:-translate-y-1"
     >
-      {/* Radial hover glow — identical to EventCard */}
+      {/* Radial hover glow - identical to EventCard */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.16),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_30%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
       {/* Card header */}
@@ -132,7 +132,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
       <div className="relative mt-5 flex flex-wrap gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-3 py-2">
           <CalendarDays className="h-3.5 w-3.5 text-primary" />
-          <span>{formatDate(challenge.start_at)} – {formatDate(challenge.end_at)}</span>
+          <span>{formatDate(challenge.start_at)} - {formatDate(challenge.end_at)}</span>
         </div>
         {submissionCount > 0 && (
           <div className="flex items-center gap-2 rounded-xl border border-glass-border bg-glass-bg px-3 py-2">
@@ -150,7 +150,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
         </div>
       )}
 
-      {/* Expand toggle + submission form — active challenges only */}
+      {/* Expand toggle + submission form - active challenges only */}
       <div className="relative mt-auto pt-5">
         <Button
           variant="ghost"
@@ -177,7 +177,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
                   isAuthenticated ? (
                     <>
                       <p className="text-xs text-muted-foreground">
-                        Submit a link to your entry — repo, deployed site, or doc.
+                        Submit a link to your entry - repo, deployed site, or doc.
                         Multiple submissions are allowed.
                       </p>
 
@@ -224,7 +224,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
                       </div>
                     </>
                   ) : (
-                    /* Not authenticated — call to action */
+                    /* Not authenticated - call to action */
                     <div className="rounded-xl border border-border/80 bg-muted/30 p-4 text-center space-y-3">
                       <p className="text-sm text-muted-foreground">
                         Sign in to submit an entry for this challenge.
@@ -235,7 +235,7 @@ export default function ChallengeCard({ challenge, isAuthenticated, initialSubmi
                     </div>
                   )
                 ) : (
-                  /* Past challenge — show full description, no form */
+                  /* Past challenge - show full description, no form */
                   <p className="text-sm leading-7 text-muted-foreground">
                     {challenge.description ?? "No additional details available for this challenge."}
                   </p>

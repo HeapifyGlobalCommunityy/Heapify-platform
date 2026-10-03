@@ -56,20 +56,20 @@ export function Footer() {
   }));
 
   return (
-    <footer className="relative mt-24 overflow-hidden">
-      {/* "For Builders, Not Spectators" banner accent at top - spans full length across the website */}
-      <div className="relative py-3 sm:py-5 md:py-7 overflow-hidden border-y border-border/40 bg-background w-full">
+    <footer className="relative mt-6 sm:mt-10 overflow-hidden w-full">
+      {/* "For Builders, Not Spectators" banner accent at top - 100% full-width edge-to-edge with zero gap */}
+      <div className="relative w-full overflow-hidden bg-background">
         {/* Subtle warm ambient glow matching page theme */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
 
-        {/* Full-length graphic banner */}
-        <div className="relative z-10 w-full max-w-[1600px] mx-auto px-2 sm:px-4 md:px-6 flex items-center justify-center">
+        {/* Full-bleed graphic banner spanning edge-to-edge */}
+        <div className="relative z-10 w-full flex items-center justify-center">
           <Image
             src="/for-builders-not-spectators.png"
             alt="For Builders, Not Spectators"
             width={1967}
             height={628}
-            className="w-full h-auto object-contain mx-auto select-none pointer-events-none drop-shadow-sm"
+            className="w-full h-auto object-cover sm:object-contain select-none pointer-events-none drop-shadow-sm"
             priority={false}
             sizes="100vw"
           />

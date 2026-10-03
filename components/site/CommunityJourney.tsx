@@ -119,7 +119,7 @@ export function CommunityJourney() {
               From discovery to leadership.
             </p>
             <p className="text-white/80 text-xs sm:text-sm mt-0.5 max-w-2xl mx-auto">
-              The path every Heapify builder takes — from first event to community leader.
+              The path every Heapify builder takes - from first event to community leader.
             </p>
           </motion.div>
 

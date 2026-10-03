@@ -1,9 +1,9 @@
 -- ============================================================
 -- MIGRATION: replace projects.maintainer_ids with a real join table
--- (safe to run on existing data — pre-launch, but written carefully anyway)
+-- (safe to run on existing data - pre-launch, but written carefully anyway)
 -- ============================================================
 
--- 1. Role helper — needed by the policies below, doesn't exist yet
+-- 1. Role helper - needed by the policies below, doesn't exist yet
 create or replace function has_role(min_role user_role)
 returns boolean
 language sql
@@ -37,7 +37,7 @@ create policy "core team assign maintainers" on project_maintainers
   for all using ((select has_role('core_team')))
   with check ((select has_role('core_team')));
 
--- 3. Migrate any existing maintainer_ids data into the join table —
+-- 3. Migrate any existing maintainer_ids data into the join table -
 --    skips any UUID that doesn't match a real profile (the exact risk you caught)
 insert into project_maintainers (project_id, user_id)
 select p.id, m

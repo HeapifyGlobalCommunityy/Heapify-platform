@@ -9,7 +9,7 @@ import ConfirmationView from "./ConfirmationView";
 import { registerForEvent } from "@/lib/actions/events";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Redesigned for visual hierarchy and polish — same exact field names, state
+// Redesigned for visual hierarchy and polish - same exact field names, state
 // shape, and validation logic as before, so nothing about the data contract
 // changes. Only the presentation layer (spacing, grouping, typography,
 // section framing) is new.
@@ -204,7 +204,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   }
 
   // Total section count drives both the numbering and the little progress
-  // dots at the top — gives the form a sense of "here's how much is left",
+  // dots at the top - gives the form a sense of "here's how much is left",
   // which is a small but real hook to keep people moving through it.
   const sectionCount = 2 + (showTeamSection ? 1 : 0) + (event.customQuestions.length > 0 ? 1 : 0);
 
@@ -213,7 +213,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
 
       {/* ── Header ── */}
       <div className="space-y-3">
-        {/* Progress dots — proportional fill based on how many sections the
+        {/* Progress dots - proportional fill based on how many sections the
             user has interacted with (name + email filled = section 1 done) */}
         <div className="flex items-center gap-1.5">
           {Array.from({ length: sectionCount }).map((_, i) => {
@@ -240,7 +240,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
             Register for {event.title}
           </h1>
           <p className="mt-2 text-sm text-zinc-500">
-            You&apos;re almost in — this takes about a minute.
+            You&apos;re almost in - this takes about a minute.
           </p>
         </div>
       </div>
@@ -292,7 +292,7 @@ export default function RegistrationForm({ event }: { event: EventProps }) {
   );
 }
 
-// ─── Section card wrapper — gives every section a consistent frame ─────────
+// ─── Section card wrapper - gives every section a consistent frame ─────────
 
 function FormSection({
   index, title, children,

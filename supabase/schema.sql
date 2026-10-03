@@ -1,5 +1,5 @@
 -- ============================================================================
--- HEAPIFY GLOBAL COMMUNITY — SUPABASE SCHEMA
+-- HEAPIFY GLOBAL COMMUNITY - SUPABASE SCHEMA
 -- Run in order. Designed for Postgres + Supabase Auth + RLS.
 -- ============================================================================
 
@@ -384,7 +384,7 @@ create policy "chapter leads update membership requests" on form_submissions
 
 -- Core team / super admin elevated access is handled via a `has_role()`
 -- helper function checked in policies on admin-only tables (sponsors,
--- team_members, announcements, site_stats) — add once auth roles are seeded:
+-- team_members, announcements, site_stats) - add once auth roles are seeded:
 --
 -- create function has_role(min_role user_role) returns boolean as $$
 --   select exists (

@@ -1,7 +1,7 @@
 export const brand = {
   name: "Heapify Global Community",
   tagline: "For Builders, Not Spectators",
-  mission: "To build a space where developers and creators learn by doing—prioritizing shipping over spectating.",
+  mission: "To build a space where developers and creators learn by doing-prioritizing shipping over spectating.",
   vision: "A world where every builder has the community they need to create meaningful impact.",
 };
 
@@ -73,7 +73,7 @@ export const featuredEvents = [
     time: "All day",
     location: "MSRIT, Bengaluru",
     summary:
-      "Heapify's flagship AI hackathon — an offline sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
+      "Heapify's flagship AI hackathon - an offline sprint at Ramaiah Institute of Technology where builders developed innovative solutions using Google's Gemma ecosystem.",
     spotlight: "Flagship Event",
   },
 ];
@@ -108,7 +108,7 @@ export const eventCatalog = [
     category: "Workshop",
     status: "Past",
     date: "18 July 2026",
-    time: "3:30 PM – 5:00 PM IST",
+    time: "3:30 PM - 5:00 PM IST",
     format: "Virtual",
     location: "Online",
     description:
@@ -116,11 +116,11 @@ export const eventCatalog = [
   },
   {
     slug: "web3-gsoc27-session-1",
-    title: "Web3 to GSoC'27 Initiative — Session 01",
+    title: "Web3 to GSoC'27 Initiative - Session 01",
     category: "Open Source",
     status: "Past",
     date: "Jun 07, 2026",
-    time: "2:00 PM – 3:30 PM IST",
+    time: "2:00 PM - 3:30 PM IST",
     format: "Virtual",
     location: "Google Meet",
     description:
@@ -128,11 +128,11 @@ export const eventCatalog = [
   },
   {
     slug: "web3-gsoc27-session-2",
-    title: "Web3 to GSoC'27 — Session 02: From First Issue to First Merge",
+    title: "Web3 to GSoC'27 - Session 02: From First Issue to First Merge",
     category: "Open Source",
     status: "Past",
     date: "Jun 14, 2026",
-    time: "3:00 PM – 4:30 PM IST",
+    time: "3:00 PM - 4:30 PM IST",
     format: "Virtual",
     location: "Google Meet",
     description:
@@ -144,7 +144,7 @@ export const eventCatalog = [
     category: "Hackathon",
     status: "Past",
     date: "Jun 21, 2026",
-    time: "3:00 PM – 4:30 PM IST",
+    time: "3:00 PM - 4:30 PM IST",
     format: "Virtual",
     location: "Google Meet",
     description:
@@ -152,11 +152,11 @@ export const eventCatalog = [
   },
   {
     slug: "builder-talks-01",
-    title: "Builder Talks #01 — Freelancing & Developer Career Building",
+    title: "Builder Talks #01 - Freelancing & Developer Career Building",
     category: "Community",
     status: "Past",
     date: "Jul 05, 2026",
-    time: "4:00 PM – 5:30 PM IST",
+    time: "4:00 PM - 5:30 PM IST",
     format: "Virtual",
     location: "Google Meet",
     description:
@@ -246,7 +246,7 @@ export const partners = [
   "IEEE CIS",
   "Google Gemma Community",
   "Kaggle",
-  "MSRIT — ISE Dept.",
+  "MSRIT - ISE Dept.",
   "Nexus Spring of Code",
   "AI Mobile Coders",
   "RedBull",
@@ -287,7 +287,7 @@ export const timeline = [
     year: "Early Days",
     title: "Community founded",
     description:
-      "Heapify started as a local builder-focused group bringing together students and developers who wanted to do more than just learn — they wanted to build.",
+      "Heapify started as a local builder-focused group bringing together students and developers who wanted to do more than just learn - they wanted to build.",
   },
   {
     year: "Growth",
@@ -297,13 +297,13 @@ export const timeline = [
   },
   {
     year: "Jun 2026",
-    title: "Web3 to GSoC'27 – Session 01",
+    title: "Web3 to GSoC'27 - Session 01",
     description:
       "First session under the Web3 to GSoC'27 Initiative. Speaker: Suryansh Maurya, GSoC Contributor. Host: Madhusudan LS, NHCE.",
   },
   {
     year: "Jun 2026",
-    title: "Web3 to GSoC'27 – Session 02",
+    title: "Web3 to GSoC'27 - Session 02",
     description:
       "From First Issue to First Merge: Building a Strong Open Source Profile. Speaker: Priyanshu Yadav, GSoC 2026 & 2025 Contributor.",
   },
@@ -315,7 +315,7 @@ export const timeline = [
   },
   {
     year: "2026",
-    title: "Builder Talks #01 – Freelancing & Builder Meet",
+    title: "Builder Talks #01 - Freelancing & Builder Meet",
     description:
       "Community session on freelancing and building a sustainable tech career. Speakers: Harsha Nandi (NSoC) and Aman Singh, Founder NSoC & GSSoC'25 Rank #3.",
   },
@@ -323,7 +323,7 @@ export const timeline = [
     year: "Jul 2026",
     title: "Build with Gemma: Bengaluru AI Sprint",
     description:
-      "Heapify organized its flagship AI hackathon at MSRIT, Bengaluru — an offline event around Google's Gemma ecosystem with ~250 participants.",
+      "Heapify organized its flagship AI hackathon at MSRIT, Bengaluru - an offline event around Google's Gemma ecosystem with ~250 participants.",
   },
 ];
 
@@ -425,7 +425,7 @@ export const teamSections = [
       {
         name: "Mohammed Oveaz Khan",
         role: "Tech Lead",
-        bio: "Owns the database schema, access control, and platform security — keeping Heapify's backend robust and reliable.",
+        bio: "Owns the database schema, access control, and platform security - keeping Heapify's backend robust and reliable.",
         links: [
           { platform: "github", url: "https://github.com/mddragon18" },
           { platform: "linkedin", url: "https://www.linkedin.com/in/mohammed-oveaz-khan-8a020030a/" }
@@ -492,7 +492,7 @@ export const socialChannels = [
   {
     title: "WhatsApp",
     href: "https://chat.whatsapp.com/EiPms0OwtDY87nkjuplDiZ",
-    description: "Join the Heapify builder group on WhatsApp — quick updates, event reminders, and community check-ins.",
+    description: "Join the Heapify builder group on WhatsApp - quick updates, event reminders, and community check-ins.",
   },
   {
     title: "Instagram",

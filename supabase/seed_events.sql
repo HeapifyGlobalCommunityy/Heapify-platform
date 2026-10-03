@@ -6,7 +6,7 @@ VALUES
   (
     '3a3b3c3d-0001-4000-8000-000000000001', 
     'web3-gsoc27-session-1', 
-    'Web3 to GSoC''27 Initiative — Session 01', 
+    'Web3 to GSoC''27 Initiative - Session 01', 
     'open_source', 
     'completed', 
     '2026-06-07 14:00:00+05:30', 
@@ -19,7 +19,7 @@ VALUES
   (
     '3a3b3c3d-0002-4000-8000-000000000002', 
     'web3-gsoc27-session-2', 
-    'Web3 to GSoC''27 — Session 02: From First Issue to First Merge', 
+    'Web3 to GSoC''27 - Session 02: From First Issue to First Merge', 
     'open_source', 
     'completed', 
     '2026-06-14 15:00:00+05:30', 
@@ -45,7 +45,7 @@ VALUES
   (
     '3a3b3c3d-0004-4000-8000-000000000004', 
     'builder-talks-01', 
-    'Builder Talks #01 — Freelancing & Developer Career Building', 
+    'Builder Talks #01 - Freelancing & Developer Career Building', 
     'workshop', 
     'completed', 
     '2026-07-05 16:00:00+05:30', 

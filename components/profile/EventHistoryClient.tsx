@@ -40,7 +40,7 @@ interface Props {
   userId: string;
 }
 
-// Server action import — pagination fetch
+// Server action import - pagination fetch
 import { loadMoreEventHistory } from "@/lib/actions/profile";
 
 export default function EventHistoryClient({ initialRows, hasMoreInitially, userId }: Props) {

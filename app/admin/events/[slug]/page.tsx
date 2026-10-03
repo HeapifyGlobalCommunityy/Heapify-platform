@@ -118,7 +118,7 @@ export default async function AdminEventDetailPage({ params }: PageProps) {
             <span className="inline-flex items-center gap-2 text-muted-foreground">
               <CalendarDays className="h-4 w-4 text-primary" />
               {formatDate(event.start_at)}
-              {event.end_at ? ` — ${formatDate(event.end_at)}` : ""}
+              {event.end_at ? ` - ${formatDate(event.end_at)}` : ""}
             </span>
             <span className="inline-flex items-center gap-2 text-muted-foreground">
               {event.is_virtual ? (

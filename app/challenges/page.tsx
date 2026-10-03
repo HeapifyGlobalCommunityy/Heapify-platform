@@ -1,8 +1,8 @@
 // app/challenges/page.tsx
-// Public challenges page — server component.
+// Public challenges page - server component.
 // Fetches active + past challenges from Supabase with full error handling.
 // Auth session checked server-side so ChallengeCard knows whether to show
-// the submission form or a "sign in" CTA — no client-side auth check.
+// the submission form or a "sign in" CTA - no client-side auth check.
 
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
@@ -84,7 +84,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
       <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-12 text-center space-y-2">
         <p className="font-display text-lg font-semibold text-foreground">No active challenges right now.</p>
         <p className="text-sm text-muted-foreground">
-          New challenges drop monthly — check back soon or follow us on socials.
+          New challenges drop monthly - check back soon or follow us on socials.
         </p>
       </div>
     );
@@ -108,7 +108,7 @@ async function ActiveChallenges({ isAuthenticated }: { isAuthenticated: boolean 
 async function PastChallenges() {
   const { data, error } = await getPastChallenges(10);
 
-  if (error) return null; // past challenges failing is non-critical — silent skip
+  if (error) return null; // past challenges failing is non-critical - silent skip
 
   if (!data || data.length === 0) {
     return (
@@ -135,9 +135,9 @@ async function PastChallenges() {
 // ─── Page ─────────────────────────────────────────────────────────────────
 
 export default async function ChallengesPage() {
-  // Auth check — server-side, session from cookie. We pass the boolean down
+  // Auth check - server-side, session from cookie. We pass the boolean down
   // to ChallengeCard so it can render the correct CTA without a client fetch.
-  // We do NOT redirect here — challenges are fully public; auth only gates submit.
+  // We do NOT redirect here - challenges are fully public; auth only gates submit.
   const supabase = await createClient();
   let isAuthenticated = false;
 
@@ -166,7 +166,7 @@ export default async function ChallengesPage() {
       <SectionWrapper
         eyebrow="Monthly Challenges"
         title="Build. Ship. Get noticed."
-        description="Community challenges with real prizes and visibility. Submit a link to your entry — repos, deployed sites, or docs all qualify."
+        description="Community challenges with real prizes and visibility. Submit a link to your entry - repos, deployed sites, or docs all qualify."
         className="pt-28 sm:pt-36 pb-12"
       >
         <Suspense fallback={<ChallengeSkeleton />}>

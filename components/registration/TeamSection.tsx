@@ -85,7 +85,7 @@ export default function TeamSection({
           </div>
 
           <p className="text-xs text-zinc-500">
-            {teamConfig.minSize}–{teamConfig.maxSize} members total, including you.
+            {teamConfig.minSize}-{teamConfig.maxSize} members total, including you.
           </p>
 
           {teammates.length > 0 && (

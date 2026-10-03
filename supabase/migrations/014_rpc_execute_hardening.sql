@@ -1,5 +1,5 @@
 -- ============================================================
--- MIGRATION 014 — harden RPC EXECUTE grants against Supabase default privileges
+-- MIGRATION 014 - harden RPC EXECUTE grants against Supabase default privileges
 -- Slice: CL-P1 (docs/challenges-leaderboard/EXECUTION_PLAN.md)
 -- Project: hfdymlfamjyonzasxwvc
 -- Depends on: 012_challenges_rls.sql, 013_points_ledger.sql
@@ -42,7 +42,7 @@ revoke execute on function public.recompute_leaderboard_category()
 grant execute on function public.recompute_leaderboard_category()
   to authenticated;
 
--- Public aggregate stays executable by anon (R7 / F10) — grant explicitly.
+-- Public aggregate stays executable by anon (R7 / F10) - grant explicitly.
 revoke execute on function public.get_approved_submission_counts()
   from public;
 grant execute on function public.get_approved_submission_counts()

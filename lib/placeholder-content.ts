@@ -1,6 +1,6 @@
 // Centralized placeholder content.
 // Replace with Supabase-driven data once the `site_stats`, `pillars`, etc.
-// tables are populated — components are written to accept this same shape.
+// tables are populated - components are written to accept this same shape.
 
 export const stats = [
   { label: "Members", value: 14200 },
@@ -30,4 +30,4 @@ export const PLACEHOLDER_TAGLINE = "Where builders rise to the top.";
 export const PLACEHOLDER_MISSION =
   "To give every engineer, regardless of background, a structured path from learning to leading.";
 export const PLACEHOLDER_VISION =
-  "A world where the best contribution always rises — open, global, and merit-driven.";
+  "A world where the best contribution always rises - open, global, and merit-driven.";

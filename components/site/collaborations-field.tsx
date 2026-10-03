@@ -30,7 +30,7 @@ const partners = [
     scale: 1.3,
   },
   {
-    name: "MSRIT — ISE",
+    name: "MSRIT - ISE",
     logo: "/partners/msrit.png",
   },
   {

@@ -86,7 +86,7 @@ export function WhatWeDoCards() {
               A Community Built Around Action
             </h2>
             <p className="mt-3 text-base sm:text-lg text-muted-foreground font-normal max-w-2xl mx-auto leading-relaxed">
-              Everything Heapify does is about builders — people who learn, ship, and create.
+              Everything Heapify does is about builders - people who learn, ship, and create.
             </p>
           </motion.div>
         </div>

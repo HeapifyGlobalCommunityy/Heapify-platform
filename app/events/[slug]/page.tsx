@@ -209,7 +209,7 @@ export default async function EventDetailPage({
     chapterName: (ev as unknown as { chapters: { name: string } | null }).chapters?.name || null,
     agenda: ((ev.agenda || []) as unknown as { time?: string; item?: string; title?: string }[]).map((a) => ({
       time: a.time ?? "",
-      // DB may store the text as 'item' or 'title' — accept both
+      // DB may store the text as 'item' or 'title' - accept both
       item: a.item ?? a.title ?? "",
     })),
     speakers: ((ev.speakers || []) as unknown as { name?: string; role?: string; focus?: string; bio?: string; photo_url?: string; photoUrl?: string }[]).map((s) => ({
@@ -232,7 +232,7 @@ export default async function EventDetailPage({
     capacity: ev.capacity ?? 0,
     registeredCount: registeredCount,
     bannerUrl: ev.banner_url || null,
-    // Always normalize to null — never undefined — so RegistrationForm's
+    // Always normalize to null - never undefined - so RegistrationForm's
     // optional-chaining on teamConfig?.allowSolo never throws.
     teamConfig: ev.team_config || null,
     customQuestions: ev.custom_questions || [],
@@ -241,7 +241,7 @@ export default async function EventDetailPage({
   const isPast = computedStatus === "completed" || computedStatus === "cancelled";
 
   // ?register=true opens the registration panel inline.
-  // Past events ignore this flag — registration is closed.
+  // Past events ignore this flag - registration is closed.
   const initialRegistering = register === "true" && !isPast;
 
   return (

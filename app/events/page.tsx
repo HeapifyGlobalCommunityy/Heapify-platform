@@ -141,7 +141,7 @@ export default async function EventsPage() {
     .filter((e) => e.isPast)
     .map(stripTemporalFlag);
 
-  // Build category list from active events only — keeps filter relevant
+  // Build category list from active events only - keeps filter relevant
   const dynamicCategories: string[] = [
     "All",
     ...Array.from(new Set(activeEvents.map((e: { category: string }) => e.category))) as string[],

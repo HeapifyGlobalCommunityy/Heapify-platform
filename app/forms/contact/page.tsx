@@ -166,7 +166,7 @@ export default function Page() {
               </Button>
 
               <p className="text-sm text-muted-foreground">
-                We typically respond within 24–48 hours.
+                We typically respond within 24-48 hours.
               </p>
             </div>
           </form>

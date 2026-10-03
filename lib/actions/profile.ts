@@ -11,7 +11,7 @@ import { EVENT_HISTORY_PAGE_SIZE } from "@/lib/supabase/queries";
 import type { EventHistoryRow } from "@/components/profile/EventHistoryClient";
 
 // ─── Update profile ───────────────────────────────────────────────────────
-// Uses the anon key — the schema already has:
+// Uses the anon key - the schema already has:
 //   CREATE POLICY "users update own profile" ON profiles
 //     FOR UPDATE USING (auth.uid() = id);
 // No admin key needed. user_id always derived from session.
@@ -62,7 +62,7 @@ export async function updateProfile(
       website_url: data.website_url.trim() || null,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", user.id); // RLS also enforces this — double protection
+    .eq("id", user.id); // RLS also enforces this - double protection
 
   if (updateError) {
     if (updateError.code === "23505") {
@@ -85,7 +85,7 @@ export async function loadMoreEventHistory(
   const supabase = await createClient();
   if (!supabase) return { rows: [], hasMore: false };
 
-  // Verify the caller is actually this user — don't trust the client-supplied userId
+  // Verify the caller is actually this user - don't trust the client-supplied userId
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user || user.id !== userId) {
     return { rows: [], hasMore: false };

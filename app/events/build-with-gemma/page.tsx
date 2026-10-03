@@ -85,7 +85,7 @@ export default async function BuildWithGemmaPage() {
             </h1>
             
             <p className="max-w-3xl text-base md:text-lg text-muted-foreground font-normal leading-relaxed">
-              Official Hackathon Briefing Session & Sprint — bringing together developers, student builders, volunteers, and mentors at Ramaiah Institute of Technology to build groundbreaking AI applications using Google&apos;s Gemma ecosystem.
+              Official Hackathon Briefing Session & Sprint - bringing together developers, student builders, volunteers, and mentors at Ramaiah Institute of Technology to build groundbreaking AI applications using Google&apos;s Gemma ecosystem.
             </p>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default async function BuildWithGemmaPage() {
                 The <strong className="text-white font-semibold">Build with Gemma: Bengaluru AI Sprint</strong> was conducted as an official hackathon briefing and building sprint at <strong className="text-white">Ramaiah Institute of Technology (MSRIT)</strong> in Bengaluru.
               </p>
               <p>
-                The session prepared registered participants and builders for competition — walking through official hackathon guidelines, key features of Google Gemma 4 models, practical strategies for building effective AI solutions, and a live Q&A session.
+                The session prepared registered participants and builders for competition - walking through official hackathon guidelines, key features of Google Gemma 4 models, practical strategies for building effective AI solutions, and a live Q&A session.
               </p>
               <p>
                 Guided by 17× hackathon winner <strong className="text-white">Atharva Patwardhan</strong> and ecosystem mentors, teams tackled hands-on prototyping and explored real-world GenAI integration workflows.
@@ -193,7 +193,7 @@ export default async function BuildWithGemmaPage() {
               </div>
               
               <p className="text-sm leading-relaxed text-zinc-300 max-w-xl">
-                Atharva delivered an inspiring keynote and briefing session — breaking down technical frameworks for leveraging Google Gemma 4, sharing winning hackathon strategies, and answering participant questions live.
+                Atharva delivered an inspiring keynote and briefing session - breaking down technical frameworks for leveraging Google Gemma 4, sharing winning hackathon strategies, and answering participant questions live.
               </p>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default async function BuildWithGemmaPage() {
               </p>
             </div>
 
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            {/* TEMPORARY: placeholder image - replace with real event photo */}
             <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
               <Image
                 src="/images/guygivingspeech.jpg"
@@ -254,7 +254,7 @@ export default async function BuildWithGemmaPage() {
               </p>
             </div>
 
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            {/* TEMPORARY: placeholder image - replace with real event photo */}
             <div className="relative w-full h-48 overflow-hidden rounded-xl border border-glass-border bg-glass-bg transition-all duration-300 hover:border-primary/40">
               <Image
                 src="/images/picofallparticipants.jpg"
@@ -339,7 +339,7 @@ export default async function BuildWithGemmaPage() {
           </div>
 
           {/* Photo 6: General Community Placeholder */}
-            {/* TEMPORARY: placeholder image — replace with real event photo */}
+            {/* TEMPORARY: placeholder image - replace with real event photo */}
             <div className="rounded-[1.75rem] overflow-hidden aspect-video relative group border border-glass-border bg-glass-bg transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(255,122,0,0.15)]">
             <Image
               src="/images/placeholder-hackathon-floor.jpg"

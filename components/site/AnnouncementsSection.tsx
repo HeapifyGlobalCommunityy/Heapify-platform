@@ -1,5 +1,5 @@
 // components/site/AnnouncementsSection.tsx
-// Server component — reads from Supabase directly, no client state.
+// Server component - reads from Supabase directly, no client state.
 // Renders only audience='all' rows. Empty state is intentional and visible.
 
 import { getPublicAnnouncements } from "@/lib/supabase/queries";
@@ -32,7 +32,7 @@ export default async function AnnouncementsSection() {
       <div className="rounded-2xl border border-border/60 bg-card p-12 text-center space-y-2 shadow-warm">
         <p className="font-display text-lg font-600 text-foreground">Nothing to announce yet.</p>
         <p className="text-sm text-muted-foreground">
-          Stay tuned — we&apos;ll share community updates here.
+          Stay tuned - we&apos;ll share community updates here.
         </p>
       </div>
     );
