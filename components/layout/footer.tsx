@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 
@@ -56,17 +57,24 @@ export function Footer() {
 
   return (
     <footer className="relative mt-24 overflow-hidden">
-      {/* Quote banner accent at top - clean page-matching background */}
-      <div className="relative py-12 sm:py-14 overflow-hidden border-y border-border/40 bg-background">
+      {/* "For Builders, Not Spectators" banner accent at top */}
+      <div className="relative py-8 sm:py-12 md:py-14 overflow-hidden border-y border-border/40 bg-background">
         {/* Very subtle warm ambient glow matching page theme */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
 
-        {/* Centered quote */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-5 text-center">
-          <p className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-foreground font-medium max-w-2xl leading-snug tracking-tight">
-            &ldquo;Built to learn. Built to ship.&rdquo;
-          </p>
-          <div className="mt-3.5 h-0.5 w-16 bg-primary rounded-full shadow-[0_0_12px_rgba(255,122,0,0.4)]" />
+        {/* Centered graphic banner */}
+        <div className="relative z-10 flex flex-col items-center justify-center px-4 sm:px-6 text-center max-w-4xl mx-auto">
+          <div className="w-full max-w-2xl md:max-w-3xl lg:max-w-4xl">
+            <Image
+              src="/for-builders-not-spectators.png"
+              alt="For Builders, Not Spectators"
+              width={1967}
+              height={800}
+              className="w-full h-auto object-contain mx-auto select-none pointer-events-none mix-blend-multiply drop-shadow-sm"
+              priority={false}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 85vw, 896px"
+            />
+          </div>
         </div>
       </div>
 
