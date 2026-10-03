@@ -130,16 +130,6 @@ export function Hero({
   void title;
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInteractive, setIsInteractive] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const updateSize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -157,8 +147,8 @@ export function Hero({
   useEffect(() => {
     const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 1024;
     const unsubscribe = smoothProgress.on("change", (latest) => {
-      setIsInteractive(latest > (isMobileDevice ? 0.18 : 0.32));
-      const isComplete = latest >= (isMobileDevice ? 0.48 : 0.66);
+      setIsInteractive(latest > (isMobileDevice ? 0.20 : 0.30));
+      const isComplete = latest >= (isMobileDevice ? 0.40 : 0.60);
       if (typeof window !== "undefined") {
         window.__heroImageResizeComplete = isComplete;
         window.dispatchEvent(
@@ -175,8 +165,8 @@ export function Hero({
   }, [smoothProgress]);
 
   // Desktop transforms: starts full-width (left: 0%, width: 100%), glides to right docked card
-  const desktopWidth = useTransform(smoothProgress, [0.10, 0.66], ["100%", "47%"]);
-  const desktopLeft = useTransform(smoothProgress, [0.10, 0.66], ["0%", "51%"]);
+  const desktopWidth = useTransform(smoothProgress, [0.10, 0.66], ["100%", "46%"]);
+  const desktopLeft = useTransform(smoothProgress, [0.10, 0.66], ["0%", "52%"]);
   const desktopTop = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
   const desktopBottom = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
   const desktopRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "32px"]);
@@ -191,37 +181,34 @@ export function Hero({
   );
   const desktopBorderWidth = useTransform(smoothProgress, [0.18, 0.66], ["0px", "1px"]);
 
-  // Mobile transforms: starts full height, contracts to top banner
-  const mobileHeight = useTransform(smoothProgress, [0.08, 0.48], ["100%", "36%"]);
-  const mobileRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
+  // Mobile transforms: starts full height, contracts cleanly to top banner
+  const mobileHeight = useTransform(smoothProgress, [0.02, 0.24], ["100%", "28%"]);
+  const mobileRadius = useTransform(smoothProgress, [0.04, 0.24], ["0px", "24px"]);
 
   // Floating scroll prompt dissolves immediately on scroll
-  const promptOpacity = useTransform(smoothProgress, [0, 0.08], [1, 0]);
-  const promptY = useTransform(smoothProgress, [0, 0.08], [0, 12]);
+  const promptOpacity = useTransform(smoothProgress, [0, 0.06], [1, 0]);
+  const promptY = useTransform(smoothProgress, [0, 0.06], [0, 10]);
 
   // Photo subtle overlay blends
-  const vignetteOpacity = useTransform(smoothProgress, [0, 0.14], [0.45, 0]);
+  const vignetteOpacity = useTransform(smoothProgress, [0, 0.12], [0.45, 0]);
 
   // Content text transforms:
-  // When image is full screen (progress 0), text is completely hidden (opacity 0, blurred, shifted).
-  // As user scrolls, text smoothly glides & melts into view like butter on a hot pan.
-  const contentOpacity = useTransform(smoothProgress, [0.15, 0.58], [0, 1]);
-  const contentY = useTransform(smoothProgress, [0.15, 0.58], [32, 0]);
-  const contentBlur = useTransform(smoothProgress, [0.15, 0.52], [10, 0]);
-  const contentFilter = useTransform(contentBlur, (b) => `blur(${b}px)`);
+  // Smoothly glides & fades into view with ZERO blur so text remains 100% razor sharp at all times
+  const contentOpacity = useTransform(smoothProgress, [0.16, 0.44], [0, 1]);
+  const contentY = useTransform(smoothProgress, [0.16, 0.44], [24, 0]);
 
   // Staggered buttery feel for inner elements
-  const badgeOpacity = useTransform(smoothProgress, [0.18, 0.44], [0, 1]);
-  const badgeY = useTransform(smoothProgress, [0.18, 0.44], [18, 0]);
+  const badgeOpacity = useTransform(smoothProgress, [0.18, 0.38], [0, 1]);
+  const badgeY = useTransform(smoothProgress, [0.18, 0.38], [14, 0]);
 
-  const headlineOpacity = useTransform(smoothProgress, [0.22, 0.48], [0, 1]);
-  const headlineY = useTransform(smoothProgress, [0.22, 0.48], [22, 0]);
+  const headlineOpacity = useTransform(smoothProgress, [0.20, 0.40], [0, 1]);
+  const headlineY = useTransform(smoothProgress, [0.20, 0.40], [16, 0]);
 
-  const descOpacity = useTransform(smoothProgress, [0.26, 0.54], [0, 1]);
-  const descY = useTransform(smoothProgress, [0.26, 0.54], [18, 0]);
+  const descOpacity = useTransform(smoothProgress, [0.24, 0.44], [0, 1]);
+  const descY = useTransform(smoothProgress, [0.24, 0.44], [14, 0]);
 
-  const actionsOpacity = useTransform(smoothProgress, [0.32, 0.62], [0, 1]);
-  const actionsY = useTransform(smoothProgress, [0.32, 0.62], [16, 0]);
+  const actionsOpacity = useTransform(smoothProgress, [0.28, 0.50], [0, 1]);
+  const actionsY = useTransform(smoothProgress, [0.28, 0.50], [12, 0]);
   const dolphinOpacity = useTransform(smoothProgress, [0.12, 0.45], [0, 1]);
 
   return (
@@ -332,19 +319,18 @@ export function Hero({
           />
         </motion.div>
 
-        {/* Content (Appears only on scroll, smoothly optimized for mobile GPUs) */}
+        {/* Content (Appears smoothly on scroll with zero blur) */}
         <motion.div
           style={{
             opacity: contentOpacity,
             y: contentY,
-            filter: isMobile ? undefined : contentFilter,
           }}
           className={cn(
             "relative z-10 mx-auto w-full max-w-7xl pt-4 sm:pt-14 lg:pt-0 transition-[pointer-events]",
             isInteractive ? "pointer-events-auto" : "pointer-events-none"
           )}
         >
-          <div className="max-w-3xl xl:max-w-4xl lg:pr-4">
+          <div className="w-full lg:max-w-[48%] xl:max-w-[47%] 2xl:max-w-[50%] lg:pr-4">
             {/* Eyebrow badge */}
             <motion.div
               style={{ opacity: badgeOpacity, y: badgeY }}
@@ -358,16 +344,16 @@ export function Hero({
               <span className="eyebrow text-primary">Est. 2024</span>
             </motion.div>
 
-            {/* Main headline — editorial serif */}
+            {/* Main headline — editorial serif with responsive clamp preventing overlap on laptops */}
             <motion.h1
               style={{ opacity: headlineOpacity, y: headlineY }}
-              className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6.25rem] font-600 leading-[1.04] tracking-tight text-foreground mb-4 sm:mb-6"
+              className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-[3.15rem] xl:text-[4rem] 2xl:text-[5.15rem] font-600 leading-[1.06] tracking-tight text-foreground mb-4 sm:mb-6"
             >
               Build with<br />
               <span className="font-serif italic font-normal text-glow inline-block pr-2">
                 people
               </span>{" "}
-              who ship.
+              <span className="inline-block">who ship.</span>
             </motion.h1>
 
             {/* Tagline */}
