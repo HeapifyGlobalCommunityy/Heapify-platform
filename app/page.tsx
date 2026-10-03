@@ -1,7 +1,6 @@
 import { Suspense } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { brand, communityJourney, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
+import { brand, gemmaSprintDate, whatWeDo } from "@/lib/site-content";
 import { CommunityJourney } from "@/components/site/CommunityJourney";
 import { CTAComponent, FeatureCard, Hero, ScrollReveal, SectionWrapper, StatsComponent } from "@/components/site/ui";
 import AnnouncementsSection from "@/components/site/AnnouncementsSection";
