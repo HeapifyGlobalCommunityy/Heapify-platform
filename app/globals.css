@@ -57,6 +57,7 @@
 
   html {
     scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
   }
 
   html.lenis,
@@ -72,11 +73,21 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body);
     min-height: 100vh;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     background-image:
       var(--bg-top-glow),
       var(--bg-ambient);
     background-repeat: no-repeat;
     font-feature-settings: "rlig" 1, "calt" 1, "kern" 1;
+  }
+
+  /* Touch device optimizations for iOS Safari & Android Chrome */
+  @media (pointer: coarse) {
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   ::selection {
