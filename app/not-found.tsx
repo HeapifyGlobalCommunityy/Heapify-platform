@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Calendar, Compass, MapPin, Trophy } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Trophy } from "lucide-react";
 
 export default function NotFound() {
   const quickLinks = [
