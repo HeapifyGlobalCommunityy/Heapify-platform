@@ -16,6 +16,7 @@ export const revalidate = 60;
 
 import { getEvents } from "@/lib/supabase/queries";
 import { EventsExplorer, SectionWrapper } from "@/components/site/ui";
+import { ParallaxDolphinWatermark } from "@/components/site/scroll-decorations";
 
 // Helper to format database category enum value to UI label
 function formatCategory(category: string): string {
@@ -126,14 +127,19 @@ export default async function EventsPage() {
     };
   });
 
+  const stripTemporalFlag = ({ isPast: _flag, ...rest }: (typeof mappedEvents)[number]): MappedEvent => {
+    void _flag;
+    return rest;
+  };
+
   // Split into two temporal groups
   const activeEvents: MappedEvent[] = mappedEvents
     .filter((e) => !e.isPast)
-    .map(({ isPast: _isPast, ...rest }) => rest);
+    .map(stripTemporalFlag);
 
   const pastEvents: MappedEvent[] = mappedEvents
     .filter((e) => e.isPast)
-    .map(({ isPast: _isPast, ...rest }) => rest);
+    .map(stripTemporalFlag);
 
   // Build category list from active events only — keeps filter relevant
   const dynamicCategories: string[] = [
@@ -142,20 +148,34 @@ export default async function EventsPage() {
   ];
 
   return (
-    <>
+    <div className="relative overflow-hidden">
+      {/* Background dolphin watermarks */}
+      <ParallaxDolphinWatermark
+        className="absolute -right-8 sm:right-6 top-32 w-36 h-36 sm:w-48 sm:h-48 opacity-[0.08] mix-blend-multiply"
+        speed={30}
+        direction="down"
+        initialRotate={18}
+        flip={true}
+      />
+      <ParallaxDolphinWatermark
+        className="absolute -left-10 sm:left-6 top-[55%] w-40 h-40 sm:w-52 sm:h-52 opacity-[0.07] mix-blend-multiply"
+        speed={40}
+        direction="up"
+        initialRotate={-16}
+      />
+
       <SectionWrapper
+        eyebrow="Events"
         title="Events & Experiences"
-        description="Join our developer workshops, space hackathons, and flagship community sprints happening globally."
-        className="pt-40 pb-12"
+        description="Join sessions, workshops, and flagship community events happening globally."
+        className="pt-28 sm:pt-36 pb-20"
       >
-        <div className="mt-8">
-          <EventsExplorer
-            events={activeEvents}
-            pastEvents={pastEvents}
-            categories={dynamicCategories}
-          />
-        </div>
+        <EventsExplorer
+          events={activeEvents}
+          pastEvents={pastEvents}
+          categories={dynamicCategories}
+        />
       </SectionWrapper>
-    </>
+    </div>
   );
 }

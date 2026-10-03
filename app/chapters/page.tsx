@@ -1,5 +1,6 @@
 import { getChapters } from "@/lib/supabase/queries";
 import { BentoCard, BentoGrid, CTAComponent, SectionWrapper } from "@/components/site/ui";
+import { ParallaxDolphinWatermark } from "@/components/site/scroll-decorations";
 
 const staticChapters = [
   { name: "Bengaluru", type: "College", members: "124 members", desc: "Focusing on AI, Web3 infra, and developer tooling." },
@@ -34,12 +35,27 @@ export default async function ChaptersPage() {
   }
 
   return (
-    <>
+    <div className="relative min-h-screen pb-16 overflow-hidden">
+      {/* Background dolphin watermarks */}
+      <ParallaxDolphinWatermark
+        className="absolute -right-8 sm:right-6 top-32 w-36 h-36 sm:w-48 sm:h-48 opacity-[0.08] mix-blend-multiply"
+        speed={30}
+        direction="down"
+        initialRotate={18}
+        flip={true}
+      />
+      <ParallaxDolphinWatermark
+        className="absolute -left-10 sm:left-6 top-[55%] w-40 h-40 sm:w-52 sm:h-52 opacity-[0.07] mix-blend-multiply"
+        speed={40}
+        direction="up"
+        initialRotate={-16}
+      />
+
       <SectionWrapper
         eyebrow="Chapters"
         title="Global Network Nodes"
         description="A distributed network of city, campus, and regional developer chapters."
-        className="pt-36"
+        className="pt-28 sm:pt-36"
       >
         <BentoGrid className="md:grid-cols-2 xl:grid-cols-3 mt-8">
           {chaptersList.map((chapter, index) => (
@@ -50,7 +66,7 @@ export default async function ChaptersPage() {
               title={chapter.name}
               description={chapter.desc}
             >
-              <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-4">
+              <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-4">
                 <span className="text-xs font-medium text-muted-foreground">{chapter.members}</span>
                 <span className="text-xs font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer">
                   View Chapter &rarr;
@@ -69,7 +85,7 @@ export default async function ChaptersPage() {
           { label: "See team", href: "/team", variant: "ghost" },
         ]}
       />
-    </>
+    </div>
   );
 }
 

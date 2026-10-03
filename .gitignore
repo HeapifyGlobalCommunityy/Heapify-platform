@@ -14,20 +14,30 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
+*.key
+*.cert
+*.bak
+*.swp
 
-# debug
+# debug & logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
 # local env files
 .env*.local
 .env
+.env.production
+.env.development
+!.env.example
 
 # vercel
 .vercel
@@ -45,11 +55,20 @@ next-env.d.ts
 !README.md
 !SITE_STRUCTURE.md
 !repo_status_and_roadmap.md
+# Canonical agent-facing spec set (documentation-first workflow) lives with the code
+!docs/**/*.md
 *.docx
 *.pdf
 context.txt
 
-# Scratch/Temporary files
+# Scratch/Temporary scripts & artifacts
 scratch*
 scratch.js
 scratch_ai.html
+scratch-ui-clean.js
+replace-colors.js
+download_images.ps1
+
+# Agent / Skill tools
+.agents/
+ui-ux-pro-max-skill/

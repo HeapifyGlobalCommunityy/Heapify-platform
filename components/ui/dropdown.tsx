@@ -55,12 +55,12 @@ export default function Dropdown({
         onClick={() => setIsOpen(!isOpen)}
         className={
           buttonClassName ||
-          "flex w-full items-center justify-between rounded-lg border border-border bg-card px-3 py-2.5 text-left text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all duration-150 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+          "flex w-full items-center justify-between rounded-xl border border-border/80 bg-card px-3 py-2.5 text-left text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-150 hover:border-border"
         }
       >
         <div className="flex items-center gap-2 overflow-hidden mr-2">
           {icon && <div className="shrink-0">{icon}</div>}
-          <span className={`truncate ${selectedOption ? "text-foreground dark:text-white" : "text-muted-foreground"}`}>
+          <span className={`truncate ${selectedOption ? "text-foreground" : "text-muted-foreground"}`}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </div>
@@ -79,7 +79,7 @@ export default function Dropdown({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute z-[9999] mt-1.5 max-h-60 w-full overflow-auto rounded-xl border border-border bg-card p-1.5 shadow-2xl backdrop-blur-xl focus:outline-none dark:border-zinc-800 dark:bg-zinc-950/95 scrollbar-thin scrollbar-thumb-border"
+            className="absolute z-[9999] mt-1.5 max-h-60 w-full overflow-auto rounded-xl border border-border/70 bg-card p-1.5 shadow-warm-lg backdrop-blur-xl focus:outline-none"
           >
             {normalizedOptions.map((opt) => {
               const isSelected = opt.value === value;
@@ -93,7 +93,7 @@ export default function Dropdown({
                   className={`flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-all duration-150 ${
                     isSelected
                       ? "bg-primary/10 text-primary font-medium"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground dark:hover:bg-zinc-900 dark:hover:text-white"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <span>{opt.label}</span>

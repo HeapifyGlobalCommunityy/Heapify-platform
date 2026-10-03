@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 import { createClient } from "@/lib/supabase/server";
+import fs from "fs/promises";
+import path from "path";
 
 export const alt = "Heapify Open Source Project";
 export const size = {
@@ -8,28 +10,36 @@ export const size = {
 };
 export const contentType = "image/png";
 
+async function getLogoDataUrl() {
+  try {
+    const logoPath = path.join(process.cwd(), "public", "Heapify_withbg.jpeg");
+    const fileBuffer = await fs.readFile(logoPath);
+    return `data:image/jpeg;base64,${fileBuffer.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
 
+  const [logoDataUrl, projectResult] = await Promise.all([
+    getLogoDataUrl(),
+    supabase ? supabase.from("projects").select("name, description, difficulty, tech_stack").eq("slug", slug).maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+
   let name = "Heapify Open Source Project";
   let description = "Contribute to open source projects built by the Heapify community.";
-  let difficulty = "Open Source";
+  let difficulty = "OPEN SOURCE";
   let techStack: string[] = [];
 
-  if (supabase) {
-    const { data: project } = await supabase
-      .from("projects")
-      .select("name, description, difficulty, tech_stack")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (project) {
-      name = project.name;
-      description = project.description || description;
-      difficulty = (project.difficulty || "Open Source").toUpperCase();
-      techStack = project.tech_stack || [];
-    }
+  const project = projectResult.data;
+  if (project) {
+    name = project.name;
+    description = project.description || description;
+    difficulty = (project.difficulty || "Open Source").toUpperCase();
+    techStack = project.tech_stack || [];
   }
 
   return new ImageResponse(
@@ -43,29 +53,51 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           alignItems: "flex-start",
           justifyContent: "space-between",
           backgroundColor: "#09090b",
-          backgroundImage: "radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.2), transparent 45%)",
+          backgroundImage: "radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.22), transparent 45%)",
           padding: "60px 80px",
           color: "#ffffff",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        {/* Top Header Row with Logo */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {logoDataUrl && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logoDataUrl}
+                width="54"
+                height="54"
+                style={{
+                  borderRadius: "14px",
+                  border: "1px solid rgba(59, 130, 246, 0.4)",
+                  objectFit: "cover",
+                }}
+                alt="Heapify Logo"
+              />
+            )}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ color: "#ffffff", fontSize: "22px", fontWeight: 800 }}>Heapify</span>
+              <span style={{ color: "#a1a1aa", fontSize: "14px", letterSpacing: "1px" }}>OPEN SOURCE HUB</span>
+            </div>
+          </div>
+
           <div
             style={{
-              padding: "6px 18px",
+              padding: "8px 20px",
               borderRadius: "50px",
               backgroundColor: "rgba(59, 130, 246, 0.15)",
               border: "1px solid rgba(59, 130, 246, 0.4)",
               color: "#3b82f6",
-              fontSize: "18px",
+              fontSize: "16px",
               fontWeight: 700,
               letterSpacing: "2px",
             }}
           >
             {difficulty}
           </div>
-          <div style={{ color: "#a1a1aa", fontSize: "20px" }}>Heapify Open Source Hub</div>
         </div>
 
+        {/* Content Body */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "980px" }}>
           <div
             style={{
@@ -115,6 +147,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           )}
         </div>
 
+        {/* Footer Bar */}
         <div
           style={{
             display: "flex",

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { canExportEventRegistrations } from "@/lib/auth/event-registration-export";
 import { createClient } from "@/lib/supabase/server";
 
@@ -60,40 +60,43 @@ export async function GET(_request: Request, { params }: RouteContext) {
   }
 
   const rows = (registrations ?? []).map((registration) => ({
-    "Event": cellValue(event.title),
-    "Event Date": cellValue(new Date(event.start_at).toISOString()),
-    "Registration ID": cellValue(registration.id),
-    "Full Name": cellValue(registration.full_name),
-    "Email": cellValue(registration.email),
-    "GitHub URL": cellValue(registration.github_url),
-    "LinkedIn URL": cellValue(registration.linkedin_url),
-    "Team Name": cellValue(registration.team_name),
-    "Team Members": cellValue(registration.team_members),
-    "Answers": cellValue(registration.answers),
-    "Status": cellValue(registration.status),
-    "Registered At": cellValue(registration.registered_at),
+    event: cellValue(event.title),
+    eventDate: cellValue(new Date(event.start_at).toISOString()),
+    registrationId: cellValue(registration.id),
+    fullName: cellValue(registration.full_name),
+    email: cellValue(registration.email),
+    githubUrl: cellValue(registration.github_url),
+    linkedinUrl: cellValue(registration.linkedin_url),
+    teamName: cellValue(registration.team_name),
+    teamMembers: cellValue(registration.team_members),
+    answers: cellValue(registration.answers),
+    status: cellValue(registration.status),
+    registeredAt: cellValue(registration.registered_at),
   }));
 
-  const workbook = XLSX.utils.book_new();
-  const worksheet = XLSX.utils.json_to_sheet(rows, {
-    header: [
-      "Event", "Event Date", "Registration ID", "Full Name", "Email",
-      "GitHub URL", "LinkedIn URL", "Team Name", "Team Members", "Answers",
-      "Status", "Registered At",
-    ],
-  });
-  worksheet["!cols"] = [
-    { wch: 28 }, { wch: 24 }, { wch: 38 }, { wch: 24 }, { wch: 32 },
-    { wch: 32 }, { wch: 32 }, { wch: 24 }, { wch: 36 }, { wch: 48 },
-    { wch: 16 }, { wch: 28 },
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Registrations");
+  worksheet.columns = [
+    { header: "Event", key: "event", width: 28 },
+    { header: "Event Date", key: "eventDate", width: 24 },
+    { header: "Registration ID", key: "registrationId", width: 38 },
+    { header: "Full Name", key: "fullName", width: 24 },
+    { header: "Email", key: "email", width: 32 },
+    { header: "GitHub URL", key: "githubUrl", width: 32 },
+    { header: "LinkedIn URL", key: "linkedinUrl", width: 32 },
+    { header: "Team Name", key: "teamName", width: 24 },
+    { header: "Team Members", key: "teamMembers", width: 36 },
+    { header: "Answers", key: "answers", width: 48 },
+    { header: "Status", key: "status", width: 16 },
+    { header: "Registered At", key: "registeredAt", width: 28 },
   ];
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+  worksheet.addRows(rows);
 
-  const file = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+  const buffer = await workbook.xlsx.writeBuffer();
   const safeSlug = slug.replace(/[^a-zA-Z0-9_-]/g, "-");
   const filename = `${safeSlug}-registrations.xlsx`;
 
-  return new NextResponse(file, {
+  return new NextResponse(buffer, {
     status: 200,
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
