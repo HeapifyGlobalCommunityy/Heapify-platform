@@ -90,6 +90,13 @@
     }
   }
 
+  /* Prevent iOS Safari automatic zoom on form input focus */
+  @media screen and (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
   ::selection {
     background: rgba(255, 122, 0, 0.22);
     color: #151B24;
