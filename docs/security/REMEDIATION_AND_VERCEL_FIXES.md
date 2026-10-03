@@ -77,7 +77,21 @@ Migrated `app/api/events/[slug]/registrations/export/route.ts` to `exceljs@4.4.0
 
 ### F. Canvas Particle Efficiency
 - **Issue**: Background canvas ran 32 particles with $O(n^2)$ line connection calculations continuously on mobile devices, consuming battery and GPU memory.
-- **Fix**: Scaled down node count to 16 on mobile screens, lowered connection distance to 100px, and paused the animation loop when the browser tab is hidden or backgrounded.
+### G. iOS Safari Auto-Zoom Prevention
+- **Issue**: iOS Safari forcibly zooms into inputs, selects, and textareas if their computed font-size is below 16px, disrupting page layout and viewport alignment.
+- **Fix**: Added `@media screen and (max-width: 768px)` global rule enforcing `font-size: 16px !important` on all interactive form inputs.
+
+### H. Mobile Drawer Scroll Containment
+- **Issue**: On compact mobile screens (e.g., iPhone SE or landscape), long navigation menus could get clipped and scroll-chain to the underlying page.
+- **Fix**: Added `max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain` to the mobile drawer in `components/layout/navbar.tsx`.
+
+### I. Viewport Cover & Safe Areas
+- **Issue**: On iPhones with notches/Dynamic Islands and modern Android devices, layout did not adapt properly to hardware insets.
+- **Fix**: Configured `viewportFit: "cover"` and `maximumScale: 5` in `app/layout.tsx` with CSS safe area inset variables.
+
+### J. Partner Grid Responsive Spacing
+- **Issue**: 4 continuous marquee columns with heavy padding squeezed logo cards down to ~50px on narrow phone screens.
+- **Fix**: Refined card padding to `p-2.5 sm:p-5 md:p-6` and margins to `px-3 sm:px-12` in `components/site/collaborations-field.tsx` for crisp partner logo rendering.
 
 ---
 
