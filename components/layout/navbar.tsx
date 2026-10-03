@@ -90,9 +90,11 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   // Synchronize visibility when hero resize completes or reverses
   useEffect(() => {
     if (isHome) {
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      const threshold = isMobile ? 420 : 1050;
       if (heroResizeComplete) {
         setVisible(true);
-      } else if (typeof window !== "undefined" && window.scrollY < 1100) {
+      } else if (typeof window !== "undefined" && window.scrollY < threshold) {
         setVisible(false);
         setOpen(false);
       }
@@ -105,8 +107,9 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
       setScrolled(currentY > 24);
 
       if (isHome) {
-        // Fallback: if user scrolled past the hero section (> 1100px), assume hero is passed
-        const isPastHero = currentY > 1100;
+        const isMobile = window.innerWidth < 768;
+        const threshold = isMobile ? 420 : 1050;
+        const isPastHero = currentY > threshold;
         const isReady = heroResizeComplete || isPastHero;
 
         if (!isReady) {
@@ -115,10 +118,10 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
           setOpen(false);
         } else {
           // Hero image has finished resizing completely: show navbar, hide only when scrolling down fast past hero
-          if (currentY > lastScrollY.current + 6 && currentY > 1200) {
+          if (currentY > lastScrollY.current + 6 && currentY > threshold + 100) {
             setVisible(false);
             setOpen(false);
-          } else if (currentY < lastScrollY.current - 4 || currentY <= 1200) {
+          } else if (currentY < lastScrollY.current - 4 || currentY <= threshold + 100) {
             setVisible(true);
           }
         }
