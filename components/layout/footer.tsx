@@ -57,24 +57,22 @@ export function Footer() {
 
   return (
     <footer className="relative mt-24 overflow-hidden">
-      {/* "For Builders, Not Spectators" banner accent at top */}
-      <div className="relative py-8 sm:py-12 md:py-14 overflow-hidden border-y border-border/40 bg-background">
-        {/* Very subtle warm ambient glow matching page theme */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
+      {/* "For Builders, Not Spectators" banner accent at top - spans full length across the website */}
+      <div className="relative py-3 sm:py-5 md:py-7 overflow-hidden border-y border-border/40 bg-background w-full">
+        {/* Subtle warm ambient glow matching page theme */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(255,122,0,0.06),transparent_70%)] pointer-events-none" />
 
-        {/* Centered graphic banner */}
-        <div className="relative z-10 flex flex-col items-center justify-center px-4 sm:px-6 text-center max-w-4xl mx-auto">
-          <div className="w-full max-w-2xl md:max-w-3xl lg:max-w-4xl">
-            <Image
-              src="/for-builders-not-spectators.png"
-              alt="For Builders, Not Spectators"
-              width={1967}
-              height={800}
-              className="w-full h-auto object-contain mx-auto select-none pointer-events-none mix-blend-multiply drop-shadow-sm"
-              priority={false}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 85vw, 896px"
-            />
-          </div>
+        {/* Full-length graphic banner */}
+        <div className="relative z-10 w-full max-w-[1600px] mx-auto px-2 sm:px-4 md:px-6 flex items-center justify-center">
+          <Image
+            src="/for-builders-not-spectators.png"
+            alt="For Builders, Not Spectators"
+            width={1967}
+            height={628}
+            className="w-full h-auto object-contain mx-auto select-none pointer-events-none drop-shadow-sm"
+            priority={false}
+            sizes="100vw"
+          />
         </div>
       </div>
 

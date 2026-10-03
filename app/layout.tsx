@@ -36,7 +36,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Heapify Global — Build with People Who Ship",
+  title: {
+    default: "Heapify Global - Build with People Who Ship",
+    template: "%s - Heapify Global",
+  },
   description:
     "A global community of engineers, builders, and open-source contributors. Learn, build, contribute, lead.",
   metadataBase: new URL("https://heapify.community"),
