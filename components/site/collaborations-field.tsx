@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 const partners = [
@@ -65,13 +66,18 @@ export function CollaborationsField() {
       key={i}
       className="flex aspect-square w-full items-center justify-center rounded-2xl border border-border/50 bg-card p-4 shadow-warm sm:rounded-2xl sm:p-6"
     >
-      <img
-        src={p.logo}
-        alt={p.name}
-        className="h-full w-full object-contain rounded-lg"
+      <div
+        className="relative h-full w-full flex items-center justify-center"
         style={{ transform: `scale(${p.scale || 1})` }}
-        loading="lazy"
-      />
+      >
+        <Image
+          src={p.logo}
+          alt={p.name}
+          fill
+          sizes="(max-width: 640px) 25vw, 120px"
+          className="object-contain rounded-lg"
+        />
+      </div>
     </div>
   );
 
