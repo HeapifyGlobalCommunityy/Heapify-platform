@@ -127,14 +127,19 @@ export default async function EventsPage() {
     };
   });
 
+  const stripTemporalFlag = ({ isPast: _flag, ...rest }: (typeof mappedEvents)[number]): MappedEvent => {
+    void _flag;
+    return rest;
+  };
+
   // Split into two temporal groups
   const activeEvents: MappedEvent[] = mappedEvents
     .filter((e) => !e.isPast)
-    .map(({ isPast: _isPast, ...rest }) => rest);
+    .map(stripTemporalFlag);
 
   const pastEvents: MappedEvent[] = mappedEvents
     .filter((e) => e.isPast)
-    .map(({ isPast: _isPast, ...rest }) => rest);
+    .map(stripTemporalFlag);
 
   // Build category list from active events only — keeps filter relevant
   const dynamicCategories: string[] = [
