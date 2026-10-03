@@ -7,6 +7,7 @@ import NavbarWithAuth from "@/components/layout/NavbarWithAuth";
 import { Footer } from "@/components/layout/footer";
 import { PageTransition, ScrollProgressBar } from "@/components/site/ui";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { BackToTop } from "@/components/layout/back-to-top";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -104,6 +105,7 @@ export default async function RootLayout({
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
+            <BackToTop />
           </SmoothScroll>
         </ThemeProvider>
       </body>
