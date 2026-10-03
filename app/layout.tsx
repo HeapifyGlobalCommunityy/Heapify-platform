@@ -47,6 +47,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/Heapify_withbg.jpeg",
+    apple: "/heapify-mascot.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Heapify",
   },
 };
 
@@ -55,6 +61,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
+  themeColor: "#FF7A00",
 };
 
 import { createClient } from "@/lib/supabase/server";
