@@ -287,7 +287,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="border-b border-border/80 bg-white shadow-xl px-5 py-6 space-y-1.5 lg:hidden"
+            className="border-b border-border/80 bg-card shadow-xl px-5 py-6 space-y-1.5 lg:hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain"
           >
             {allNavLinks.map((link) => (
               <Link
