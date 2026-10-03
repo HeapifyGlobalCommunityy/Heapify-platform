@@ -64,7 +64,7 @@ export function CollaborationsField() {
   const renderCard = (p: typeof partners[0], i: number) => (
     <div
       key={i}
-      className="flex aspect-square w-full items-center justify-center rounded-2xl border border-border/50 bg-card p-4 shadow-warm sm:rounded-2xl sm:p-6"
+      className="flex aspect-square w-full items-center justify-center rounded-xl sm:rounded-2xl border border-border/50 bg-card p-2.5 sm:p-5 md:p-6 shadow-warm"
     >
       <div
         className="relative h-full w-full flex items-center justify-center"
@@ -117,7 +117,7 @@ export function CollaborationsField() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="relative flex h-[460px] w-full gap-4 overflow-hidden rounded-3xl border border-border/60 bg-card/60 px-8 py-4 sm:h-[640px] sm:gap-6 sm:px-20 sm:py-8"
+        className="relative flex h-[460px] w-full gap-2.5 sm:gap-6 overflow-hidden rounded-3xl border border-border/60 bg-card/60 px-3 py-4 sm:h-[640px] sm:px-12 md:px-20 sm:py-8"
       >
         <style>{`
           .marquee-container {

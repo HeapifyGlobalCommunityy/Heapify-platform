@@ -44,11 +44,13 @@ export function AnimatedNetworkBackground() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     // Reduced node count from 54 → 32 for much better perf.
-    // The O(n²) connection loop drops from ~1431 to ~496 iterations per frame.
-    const NODE_COUNT = 32;
-    const CONNECTION_DISTANCE = 150;
+    let connectionDistance = 150;
 
     const resize = () => {
+      const isMobile = window.innerWidth < 768;
+      const nodeCount = isMobile ? 16 : 32;
+      connectionDistance = isMobile ? 100 : 150;
+
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
@@ -57,7 +59,7 @@ export function AnimatedNetworkBackground() {
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       nodes.length = 0;
-      for (let index = 0; index < NODE_COUNT; index += 1) {
+      for (let index = 0; index < nodeCount; index += 1) {
         nodes.push({
           x: Math.random() * width,
           y: Math.random() * height,
@@ -81,6 +83,12 @@ export function AnimatedNetworkBackground() {
       mouse = { x: 0, y: 0, active: false };
     };
 
+    let isDocumentVisible = !document.hidden;
+    const onVisibilityChange = () => {
+      isDocumentVisible = !document.hidden;
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     resize();
     window.addEventListener("resize", resize);
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -94,6 +102,7 @@ export function AnimatedNetworkBackground() {
     const draw = (time: number) => {
       frame = requestAnimationFrame(draw);
 
+      if (!isDocumentVisible) return;
       if (time - lastTime < FRAME_INTERVAL) return;
       lastTime = time;
 
@@ -133,9 +142,9 @@ export function AnimatedNetworkBackground() {
           const dy = first.y - second.y;
           // Skip sqrt when possible — compare squared distances
           const distSq = dx * dx + dy * dy;
-          if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
+          if (distSq < connectionDistance * connectionDistance) {
             const distance = Math.sqrt(distSq);
-            const alpha = 0.12 * (1 - distance / CONNECTION_DISTANCE);
+            const alpha = 0.12 * (1 - distance / connectionDistance);
             context.strokeStyle = colors.lineColor.replace(/[\d.]+\)$/, `${alpha})`);
             context.moveTo(first.x, first.y);
             context.lineTo(second.x, second.y);
@@ -158,6 +167,7 @@ export function AnimatedNetworkBackground() {
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseleave", onLeave);

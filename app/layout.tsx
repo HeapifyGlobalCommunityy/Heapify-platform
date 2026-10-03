@@ -7,6 +7,7 @@ import NavbarWithAuth from "@/components/layout/NavbarWithAuth";
 import { Footer } from "@/components/layout/footer";
 import { PageTransition, ScrollProgressBar } from "@/components/site/ui";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { BackToTop } from "@/components/layout/back-to-top";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -47,12 +48,21 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/Heapify_withbg.jpeg",
+    apple: "/heapify-mascot.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Heapify",
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#FF7A00",
 };
 
 import { createClient } from "@/lib/supabase/server";
@@ -95,6 +105,7 @@ export default async function RootLayout({
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
+            <BackToTop />
           </SmoothScroll>
         </ThemeProvider>
       </body>
