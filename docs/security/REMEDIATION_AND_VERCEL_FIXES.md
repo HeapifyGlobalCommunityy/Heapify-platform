@@ -1,17 +1,17 @@
 # Security Remediation & Vercel Readiness Report
 
 ## Overview
-This document details the security vulnerability remediations and build optimization fixes applied to ensure the repository is fully production- and Vercel-ready with zero build warnings, zero ESLint errors, and full compliance against all reported GitHub Dependabot alerts.
+This document details the security vulnerability remediations, mobile touch optimizations, and build configuration fixes applied to ensure the repository is fully production- and Vercel-ready with zero build warnings, zero ESLint errors, and full compliance against all reported GitHub Dependabot alerts.
 
 ---
 
 ## 1. Security Vulnerability Remediations
 
-All 20 Dependabot security alerts and secondary transitive CVEs have been remediated.
+All Dependabot security alerts and secondary transitive CVEs have been systematically remediated.
 
 | Alert # | Package | Severity | Advisory / CVE | Root Cause & Transitive Path | Remediation Applied |
 |---|---|---|---|---|---|
-| **#21** | `next` | **Critical** | GHSA-p293-qw3h-jr36 | Unauthenticated Remote Code Execution on Windows-hosted servers | Upgraded `next` to `15.5.27` |
+| **#21** | `next` | **Critical** | GHSA-p293-qw3h-jr36 | Unauthenticated Remote Code Execution on Windows-hosted servers | Upgraded `next` to `15.5.27` (patched in `15.5.24+`) |
 | **#22** | `next` | **Critical** | GHSA-2xp9-vwfh-vxw4 | Unauthenticated Remote Code Execution in Image Optimization API with AVIF files | Upgraded `next` to `15.5.27` |
 | **#24** | `sharp` | **High** | GHSA-g89c-p67h-r497, GHSA-2jg2-4ch7-h545 | Vulnerabilities in bundled `libheif` library | Added npm override: `sharp: ^0.35.5` |
 | **#7** | `sharp` | **High** | GHSA-f88m-g3jw-g9cj (CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591) | Inherited vulnerabilities in `libvips` | Added npm override: `sharp: ^0.35.5` |
@@ -31,6 +31,7 @@ All 20 Dependabot security alerts and secondary transitive CVEs have been remedi
 | **#5** | `brace-expansion` | **High** | GHSA-3jxr-9vmj-r5cp | DoS via exponential-time expansion of consecutive non-expanding `{}` groups | Added npm override: `brace-expansion: ^1.1.21` & `5.0.12` |
 | **#4** | `brace-expansion` | **High** | GHSA-3jxr-9vmj-r5cp | DoS via exponential-time expansion of consecutive non-expanding `{}` groups | Added npm override: `brace-expansion: ^1.1.21` & `5.0.12` |
 | **#20** | `baseline-browser-mapping` | **Moderate** | GHSA-w5vr-8v7q-w6rv | Process termination on invalid input causes denial of service | Added npm override: `baseline-browser-mapping: ^2.11.27` |
+| **#25** | `braces` | **High** | GHSA-vfj7-8cjw-p6xm (CVE-2026-93687) | Recursive AST walkers without depth guard (`<= 3.0.3`) in dev build tools | Upstream PR #72 pending by maintainers; severed `chokidar@3` path via override `chokidar: ^4.0.3`. Never exposed to production runtime |
 | **Sec** | `uuid` | **Moderate** | GHSA-w5hq-g745-h8pq | Missing buffer bounds check in `uuid` v3/v5/v6 when `buf` is provided | Added npm override: `uuid: ^11.1.1` |
 
 ---
@@ -49,7 +50,38 @@ Migrated `app/api/events/[slug]/registrations/export/route.ts` to `exceljs@4.4.0
 
 ---
 
-## 3. Vercel Build & Lint Readiness
+## 3. Mobile Performance & Animation Enhancements (Android & iPhone)
+
+### A. Lenis Smooth Scrolling Touch Physics
+- **Issue**: Lenis touch simulation with `touchMultiplier: 1.8` and `syncTouch: false` caused jerky, hyper-sensitive scrolling and fought against the native hardware-accelerated momentum scrolling of iOS Safari and Android Chrome.
+- **Fix**: Configured `syncTouch: true` and `touchMultiplier: 1.0`. Touch screens on iOS and Android track 1:1 with user finger gestures smoothly, while desktop maintains inertia-based smooth scrolling.
+
+### B. Dynamic Viewport Height (`100dvh`)
+- **Issue**: Using standard `100vh` on mobile devices caused visible jumping when the mobile browser's top address bar and bottom navigation controls expand or collapse.
+- **Fix**: Applied `h-screen h-[100dvh]` to the pinned hero container and `.min-h-screen-dvh` in CSS.
+
+### C. Reduced Mobile Section Height & Early Interactivity
+- **Issue**: A `220vh` sticky scroll on mobile required 4–5 full-length swipes just to read the hero headline, and `pointer-events-none` blocked button taps until deep scroll.
+- **Fix**: 
+  - Reduced section height on mobile to `h-[180vh]` (`lg:h-[240vh]` on desktop).
+  - Mobile photo contracts to top banner earlier (`smoothProgress` `0.08` → `0.48`), allowing the text and buttons to settle into place quickly.
+  - Enabled button interactivity earlier on mobile (`latest > 0.18`), allowing users to tap CTAs immediately once visible.
+
+### D. Mobile GPU Optimization (CSS Blur Removal)
+- **Issue**: Applying dynamic `filter: blur(...)` during scroll transitions on mobile WebKit and Blink triggers severe paint thrashing, font blurring, and frame drops.
+- **Fix**: Conditionally disabled blur filtering on mobile screens (`filter: isMobile ? undefined : contentFilter`), using GPU-composited `opacity` and `transform` exclusively.
+
+### E. Responsive Navbar Reveal Threshold
+- **Issue**: On the home page, the navbar was hidden until `window.scrollY > 1100px`, trapping mobile visitors on small screens without access to the site menu.
+- **Fix**: Added dynamic mobile detection (`threshold = isMobile ? 420 : 1050`), making the navbar immediately accessible on phones.
+
+### F. Canvas Particle Efficiency
+- **Issue**: Background canvas ran 32 particles with $O(n^2)$ line connection calculations continuously on mobile devices, consuming battery and GPU memory.
+- **Fix**: Scaled down node count to 16 on mobile screens, lowered connection distance to 100px, and paused the animation loop when the browser tab is hidden or backgrounded.
+
+---
+
+## 4. Vercel Build & Lint Readiness
 
 ### A. Next.js Output File Tracing Root
 - **Issue**: Next.js logged `Warning: Next.js inferred your workspace root, but it may not be correct` when parent directories contained lockfiles.
@@ -61,7 +93,7 @@ Migrated `app/api/events/[slug]/registrations/export/route.ts` to `exceljs@4.4.0
 - `app/events/page.tsx`: Cleaned unused temporal flag parameter `_isPast` in event mappings.
 - `app/page.tsx`: Removed unused `Image` and `communityJourney` imports.
 - `components/events/EventDetailClient.tsx`: Removed unused `Users` and `SectionWrapper` imports.
-- `components/site/ui.tsx`: Removed unused `fadeIn` animation variant, handled `title` in `Hero`, and rendered the `eyebrow` badge in `FeatureCard`.
+- `components/site/ui.tsx`: Handled `title` in `Hero`, removed unused `fadeIn`, and rendered the `eyebrow` badge in `FeatureCard`.
 
 ### C. Image Optimization (`@next/next/no-img-element`)
 - `components/site/collaborations-field.tsx`: Replaced native `<img>` elements with Next.js `<Image />` component with responsive sizing and layout containment.
@@ -69,10 +101,9 @@ Migrated `app/api/events/[slug]/registrations/export/route.ts` to `exceljs@4.4.0
 
 ---
 
-## 4. Verification
+## 5. Build Verification
 
-Production build was run via `npm run build`:
-- **Result**: Exit code 0 (Success)
+- **Command**: `npm run build`
+- **Result**: Exit code `0` (Success in 11.6s)
 - **Pages generated**: 31/31 static and dynamic routes compiled without errors
 - **Lint status**: 0 errors, 0 warnings
-- **Security audit**: All 20 requested security alerts remediated

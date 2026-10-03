@@ -130,6 +130,16 @@ export function Hero({
   void title;
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInteractive, setIsInteractive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateSize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -145,13 +155,14 @@ export function Hero({
   });
 
   useEffect(() => {
+    const isMobileDevice = typeof window !== "undefined" && window.innerWidth < 1024;
     const unsubscribe = smoothProgress.on("change", (latest) => {
-      setIsInteractive(latest > 0.32);
-      const isComplete = latest >= 0.66;
+      setIsInteractive(latest > (isMobileDevice ? 0.18 : 0.32));
+      const isComplete = latest >= (isMobileDevice ? 0.48 : 0.66);
       if (typeof window !== "undefined") {
         window.__heroImageResizeComplete = isComplete;
         window.dispatchEvent(
-          new CustomEvent("hero-image-resize", { detail: { isComplete, progress: latest } })
+          new CustomEvent("hero-image-resize", { detail: { isComplete, progress: latest, isMobile: isMobileDevice } })
         );
       }
     });
@@ -181,7 +192,7 @@ export function Hero({
   const desktopBorderWidth = useTransform(smoothProgress, [0.18, 0.66], ["0px", "1px"]);
 
   // Mobile transforms: starts full height, contracts to top banner
-  const mobileHeight = useTransform(smoothProgress, [0.10, 0.66], ["100%", "38%"]);
+  const mobileHeight = useTransform(smoothProgress, [0.08, 0.48], ["100%", "36%"]);
   const mobileRadius = useTransform(smoothProgress, [0.10, 0.66], ["0px", "28px"]);
 
   // Floating scroll prompt dissolves immediately on scroll
@@ -214,8 +225,8 @@ export function Hero({
   const dolphinOpacity = useTransform(smoothProgress, [0.12, 0.45], [0, 1]);
 
   return (
-    <section ref={containerRef} className="relative h-[220vh] lg:h-[240vh] -mt-20">
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end lg:justify-center px-5 sm:px-8 pb-12 lg:pb-0">
+    <section ref={containerRef} className="relative h-[180vh] md:h-[210vh] lg:h-[240vh] -mt-20">
+      <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex flex-col justify-end lg:justify-center px-4 sm:px-8 pb-8 sm:pb-12 lg:pb-0">
         {/* Animated particle background */}
         <AnimatedNetworkBackground />
 
@@ -253,7 +264,7 @@ export function Hero({
 
         <motion.div
           style={{ opacity: dolphinOpacity }}
-          className="pointer-events-none absolute right-3 sm:right-6 lg:right-10 top-[52%] -translate-y-1/2 w-28 sm:w-36 md:w-42 aspect-square select-none z-0"
+          className="pointer-events-none absolute right-3 sm:right-6 lg:right-10 top-[52%] -translate-y-1/2 w-28 sm:w-36 md:w-42 aspect-square select-none z-0 hidden sm:block"
         >
           <motion.div
             animate={{ y: [5, -5, 5], rotate: [12, 18, 12] }}
@@ -321,15 +332,15 @@ export function Hero({
           />
         </motion.div>
 
-        {/* Content (Appears only on scroll, like butter melting into place) */}
+        {/* Content (Appears only on scroll, smoothly optimized for mobile GPUs) */}
         <motion.div
           style={{
             opacity: contentOpacity,
             y: contentY,
-            filter: contentFilter,
+            filter: isMobile ? undefined : contentFilter,
           }}
           className={cn(
-            "relative z-10 mx-auto w-full max-w-7xl pt-24 lg:pt-0 transition-[pointer-events]",
+            "relative z-10 mx-auto w-full max-w-7xl pt-4 sm:pt-14 lg:pt-0 transition-[pointer-events]",
             isInteractive ? "pointer-events-auto" : "pointer-events-none"
           )}
         >
@@ -337,7 +348,7 @@ export function Hero({
             {/* Eyebrow badge */}
             <motion.div
               style={{ opacity: badgeOpacity, y: badgeY }}
-              className="mb-6 lg:mb-8 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/70 bg-card/85 backdrop-blur-md shadow-sm"
+              className="mb-4 lg:mb-8 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/70 bg-card/85 backdrop-blur-md shadow-sm"
             >
               <HeapifyLogo className="h-5 w-5 rounded-sm" />
               <span className="eyebrow text-foreground/75">
@@ -350,7 +361,7 @@ export function Hero({
             {/* Main headline — editorial serif */}
             <motion.h1
               style={{ opacity: headlineOpacity, y: headlineY }}
-              className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6.25rem] font-600 leading-[1.02] tracking-tight text-foreground mb-6"
+              className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6.25rem] font-600 leading-[1.04] tracking-tight text-foreground mb-4 sm:mb-6"
             >
               Build with<br />
               <span className="font-serif italic font-normal text-glow inline-block pr-2">
@@ -362,7 +373,7 @@ export function Hero({
             {/* Tagline */}
             <motion.p
               style={{ opacity: descOpacity, y: descY }}
-              className="text-lg sm:text-xl text-foreground/80 font-300 leading-relaxed max-w-lg mb-3"
+              className="text-base sm:text-xl text-foreground/80 font-300 leading-snug sm:leading-relaxed max-w-lg mb-2 sm:mb-3"
             >
               {tagline}
             </motion.p>
@@ -370,7 +381,7 @@ export function Hero({
             {/* Description */}
             <motion.p
               style={{ opacity: descOpacity, y: descY }}
-              className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mb-8"
+              className="text-xs sm:text-base text-muted-foreground leading-relaxed max-w-lg mb-6 sm:mb-8 line-clamp-3 sm:line-clamp-none"
             >
               {description}
             </motion.p>
@@ -378,7 +389,7 @@ export function Hero({
             {/* CTAs */}
             <motion.div
               style={{ opacity: actionsOpacity, y: actionsY }}
-              className="flex flex-wrap items-center gap-3"
+              className="flex flex-wrap items-center gap-2.5 sm:gap-3"
             >
               {actions.map((action, i) => (
                 <Button
