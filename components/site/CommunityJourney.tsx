@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 export function CommunityJourney() {
@@ -28,9 +29,11 @@ export function CommunityJourney() {
       title: "Discover",
       description: "Join hackathons, tech sessions, and community events.",
       icon: (
-        <img
-          src="/discover-icon.png?v=3"
+        <Image
+          src="/discover-icon.png"
           alt="Discover"
+          width={112}
+          height={112}
           className="w-24 h-24 sm:w-28 sm:h-28 object-contain"
         />
       ),
@@ -40,9 +43,11 @@ export function CommunityJourney() {
       title: "Learn",
       description: "Learn directly from mentors and hands-on workshops.",
       icon: (
-        <img
-          src="/learn-icon.png?v=3"
+        <Image
+          src="/learn-icon.png"
           alt="Learn"
+          width={112}
+          height={112}
           className="w-24 h-24 sm:w-28 sm:h-28 object-contain"
         />
       ),
@@ -52,9 +57,11 @@ export function CommunityJourney() {
       title: "Build",
       description: "Turn ideas into real projects, collaborate, and ship.",
       icon: (
-        <img
-          src="/build-icon.png?v=3"
+        <Image
+          src="/build-icon.png"
           alt="Build"
+          width={112}
+          height={112}
           className="w-24 h-24 sm:w-28 sm:h-28 object-contain"
         />
       ),
@@ -64,9 +71,11 @@ export function CommunityJourney() {
       title: "Lead",
       description: "Grow into a mentor, organizer, or chapter leader.",
       icon: (
-        <img
-          src="/lead-icon.png?v=3"
+        <Image
+          src="/lead-icon.png"
           alt="Lead"
+          width={112}
+          height={112}
           className="w-24 h-24 sm:w-28 sm:h-28 object-contain"
         />
       ),
