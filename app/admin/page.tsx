@@ -52,31 +52,32 @@ export default async function AdminPage() {
         eyebrow="Admin"
         title="Platform Command Center"
         description="Global administration, event management, and community submissions inbox."
-        className="pt-36"
+        className="pt-28 sm:pt-36 relative overflow-hidden"
       >
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(255,122,0,0.08),transparent_35%)]" />
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-orange">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Total Events</span>
               <Calendar className="h-4 w-4 text-primary" />
             </div>
             <p className="mt-3 font-display text-3xl font-bold">{events.length}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-orange">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Active Events</span>
               <ShieldCheck className="h-4 w-4 text-primary" />
             </div>
             <p className="mt-3 font-display text-3xl font-bold text-primary">{activeEventsCount}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-orange">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Submissions Inbox</span>
               <Inbox className="h-4 w-4 text-primary" />
             </div>
             <p className="mt-3 font-display text-3xl font-bold">{submissions.length}</p>
           </div>
-          <div className="rounded-[1.5rem] border border-glass-border bg-glass-bg p-6 backdrop-blur-xl">
+          <div className="group rounded-2xl border border-border/80 bg-card p-6 shadow-warm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-orange">
             <div className="flex items-center justify-between text-xs text-muted-foreground uppercase font-mono tracking-wider">
               <span>Access Level</span>
               <ShieldCheck className="h-4 w-4 text-primary" />
@@ -87,16 +88,21 @@ export default async function AdminPage() {
 
         <BentoGrid className="md:grid-cols-2 mt-8">
           {controls.map((control, index) => (
-            <Link key={control.title} href={control.href} className="block group">
+            <Link 
+              key={control.title} 
+              href={control.href} 
+              className="block group rounded-2xl border border-transparent transition-colors duration-300 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
               <BentoCard
                 index={index}
                 eyebrow={control.badge}
                 title={control.title}
                 description={control.description}
+                className="hover:shadow-orange transition-shadow duration-300"
               >
-                <div className="mt-4 flex items-center justify-between border-t border-glass-border pt-4">
+                <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-4">
                   {control.icon}
-                  <span className="text-xs font-medium text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  <span className="text-xs font-medium text-primary inline-flex items-center gap-1 transition-transform duration-300 group-hover:translate-x-1">
                     Manage <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>

@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { HeapifyLogo } from "@/components/layout/logo";
 import { navigationLinks } from "@/lib/site-content";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const pathname = usePathname();
@@ -25,6 +26,7 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const auth = useAuth();
+  const { theme, setTheme } = useTheme();
   const user = auth.user;
   const profile = auth.profile;
   const [canCreateEvents, setCanCreateEvents] = useState(false);
@@ -240,6 +242,17 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                   >
                     Profile
                   </Link>
+                  {mounted && (
+                    <button
+                      type="button"
+                      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/80 bg-card/80 text-foreground/70 hover:text-foreground hover:border-primary/50 hover:bg-muted/50 transition-all duration-200"
+                      aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                      title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    >
+                      {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+                  )}
                   <button
                     onClick={handleSignOut}
                     disabled={isSigningOut}
@@ -316,6 +329,15 @@ export function Navbar({ isChapterLead = false }: { isChapterLead?: boolean }) {
                   <Link href="/profile" onClick={() => setOpen(false)} className="text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
                     Profile
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    className="flex w-full items-center justify-between text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors"
+                    aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                  >
+                  <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+                  {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                  </button>
                   <button onClick={handleSignOut} disabled={isSigningOut} className="text-left text-sm font-medium text-foreground/80 py-2.5 px-3.5 rounded-xl hover:bg-muted/50 hover:text-foreground transition-colors">
                     {isSigningOut ? "Signing out…" : "Sign Out"}
                   </button>

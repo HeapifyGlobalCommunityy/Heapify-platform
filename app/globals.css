@@ -51,6 +51,49 @@
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  .dark {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 96%;
+
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 96%;
+
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 68%;
+
+  --border: 0 0% 18%;
+
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(10, 10, 11, 0.82);
+
+  --hero-overlay-from: transparent;
+  --hero-overlay-mid: transparent;
+  --hero-overlay-to: transparent;
+
+  --canvas-fill: rgba(255, 255, 255, 0.002);
+  --node-primary: rgba(255, 122, 0, 0.65);
+  --node-accent: rgba(148, 163, 184, 0.45);
+  --line-color: rgba(255, 122, 0, 0.12);
+
+  --bg-top-glow: radial-gradient(
+    ellipse 75% 45% at 50% -5%,
+    rgba(255, 122, 0, 0.12),
+    transparent 70%
+  );
+
+  --bg-ambient:
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(255, 122, 0, 0.06),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 12% 80%,
+      rgba(148, 163, 184, 0.06),
+      transparent 45%
+    );
+}
+
   * {
     @apply border-border;
   }
@@ -158,7 +201,7 @@
 
   .glass-panel-strong {
     @apply border border-glass-border backdrop-blur-2xl;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--glass-bg);
     box-shadow: 0 8px 40px -16px rgba(15, 23, 42, 0.10),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
