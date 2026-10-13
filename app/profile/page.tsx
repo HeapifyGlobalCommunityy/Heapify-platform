@@ -304,9 +304,11 @@ export default async function ProfilePage() {
       {/* ── Badges & Achievements ── */}
       <SectionWrapper eyebrow="Badges & Achievements" title="Achievements" className="pt-12 pb-0">
         {typedBadges.length === 0 && (!typedProfile.won_challenges || typedProfile.won_challenges.length === 0) ? (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 flex items-center gap-4 text-muted-foreground">
-            <Award className="h-5 w-5 text-zinc-600 shrink-0" />
-            <span className="text-sm">No badges or awards yet - earn them by attending events, winning challenges, and contributing.</span>
+          <div className="flex items-center gap-4 rounded-[1.75rem] border border-slate-200 bg-white/80 p-5 text-slate-600 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.22)] sm:p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 text-primary shadow-inner shadow-primary/10">
+              <Award className="h-4 w-4 shrink-0" />
+            </div>
+            <span className="text-sm leading-6">No badges or awards yet — earn them by attending events, winning challenges, and contributing.</span>
           </div>
         ) : (
           <div className="flex flex-wrap gap-3">
@@ -315,19 +317,19 @@ export default async function ProfilePage() {
               <div
                 key={challenge.id}
                 title={`Won Monthly Challenge: ${challenge.title}`}
-                className="flex items-center gap-2.5 rounded-2xl border border-amber-500/20 bg-amber-500/8 px-4 py-2.5"
+                className="flex items-center gap-3 rounded-[1.5rem] border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3 shadow-[0_16px_30px_-24px_rgba(245,158,11,0.8)]"
               >
-                <Trophy className="h-4 w-4 text-amber-400 shrink-0" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                  <Trophy className="h-4 w-4 shrink-0" />
+                </div>
                 <div>
-                  <div className="text-sm font-medium text-amber-400 flex items-center gap-1">
-                    Challenge Winner
-                  </div>
+                  <div className="text-sm font-semibold text-amber-700">Challenge Winner</div>
                   {challenge.end_at && (
-                    <div className="text-[9px] text-muted-foreground font-mono">
+                    <div className="text-[9px] font-mono text-slate-500">
                       {new Date(challenge.end_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                     </div>
                   )}
-                  <div className="text-[10px] text-muted-foreground truncate max-w-[150px] mt-0.5">
+                  <div className="mt-0.5 max-w-[150px] truncate text-[10px] text-slate-600">
                     {challenge.title}
                   </div>
                 </div>
@@ -340,28 +342,30 @@ export default async function ProfilePage() {
               return (
                 <div
                   key={badge.id}
-                  className="flex items-center gap-2.5 rounded-2xl border border-primary/20 bg-primary/8 px-4 py-2.5"
+                  className="flex items-center gap-3 rounded-[1.5rem] border border-orange-200 bg-gradient-to-br from-primary/8 to-orange-50 px-4 py-3 shadow-[0_16px_30px_-24px_rgba(255,122,0,0.8)]"
                 >
-                  {badge.icon_url ? (
-                    <SafeImage 
-                      src={badge.icon_url} 
-                      alt={badge.name} 
-                      width={20}
-                      height={20}
-                      className="h-5 w-5 object-cover" 
-                      fallback={<Star className="h-4 w-4 text-primary" />}
-                    />
-                  ) : (
-                    <Star className="h-4 w-4 text-primary" />
-                  )}
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-100 text-primary">
+                    {badge.icon_url ? (
+                      <SafeImage 
+                        src={badge.icon_url} 
+                        alt={badge.name} 
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 object-cover" 
+                        fallback={<Star className="h-4 w-4 text-primary" />}
+                      />
+                    ) : (
+                      <Star className="h-4 w-4 text-primary" />
+                    )}
+                  </div>
                   <div>
-                    <div className="text-sm font-medium text-white">{badge.name}</div>
+                    <div className="text-sm font-semibold text-slate-900">{badge.name}</div>
                     {badge.description && (
-                      <div className="text-[9px] text-zinc-400 max-w-[200px] leading-tight">
+                      <div className="max-w-[200px] text-[9px] leading-tight text-slate-600">
                         {badge.description}
                       </div>
                     )}
-                    <div className="text-[9px] text-muted-foreground mt-0.5 font-mono">
+                    <div className="mt-0.5 text-[9px] font-mono text-slate-500">
                       {new Date(awarded_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                     </div>
                   </div>
@@ -376,16 +380,18 @@ export default async function ProfilePage() {
       <SectionWrapper eyebrow="Open Source" title="Projects &amp; Contributions" className="pt-12 pb-0">
         {(!typedProfile.project_maintainers || typedProfile.project_maintainers.length === 0) &&
         (filteredContributors.length === 0) ? (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 flex items-center gap-4 text-muted-foreground">
-            <Award className="h-5 w-5 text-zinc-600 shrink-0" />
-            <span className="text-sm">No open-source project affiliations yet. Join or maintain projects on the platform!</span>
+          <div className="flex items-center gap-4 rounded-[1.75rem] border border-slate-200 bg-white/80 p-5 text-slate-600 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.22)] sm:p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+              <Award className="h-4 w-4 shrink-0" />
+            </div>
+            <span className="text-sm leading-6">No open-source project affiliations yet. Join or maintain projects on the platform!</span>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Maintaining */}
             {typedProfile.project_maintainers && typedProfile.project_maintainers.length > 0 && (
-              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-3">
-                <h4 className="text-xs font-mono uppercase tracking-wider text-primary flex items-center gap-1.5">
+              <div className="space-y-3 rounded-[1.75rem] border border-orange-200 bg-gradient-to-br from-white to-orange-50/80 p-5 shadow-[0_18px_35px_-30px_rgba(255,122,0,0.7)]">
+                <h4 className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.2em] text-primary">
                   <Award className="h-4 w-4" /> Maintains
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -393,7 +399,7 @@ export default async function ProfilePage() {
                     <Link
                       key={project.id}
                       href={`/projects/${project.slug}`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-primary/20 bg-primary/10 hover:bg-primary/20 text-xs text-white transition-colors"
+                      className="inline-flex items-center gap-1 rounded-full border border-orange-200 bg-orange-100/80 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-slate-900"
                     >
                       {project.name}
                     </Link>
@@ -404,8 +410,8 @@ export default async function ProfilePage() {
 
             {/* Contributing */}
             {filteredContributors.length > 0 && (
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/10 p-5 space-y-3">
-                <h4 className="text-xs font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <div className="space-y-3 rounded-[1.75rem] border border-slate-200 bg-white/80 p-5 shadow-[0_18px_35px_-30px_rgba(15,23,42,0.2)]">
+                <h4 className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.2em] text-slate-600">
                   <Globe className="h-4 w-4" /> Contributes to
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -413,7 +419,7 @@ export default async function ProfilePage() {
                     <Link
                       key={project.id}
                       href={`/projects/${project.slug}`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-900"
                     >
                       {project.name}
                     </Link>
